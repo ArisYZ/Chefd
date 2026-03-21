@@ -1,3 +1,22 @@
 {
-  "users": []
+  "users": [
+    {
+      "id": "u_test_account_1",
+      "username": "test",
+      "displayName": "test",
+      "email": "test@gmail.com",
+      "avatarUri": null,
+      "bio": "",
+      "rankingScore": 0,
+      "leaderboardRank": 1,
+      "followersCount": 0,
+      "followingCount": 0,
+      "recipeCount": 0,
+      "reviewCount": 0,
+      "averageRating": 0,
+      "googleSub": null,
+      "createdAt": 1732147200000,
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+    }
+  ]
 }
