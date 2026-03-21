@@ -25,7 +25,12 @@ export interface Review {
 
 export interface IngredientMeasured {
   name: string;
-  measurement: string;
+  /** Numeric or fractional quantity, e.g. "500", "1/2", "2" */
+  amount?: string;
+  /** Unit from the measurement picker (e.g. mL, g, cup) */
+  unit?: string;
+  /** Legacy: combined amount+unit text (e.g. "1 cup (reserved)") */
+  measurement?: string;
 }
 
 export interface Recipe {

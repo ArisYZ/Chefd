@@ -12,6 +12,7 @@ import { Avatar } from '@/components/Avatar';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { computeScore, Review, User } from '@/types';
+import { formatIngredientLine } from '@/lib/ingredients';
 
 const { width } = Dimensions.get('window');
 
@@ -146,12 +147,21 @@ export default function RecipeDetailScreen() {
             <>
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Ingredients</Text>
-                {recipe.ingredients.map((ingredient, index) => (
-                  <View key={index} style={styles.ingredientRow}>
-                    <View style={styles.bulletPoint} />
-                    <Text style={styles.ingredientText}>{ingredient}</Text>
-                  </View>
-                ))}
+                {recipe.ingredientsMeasured && recipe.ingredientsMeasured.length > 0 ? (
+                  recipe.ingredientsMeasured.map((item, index) => (
+                    <View key={index} style={styles.ingredientRow}>
+                      <View style={styles.bulletPoint} />
+                      <Text style={styles.ingredientText}>{formatIngredientLine(item)}</Text>
+                    </View>
+                  ))
+                ) : (
+                  recipe.ingredients.map((ingredient, index) => (
+                    <View key={index} style={styles.ingredientRow}>
+                      <View style={styles.bulletPoint} />
+                      <Text style={styles.ingredientText}>{ingredient}</Text>
+                    </View>
+                  ))
+                )}
               </View>
 
               <View style={styles.section}>
@@ -427,6 +437,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     color: Colors.text,
     lineHeight: 22,
+    flex: 1,
   },
   stepRow: {
     flexDirection: 'row',

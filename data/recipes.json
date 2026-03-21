@@ -12,8 +12,20 @@
         "cookTime": 15,
         "servings": 2,
         "difficulty": "Medium",
-        "ingredients": ["Spaghetti", "Pecorino Romano", "Black pepper", "Salt", "Pasta water"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "200 g Spaghetti",
+          "60 g Pecorino Romano",
+          "2 tsp Black pepper",
+          "1 tbsp Salt",
+          "1 cup Pasta water (reserved)"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Spaghetti", "amount": "200", "unit": "g" },
+          { "name": "Pecorino Romano", "amount": "60", "unit": "g" },
+          { "name": "Black pepper", "amount": "2", "unit": "tsp" },
+          { "name": "Salt", "amount": "1", "unit": "tbsp" },
+          { "name": "Pasta water (reserved)", "amount": "1", "unit": "cup" }
+        ],
         "instructions": [
           "Bring a large pot of salted water to a boil",
           "Toast black pepper in a dry pan",
@@ -76,8 +88,28 @@
         "cookTime": 40,
         "servings": 4,
         "difficulty": "Medium",
-        "ingredients": ["Chicken thighs", "Yogurt", "Tomato sauce", "Butter", "Cream", "Garam masala", "Turmeric", "Ginger", "Garlic"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "500 g Chicken thighs",
+          "1/2 cup Yogurt",
+          "1 cup Tomato sauce",
+          "50 g Butter",
+          "1/2 cup Cream",
+          "1 tbsp Garam masala",
+          "1 tsp Turmeric",
+          "1 tbsp Ginger (grated)",
+          "3 clove Garlic (minced)"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Chicken thighs", "amount": "500", "unit": "g" },
+          { "name": "Yogurt", "amount": "1/2", "unit": "cup" },
+          { "name": "Tomato sauce", "amount": "1", "unit": "cup" },
+          { "name": "Butter", "amount": "50", "unit": "g" },
+          { "name": "Cream", "amount": "1/2", "unit": "cup" },
+          { "name": "Garam masala", "amount": "1", "unit": "tbsp" },
+          { "name": "Turmeric", "amount": "1", "unit": "tsp" },
+          { "name": "Ginger (grated)", "amount": "1", "unit": "tbsp" },
+          { "name": "Garlic (minced)", "amount": "3", "unit": "clove" }
+        ],
         "instructions": [
           "Marinate chicken in yogurt and spices for 1 hour",
           "Cook chicken in a hot pan until charred",
@@ -121,8 +153,18 @@
         "cookTime": 45,
         "servings": 1,
         "difficulty": "Hard",
-        "ingredients": ["Bread flour", "Sourdough starter", "Water", "Salt"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "500 g Bread flour",
+          "100 g Sourdough starter",
+          "350 mL Water (warm)",
+          "10 g Salt"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Bread flour", "amount": "500", "unit": "g" },
+          { "name": "Sourdough starter", "amount": "100", "unit": "g" },
+          { "name": "Water (warm)", "amount": "350", "unit": "mL" },
+          { "name": "Salt", "amount": "10", "unit": "g" }
+        ],
         "instructions": [
           "Mix flour, water, and starter. Autolyse 30 min",
           "Add salt and perform stretch & folds every 30 min",
@@ -166,8 +208,26 @@
         "cookTime": 30,
         "servings": 2,
         "difficulty": "Medium",
-        "ingredients": ["Ramen noodles", "Miso paste", "Chili oil", "Pork belly", "Soft-boiled egg", "Green onions", "Nori", "Chicken broth"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "200 g Ramen noodles",
+          "3 tbsp Miso paste",
+          "1 tbsp Chili oil",
+          "200 g Pork belly (sliced)",
+          "2 whole Soft-boiled eggs",
+          "2 stalk Green onions",
+          "2 sheet Nori",
+          "1 L Chicken broth"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Ramen noodles", "amount": "200", "unit": "g" },
+          { "name": "Miso paste", "amount": "3", "unit": "tbsp" },
+          { "name": "Chili oil", "amount": "1", "unit": "tbsp" },
+          { "name": "Pork belly (sliced)", "amount": "200", "unit": "g" },
+          { "name": "Soft-boiled eggs", "amount": "2", "unit": "whole" },
+          { "name": "Green onions", "amount": "2", "unit": "stalk" },
+          { "name": "Nori", "amount": "2", "unit": "slice" },
+          { "name": "Chicken broth", "amount": "1", "unit": "L" }
+        ],
         "instructions": [
           "Prepare broth with miso paste and chili",
           "Cook pork belly until caramelized",
@@ -211,8 +271,24 @@
         "cookTime": 0,
         "servings": 8,
         "difficulty": "Medium",
-        "ingredients": ["Mascarpone", "Eggs", "Sugar", "Espresso", "Ladyfingers", "Cocoa powder", "Marsala wine"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "500 g Mascarpone",
+          "4 whole Eggs",
+          "100 g Sugar",
+          "250 mL Espresso (cooled)",
+          "200 g Ladyfingers",
+          "2 tbsp Cocoa powder",
+          "30 mL Marsala wine"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Mascarpone", "amount": "500", "unit": "g" },
+          { "name": "Eggs", "amount": "4", "unit": "whole" },
+          { "name": "Sugar", "amount": "100", "unit": "g" },
+          { "name": "Espresso (cooled)", "amount": "250", "unit": "mL" },
+          { "name": "Ladyfingers", "amount": "200", "unit": "g" },
+          { "name": "Cocoa powder", "amount": "2", "unit": "tbsp" },
+          { "name": "Marsala wine", "amount": "30", "unit": "mL" }
+        ],
         "instructions": [
           "Whip egg yolks and sugar until pale",
           "Fold in mascarpone until smooth",
@@ -256,8 +332,26 @@
         "cookTime": 25,
         "servings": 4,
         "difficulty": "Easy",
-        "ingredients": ["Green curry paste", "Coconut milk", "Chicken", "Thai basil", "Bamboo shoots", "Fish sauce", "Palm sugar", "Thai eggplant"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "3 tbsp Green curry paste",
+          "400 mL Coconut milk",
+          "400 g Chicken (cubed)",
+          "1 handful Thai basil",
+          "100 g Bamboo shoots",
+          "2 tbsp Fish sauce",
+          "1 tbsp Palm sugar",
+          "150 g Thai eggplant"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Green curry paste", "amount": "3", "unit": "tbsp" },
+          { "name": "Coconut milk", "amount": "400", "unit": "mL" },
+          { "name": "Chicken (cubed)", "amount": "400", "unit": "g" },
+          { "name": "Thai basil", "amount": "1", "unit": "handful" },
+          { "name": "Bamboo shoots", "amount": "100", "unit": "g" },
+          { "name": "Fish sauce", "amount": "2", "unit": "tbsp" },
+          { "name": "Palm sugar", "amount": "1", "unit": "tbsp" },
+          { "name": "Thai eggplant", "amount": "150", "unit": "g" }
+        ],
         "instructions": [
           "Fry curry paste in coconut cream until fragrant",
           "Add chicken and cook through",
@@ -280,8 +374,22 @@
         "cookTime": 12,
         "servings": 4,
         "difficulty": "Medium",
-        "ingredients": ["Bread flour", "Water", "Yeast", "Salt", "Sugar", "Olive oil"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "500 g Bread flour",
+          "325 mL Water",
+          "5 g Yeast (dry)",
+          "10 g Salt",
+          "5 g Sugar",
+          "15 mL Olive oil"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Bread flour", "amount": "500", "unit": "g" },
+          { "name": "Water", "amount": "325", "unit": "mL" },
+          { "name": "Yeast (dry)", "amount": "5", "unit": "g" },
+          { "name": "Salt", "amount": "10", "unit": "g" },
+          { "name": "Sugar", "amount": "5", "unit": "g" },
+          { "name": "Olive oil", "amount": "15", "unit": "mL" }
+        ],
         "instructions": [
           "Combine water, yeast, and sugar",
           "Mix in flour, salt, and olive oil",
@@ -325,8 +433,24 @@
         "cookTime": 20,
         "servings": 4,
         "difficulty": "Medium",
-        "ingredients": ["Pork shoulder", "Pineapple", "Achiote paste", "Corn tortillas", "Onion", "Cilantro", "Lime"],
-        "ingredientsMeasured": [],
+        "ingredients": [
+          "800 g Pork shoulder",
+          "200 g Pineapple",
+          "3 tbsp Achiote paste",
+          "12 whole Corn tortillas",
+          "1 whole Onion (diced)",
+          "1 handful Cilantro",
+          "2 whole Limes"
+        ],
+        "ingredientsMeasured": [
+          { "name": "Pork shoulder", "amount": "800", "unit": "g" },
+          { "name": "Pineapple", "amount": "200", "unit": "g" },
+          { "name": "Achiote paste", "amount": "3", "unit": "tbsp" },
+          { "name": "Corn tortillas", "amount": "12", "unit": "whole" },
+          { "name": "Onion (diced)", "amount": "1", "unit": "whole" },
+          { "name": "Cilantro", "amount": "1", "unit": "handful" },
+          { "name": "Limes", "amount": "2", "unit": "whole" }
+        ],
         "instructions": [
           "Marinate pork in achiote and pineapple juice",
           "Grill or broil pork until charred",

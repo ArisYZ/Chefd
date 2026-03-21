@@ -10,6 +10,7 @@ import {
 import { mergeAccountsFromJsonString } from '@/database/db';
 import type { RepoAccountsFile } from '@/database/accountRepo';
 import { useAuth } from '@/contexts/AuthContext';
+import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
 
 const RECIPES_STORAGE_KEY = '@chefd_user_recipes';
 const REVIEWS_STORAGE_KEY = '@chefd_user_reviews';
@@ -19,7 +20,7 @@ const ACCOUNTS_PARSE_OVERRIDE_KEY = '@chefd_accounts_json_parse_override';
 type RecipeContextValue = {
   recipes: Recipe[];
   getRecipeById: (id: string) => Recipe | undefined;
-  addRecipe: (recipe: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings' | 'ingredientsMeasured'>) => string;
+  addRecipe: (recipe: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings'>) => string;
   getReviewsForRecipe: (recipeId: string) => Review[];
   addReview: (review: Review) => void;
   /** Serialized `data/recipes.json` including session reviews and user-added recipes. */
@@ -86,11 +87,18 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
           const parsed = JSON.parse(raw) as Recipe[];
           if (Array.isArray(parsed)) {
             setUserRecipes(
-              parsed.map((r) => ({
-                ...r,
-                createdByUserId: r.createdByUserId ?? userId,
-                createdByName: r.createdByName ?? user?.displayName ?? user?.username ?? 'You',
-              })),
+              parsed.map((r) => {
+                const measured = normalizeRecipeIngredientsMeasured(r.ingredientsMeasured ?? []);
+                const ingredients =
+                  measured.length > 0 ? measured.map(formatIngredientLine) : r.ingredients ?? [];
+                return {
+                  ...r,
+                  ingredientsMeasured: measured,
+                  ingredients,
+                  createdByUserId: r.createdByUserId ?? userId,
+                  createdByName: r.createdByName ?? user?.displayName ?? user?.username ?? 'You',
+                };
+              }),
             );
           }
         }
@@ -152,14 +160,13 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const addRecipe = useCallback(
-    (data: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings' | 'ingredientsMeasured'>) => {
+    (data: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings'>) => {
       const id = `ur-${Date.now()}`;
       const next: Recipe = {
         ...data,
         id,
         averageRating: 0,
         totalRatings: 0,
-        ingredientsMeasured: [],
         createdByUserId: userId,
         createdByName: user?.displayName ?? user?.username ?? 'You',
       };

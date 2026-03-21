@@ -1,6 +1,7 @@
 import type { Recipe, Review } from '@/types';
 import accountsFile from '@/data/accounts.json';
 import type { RepoAccountsFile } from '@/database/accountRepo';
+import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
 
 /**
  * Recipe storage model:
@@ -22,7 +23,7 @@ export interface RepoRecipeEntry {
   servings: number;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   ingredients: string[];
-  ingredientsMeasured: { name: string; measurement: string }[];
+  ingredientsMeasured: import('@/types').IngredientMeasured[];
   instructions: string[];
   averageRating: number;
   totalRatings: number;
@@ -53,8 +54,14 @@ export function parseRecipesFile(
     if (!entry?.recipes) continue;
     for (const r of entry.recipes) {
       const { reviews, ...recipeFields } = r;
+      const rf = recipeFields as Recipe;
+      const measured = normalizeRecipeIngredientsMeasured(rf.ingredientsMeasured ?? []);
+      const ingredientsLines =
+        measured.length > 0 ? measured.map(formatIngredientLine) : rf.ingredients ?? [];
       recipes.push({
-        ...(recipeFields as Recipe),
+        ...rf,
+        ingredientsMeasured: measured,
+        ingredients: ingredientsLines,
         createdByUserId: userId,
         createdByName: creatorNameById.get(userId) ?? userId,
       });

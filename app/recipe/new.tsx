@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -17,6 +19,9 @@ import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
+import { MEASUREMENT_UNITS } from '@/constants/measurementUnits';
+import { formatIngredientLine } from '@/lib/ingredients';
+import type { IngredientMeasured } from '@/types';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -36,7 +41,10 @@ export default function NewRecipeScreen() {
   const [servings, setServings] = useState('');
   const [difficulty, setDifficulty] = useState<(typeof DIFFICULTIES)[number]>('Medium');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [ingredients, setIngredients] = useState<string[]>(['']);
+  const [ingredients, setIngredients] = useState<
+    { amount: string; unit: string; name: string }[]
+  >([{ amount: '', unit: 'g', name: '' }]);
+  const [unitPickerIndex, setUnitPickerIndex] = useState<number | null>(null);
   const [instructions, setInstructions] = useState<string[]>(['']);
 
   const toggleTag = (tag: string) => {
@@ -96,10 +104,26 @@ export default function NewRecipeScreen() {
     ]);
   };
 
-  const updateIngredient = (index: number, text: string) => {
+  const updateIngredientName = (index: number, text: string) => {
     setIngredients((prev) => {
       const next = [...prev];
-      next[index] = text;
+      next[index] = { ...next[index], name: text };
+      return next;
+    });
+  };
+
+  const updateIngredientAmount = (index: number, text: string) => {
+    setIngredients((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], amount: text };
+      return next;
+    });
+  };
+
+  const updateIngredientUnit = (index: number, unit: string) => {
+    setIngredients((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], unit };
       return next;
     });
   };
@@ -134,11 +158,27 @@ export default function NewRecipeScreen() {
       return;
     }
 
-    const ing = ingredients.map((s) => s.trim()).filter(Boolean);
+    const ingMeasured: IngredientMeasured[] = ingredients
+      .map((i) => ({
+        name: i.name.trim(),
+        amount: i.amount.trim(),
+        unit: i.unit.trim(),
+      }))
+      .filter((i) => i.name || i.amount || i.unit);
+
     const steps = instructions.map((s) => s.trim()).filter(Boolean);
-    if (!ing.length) {
+    if (!ingMeasured.length) {
       Alert.alert('Ingredients', 'Add at least one ingredient.');
       return;
+    }
+    for (const row of ingMeasured) {
+      if (!row.amount || !row.unit || !row.name) {
+        Alert.alert(
+          'Ingredients',
+          'Each ingredient needs an amount (e.g. 500), a unit (e.g. mL), and a name.',
+        );
+        return;
+      }
     }
     if (!steps.length) {
       Alert.alert('Instructions', 'Add at least one step.');
@@ -155,7 +195,8 @@ export default function NewRecipeScreen() {
       cookTime: cook,
       servings: serv,
       difficulty,
-      ingredients: ing,
+      ingredients: ingMeasured.map((i) => formatIngredientLine(i)),
+      ingredientsMeasured: ingMeasured,
       instructions: steps,
     });
 
@@ -289,22 +330,65 @@ export default function NewRecipeScreen() {
         <View style={styles.sectionHead}>
           <Text style={styles.label}>Ingredients</Text>
           <TouchableOpacity
-            onPress={() => setIngredients((p) => [...p, ''])}
+            onPress={() => setIngredients((p) => [...p, { amount: '', unit: 'g', name: '' }])}
             hitSlop={8}
           >
             <Text style={styles.addLine}>+ Add line</Text>
           </TouchableOpacity>
         </View>
+        <Text style={styles.ingredientHint}>Amount · unit · ingredient name</Text>
         {ingredients.map((line, i) => (
-          <TextInput
-            key={`ing-${i}`}
-            style={[styles.input, styles.lineInput]}
-            value={line}
-            onChangeText={(t) => updateIngredient(i, t)}
-            placeholder={`Ingredient ${i + 1}`}
-            placeholderTextColor={Colors.textTertiary}
-          />
+          <View key={`ing-${i}`} style={styles.ingredientRowForm}>
+            <TextInput
+              style={[styles.input, styles.amountInput]}
+              value={line.amount}
+              onChangeText={(t) => updateIngredientAmount(i, t)}
+              placeholder="500"
+              placeholderTextColor={Colors.textTertiary}
+              keyboardType="default"
+            />
+            <TouchableOpacity
+              style={[styles.input, styles.unitSelect]}
+              onPress={() => setUnitPickerIndex(i)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.unitSelectText} numberOfLines={1}>
+                {line.unit || 'unit'}
+              </Text>
+              <Ionicons name="chevron-down" size={16} color={Colors.textSecondary} />
+            </TouchableOpacity>
+            <TextInput
+              style={[styles.input, styles.ingredientNameInput]}
+              value={line.name}
+              onChangeText={(t) => updateIngredientName(i, t)}
+              placeholder="flour"
+              placeholderTextColor={Colors.textTertiary}
+            />
+          </View>
         ))}
+
+        <Modal visible={unitPickerIndex !== null} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <Pressable style={StyleSheet.absoluteFill} onPress={() => setUnitPickerIndex(null)} />
+            <View style={styles.modalSheet}>
+              <Text style={styles.modalTitle}>Measurement</Text>
+              <ScrollView style={styles.modalList} keyboardShouldPersistTaps="handled">
+                {MEASUREMENT_UNITS.map((u) => (
+                  <TouchableOpacity
+                    key={u}
+                    style={styles.modalRow}
+                    onPress={() => {
+                      if (unitPickerIndex !== null) updateIngredientUnit(unitPickerIndex, u);
+                      setUnitPickerIndex(null);
+                    }}
+                  >
+                    <Text style={styles.modalRowText}>{u}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
 
         <View style={styles.sectionHead}>
           <Text style={styles.label}>Instructions</Text>
@@ -406,6 +490,76 @@ const styles = StyleSheet.create({
   },
   rowItem: {
     flex: 1,
+  },
+  ingredientHint: {
+    fontSize: FontSize.xs,
+    color: Colors.textTertiary,
+    marginBottom: Spacing.sm,
+  },
+  ingredientRowForm: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  amountInput: {
+    width: 72,
+    marginBottom: 0,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+  },
+  unitSelect: {
+    width: 100,
+    marginBottom: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
+  },
+  unitSelectText: {
+    flex: 1,
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  ingredientNameInput: {
+    flex: 1,
+    marginBottom: 0,
+    paddingVertical: Spacing.sm,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: Spacing.xl,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+  },
+  modalSheet: {
+    backgroundColor: Colors.white,
+    borderRadius: BorderRadius.lg,
+    maxHeight: '70%',
+    overflow: 'hidden',
+  },
+  modalTitle: {
+    fontSize: FontSize.lg,
+    fontWeight: '700',
+    padding: Spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+    color: Colors.text,
+  },
+  modalList: {
+    maxHeight: 320,
+  },
+  modalRow: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+  },
+  modalRowText: {
+    fontSize: FontSize.md,
+    color: Colors.text,
   },
   diffRow: {
     flexDirection: 'row',

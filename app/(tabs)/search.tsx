@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
@@ -11,7 +11,7 @@ import { cuisineFilters } from '@/constants/MockData';
 import { useRecipes } from '@/contexts/RecipeContext';
 
 const QUICK_ACTIONS = [
-  { icon: 'add-circle-outline', label: 'Create Recipe', color: Colors.primary },
+  { icon: 'flame-outline', label: 'Hot picks', color: Colors.primary },
   { icon: 'camera-outline', label: 'Snap a Dish', color: Colors.accent },
   { icon: 'bookmark-outline', label: 'Save Recipe', color: Colors.primaryLight },
   { icon: 'share-outline', label: 'Share List', color: Colors.ratingYellow },
@@ -19,20 +19,40 @@ const QUICK_ACTIONS = [
 
 export default function SearchScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ q?: string }>();
   const { recipes } = useRecipes();
   const [searchText, setSearchText] = useState('');
   const [activeCuisine, setActiveCuisine] = useState('All');
 
+  useEffect(() => {
+    // Clear search text when navigating away from this tab
+    return () => {
+      setSearchText('');
+      setActiveCuisine('All');
+    };
+  }, []);
+
+  useEffect(() => {
+    const raw = params.q;
+    const q = Array.isArray(raw) ? raw[0] : raw;
+    if (typeof q === 'string') {
+      setSearchText(q);
+    }
+  }, [params.q]);
+
   const filteredRecipes = useMemo(() => {
     const q = searchText.trim().toLowerCase();
     return recipes.filter((recipe) => {
+      const name = (recipe.name ?? '').toLowerCase();
+      const ing = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+      const tags = Array.isArray(recipe.tags) ? recipe.tags : [];
       const matchesSearch =
         q === '' ||
-        recipe.name.toLowerCase().includes(q) ||
-        recipe.cuisine.toLowerCase().includes(q) ||
-        recipe.category.toLowerCase().includes(q) ||
-        recipe.tags.some((t) => t.toLowerCase().includes(q)) ||
-        recipe.ingredients.some((i) => i.toLowerCase().includes(q));
+        name.includes(q) ||
+        (recipe.cuisine ?? '').toLowerCase().includes(q) ||
+        (recipe.category ?? '').toLowerCase().includes(q) ||
+        tags.some((t) => t.toLowerCase().includes(q)) ||
+        ing.some((i) => i.toLowerCase().includes(q));
       const matchesCuisine = activeCuisine === 'All' || recipe.cuisine === activeCuisine;
       return matchesSearch && matchesCuisine;
     });
@@ -47,7 +67,7 @@ export default function SearchScreen() {
       <SearchBar
         value={searchText}
         onChangeText={setSearchText}
-        placeholder="Search recipes, cuisine, ingredients"
+        placeholder="Search by recipe name…"
       />
 
       <View style={styles.quickActions}>
@@ -56,9 +76,7 @@ export default function SearchScreen() {
             key={action.label}
             style={styles.quickAction}
             activeOpacity={0.7}
-            onPress={() => {
-              if (action.label === 'Create Recipe') router.push('/recipe/new');
-            }}
+            onPress={() => {}}
           >
             <View style={[styles.quickActionIcon, { backgroundColor: action.color + '15' }]}>
               <Ionicons name={action.icon as any} size={24} color={action.color} />

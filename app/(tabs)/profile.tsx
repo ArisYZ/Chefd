@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -19,8 +19,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { Avatar } from '@/components/Avatar';
+import { RecipeCard } from '@/components/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRecipes } from '@/contexts/RecipeContext';
+import { userLists } from '@/constants/MockData';
+import { RecipeList } from '@/types';
+
+function ListCard({ list, onPress }: { list: RecipeList; onPress: () => void }) {
+  return (
+    <TouchableOpacity style={styles.listCard} onPress={onPress} activeOpacity={0.8}>
+      <Image source={{ uri: list.image }} style={styles.listImage} />
+      <View style={styles.listContent}>
+        <Text style={styles.listTitle}>{list.title}</Text>
+        <Text style={styles.listDescription} numberOfLines={1}>{list.description}</Text>
+        <Text style={styles.listCount}>{list.recipes.length} recipes</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={20} color={Colors.textTertiary} />
+    </TouchableOpacity>
+  );
+}
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -28,6 +45,11 @@ export default function ProfileScreen() {
   const { recipes, exportMergedRecipesJson, applyPulledDataJson } = useRecipes();
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [dataSyncBusy, setDataSyncBusy] = useState(false);
+
+  const myRecipes = useMemo(
+    () => [...recipes].filter((r) => user?.id && r.createdByUserId === user.id),
+    [recipes, user?.id],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -154,7 +176,50 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.topRatedSection}>
+        <View style={styles.myRecipesSection}>
+          <View style={styles.myRecipesHeader}>
+            <Text style={styles.myRecipesSectionTitle}>Your recipes</Text>
+            <Text style={styles.myRecipesCount}>{myRecipes.length}</Text>
+          </View>
+          {myRecipes.length === 0 ? (
+            <View style={styles.emptyMyRecipes}>
+              <Ionicons name="restaurant-outline" size={40} color={Colors.textTertiary} />
+              <Text style={styles.emptyMyRecipesText}>
+                You have not published any recipes yet. Tap the + tab to create one.
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.myRecipesList}>
+              {myRecipes.map((recipe) => (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onPress={() => router.push(`/recipe/${recipe.id}`)}
+                />
+              ))}
+            </View>
+          </View>
+          </View>
+
+          <View style={styles.listsSection}>
+          <View style={styles.listsHeader}>
+            <Text style={styles.sectionTitle}>Your Lists</Text>
+            <TouchableOpacity style={styles.addListButton} activeOpacity={0.7}>
+              <Ionicons name="add" size={20} color={Colors.primary} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.listsContent}>
+            {userLists.map((list) => (
+              <ListCard
+                key={list.id}
+                list={list}
+                onPress={() => router.push(`/list/${list.id}`)}
+              />
+            ))}
+          </View>
+          </View>
+
+          <View style={styles.topRatedSection}>
           <Text style={styles.sectionTitle}>Trending recipes</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.topRatedScroll}>
             {recipes.slice(0, 4).map((recipe) => (
@@ -421,6 +486,105 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     fontWeight: '600',
     color: Colors.primary,
+  },
+  myRecipesSection: {
+    paddingBottom: Spacing.xl,
+  },
+  myRecipesHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  myRecipesSectionTitle: {
+    fontSize: FontSize.md,
+    fontWeight: '700',
+    color: Colors.text,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  myRecipesCount: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  emptyMyRecipes: {
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.xl,
+    marginHorizontal: Spacing.lg,
+    backgroundColor: Colors.surfaceElevated,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  emptyMyRecipesText: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginTop: Spacing.md,
+    lineHeight: 20,
+  },
+  myRecipesList: {
+    paddingBottom: Spacing.sm,
+  },
+  listsSection: {
+    paddingBottom: Spacing.xl,
+  },
+  listsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  addListButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  listsContent: {
+    paddingHorizontal: Spacing.lg,
+    gap: Spacing.md,
+  },
+  listCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: BorderRadius.md,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  listImage: {
+    width: 70,
+    height: 70,
+    backgroundColor: '#E0E0E0',
+  },
+  listContent: {
+    flex: 1,
+    padding: Spacing.md,
+  },
+  listTitle: {
+    fontSize: FontSize.md,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  listDescription: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    marginTop: 2,
+  },
+  listCount: {
+    fontSize: FontSize.xs,
+    color: Colors.textTertiary,
+    marginTop: 4,
   },
   topRatedSection: {
     paddingBottom: Spacing.xl,

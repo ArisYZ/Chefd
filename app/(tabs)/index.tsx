@@ -39,7 +39,11 @@ export default function FeedScreen() {
         </View>
       </View>
 
-      <SearchBar />
+      <SearchBar
+        onFocus={() => router.navigate('/search')}
+        placeholder="Search recipes, cuisine, ingredients"
+      />
+
 
       <FilterTabs
         tabs={FILTER_TABS}

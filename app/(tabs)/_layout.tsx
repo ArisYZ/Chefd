@@ -1,7 +1,7 @@
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, FontSize } from '@/constants/Colors';
-import { Platform } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -34,12 +34,30 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="lists"
+        name="search"
         options={{
-          title: 'Your Lists',
+          title: 'Discover',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list-outline" size={size} color={color} />
+            <Ionicons name="search-outline" size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: 'Create',
+          tabBarIcon: () => (
+            <View style={styles.fab}>
+              <Ionicons name="add" size={28} color={Colors.white} />
+            </View>
+          ),
+          tabBarLabel: () => null,
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            router.push('/recipe/new');
+          },
         }}
       />
       <Tabs.Screen
@@ -61,9 +79,23 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
-        options={{ href: null }}
+        name="lists"
+        options={{
+          href: null,
+        }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  fab: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+});
