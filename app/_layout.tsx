@@ -1,10 +1,12 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Colors } from '@/constants/Colors';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { RecipeProvider } from '@/contexts/RecipeContext';
 
 export default function RootLayout() {
   return (
+    <AuthProvider>
     <RecipeProvider>
       <StatusBar style="dark" />
       <Stack
@@ -13,6 +15,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: Colors.background },
         }}
       >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="auth" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen
           name="recipe/[id]"
@@ -49,5 +53,6 @@ export default function RootLayout() {
         />
       </Stack>
     </RecipeProvider>
+    </AuthProvider>
   );
 }

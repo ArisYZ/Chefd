@@ -9,12 +9,25 @@ export interface User {
   recipesRated: number;
 }
 
+export type MakeAgain = 'yes' | 'no' | 'maybe';
+
+export interface Review {
+  id: string;
+  user: User;
+  recipeId: string;
+  makeAgain: MakeAgain;
+  difficulty: 1 | 2 | 3 | 4 | 5;
+  comment?: string;
+  likes: number;
+  liked: boolean;
+  timestamp: string;
+}
+
 export interface Recipe {
   id: string;
   name: string;
   cuisine: string;
   category: string;
-  /** Dietary / style labels (e.g. vegan, high-protein) */
   tags: string[];
   image: string;
   prepTime: number;
@@ -27,14 +40,26 @@ export interface Recipe {
   totalRatings: number;
 }
 
+/**
+ * Derive a 0-10 score from reviews.
+ * yes = 10, maybe = 5, no = 0 → averaged.
+ * Returns null when there are no reviews.
+ */
+export function computeScore(reviews: Review[]): number | null {
+  if (reviews.length === 0) return null;
+  const total = reviews.reduce((sum, r) => {
+    if (r.makeAgain === 'yes') return sum + 10;
+    if (r.makeAgain === 'maybe') return sum + 5;
+    return sum;
+  }, 0);
+  return parseFloat((total / reviews.length).toFixed(1));
+}
+
 export interface RecipeRating {
   id: string;
   user: User;
   recipe: Recipe;
-  rating: number;
-  notes: string;
-  favoritePart?: string;
-  withUsers?: User[];
+  review: Review;
   likes: number;
   comments: number;
   liked: boolean;

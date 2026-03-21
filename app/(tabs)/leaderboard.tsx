@@ -1,18 +1,24 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RatingBadge } from '@/components/RatingBadge';
+import { Avatar } from '@/components/Avatar';
 import { buildLeaderboard, cuisineFilters } from '@/constants/MockData';
 import { LeaderboardEntry } from '@/types';
+import type { StoredUser } from '@/types/auth';
 import { useRecipes } from '@/contexts/RecipeContext';
+import { listUsersByRank } from '@/database/db';
+
+type LeaderMode = 'recipes' | 'cooks';
 
 function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: number }) {
   const heights = [140, 160, 130];
   const medals = ['🥈', '🥇', '🥉'];
+  const score = entry.totalRatings === 0 ? null : entry.averageRating;
 
   return (
     <View style={[styles.podiumItem, { height: heights[position] }]}>
@@ -21,7 +27,7 @@ function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: 
       <View style={styles.podiumContent}>
         <Text style={styles.podiumMedal}>{medals[position]}</Text>
         <Text style={styles.podiumName} numberOfLines={1}>{entry.recipe.name}</Text>
-        <Text style={styles.podiumRating}>{entry.averageRating.toFixed(1)}</Text>
+        <Text style={styles.podiumRating}>{score == null ? '—' : score.toFixed(1)}</Text>
       </View>
     </View>
   );
@@ -38,15 +44,54 @@ function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: 
           {entry.cuisine} · {entry.totalRatings} ratings
         </Text>
       </View>
-      <RatingBadge rating={entry.averageRating} size="sm" />
+      <RatingBadge rating={entry.totalRatings === 0 ? null : entry.averageRating} size="sm" />
     </TouchableOpacity>
+  );
+}
+
+function CookTopCard({ user: u, position }: { user: StoredUser; position: number }) {
+  const heights = [130, 150, 120];
+  const medals = ['🥈', '🥇', '🥉'];
+  const uri = u.avatarUri || 'https://i.pravatar.cc/150?img=3';
+
+  return (
+    <View style={[styles.cookPodiumItem, { height: heights[position] }]}>
+      <Image source={{ uri }} style={styles.podiumImage} />
+      <View style={styles.podiumOverlay} />
+      <View style={styles.podiumContent}>
+        <Text style={styles.podiumMedal}>{medals[position]}</Text>
+        <Text style={styles.podiumName} numberOfLines={1}>@{u.username}</Text>
+        <Text style={styles.podiumRating}>{u.rankingScore} pts</Text>
+      </View>
+    </View>
+  );
+}
+
+function CookRow({ user: u }: { user: StoredUser }) {
+  const uri = u.avatarUri || 'https://i.pravatar.cc/150?img=3';
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rankText}>{u.leaderboardRank}</Text>
+      <View style={styles.avatarWrap}>
+        <Avatar uri={uri} size={50} />
+      </View>
+      <View style={styles.rowContent}>
+        <Text style={styles.rowName}>@{u.username}</Text>
+        <Text style={styles.rowMeta}>
+          {u.recipeCount} recipes · {u.reviewCount} reviews · avg {u.reviewCount > 0 ? u.averageRating.toFixed(1) : '—'}
+        </Text>
+      </View>
+      <Text style={styles.cookScore}>{u.rankingScore}</Text>
+    </View>
   );
 }
 
 export default function LeaderboardScreen() {
   const router = useRouter();
   const { recipes } = useRecipes();
+  const [mode, setMode] = useState<LeaderMode>('recipes');
   const [activeCuisine, setActiveCuisine] = useState('All');
+  const [cooks, setCooks] = useState<StoredUser[]>([]);
 
   const leaderboardData = useMemo(() => buildLeaderboard(recipes), [recipes]);
 
@@ -60,6 +105,24 @@ export default function LeaderboardScreen() {
     ? [topThree[1], topThree[0], topThree[2]]
     : topThree;
 
+  const loadCooks = useCallback(async () => {
+    const list = await listUsersByRank(100);
+    setCooks(list);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCooks();
+    }, [loadCooks]),
+  );
+
+  const cookTopThree = cooks.slice(0, 3);
+  const cookPodium =
+    cookTopThree.length >= 3
+      ? [cookTopThree[1], cookTopThree[0], cookTopThree[2]]
+      : cookTopThree;
+  const cookRest = cooks.slice(3);
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
@@ -69,31 +132,68 @@ export default function LeaderboardScreen() {
         </TouchableOpacity>
       </View>
 
-      <FilterTabs
-        tabs={cuisineFilters.map((c) => ({ label: c }))}
-        activeTab={activeCuisine}
-        onTabPress={setActiveCuisine}
-      />
+      <View style={styles.modeRow}>
+        <TouchableOpacity
+          style={[styles.modeBtn, mode === 'recipes' && styles.modeBtnActive]}
+          onPress={() => setMode('recipes')}
+        >
+          <Text style={[styles.modeBtnText, mode === 'recipes' && styles.modeBtnTextActive]}>Recipes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.modeBtn, mode === 'cooks' && styles.modeBtnActive]}
+          onPress={() => setMode('cooks')}
+        >
+          <Text style={[styles.modeBtnText, mode === 'cooks' && styles.modeBtnTextActive]}>Cooks</Text>
+        </TouchableOpacity>
+      </View>
 
-      <FlatList
-        data={rest}
-        keyExtractor={(item) => item.recipe.id}
-        ListHeaderComponent={() => (
-          <View style={styles.podiumRow}>
-            {podiumOrder.map((entry, i) => (
-              <TopThreeCard key={entry.recipe.id} entry={entry} position={i} />
-            ))}
-          </View>
-        )}
-        renderItem={({ item }) => (
-          <LeaderboardRow
-            entry={item}
-            onPress={() => router.push(`/recipe/${item.recipe.id}`)}
+      {mode === 'recipes' ? (
+        <>
+          <FilterTabs
+            tabs={cuisineFilters.map((c) => ({ label: c }))}
+            activeTab={activeCuisine}
+            onTabPress={setActiveCuisine}
           />
-        )}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-      />
+
+          <FlatList
+            data={rest}
+            keyExtractor={(item) => item.recipe.id}
+            ListHeaderComponent={() => (
+              <View style={styles.podiumRow}>
+                {podiumOrder.map((entry, i) => (
+                  <TopThreeCard key={entry.recipe.id} entry={entry} position={i} />
+                ))}
+              </View>
+            )}
+            renderItem={({ item }) => (
+              <LeaderboardRow
+                entry={item}
+                onPress={() => router.push(`/recipe/${item.recipe.id}`)}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+          />
+        </>
+      ) : (
+        <FlatList
+          data={cookRest}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={() => (
+            <View style={styles.podiumRow}>
+              {cookPodium.map((u, i) => (
+                <CookTopCard key={u.id} user={u} position={i} />
+              ))}
+              {cooks.length === 0 && (
+                <Text style={styles.emptyCooks}>No cooks yet — sign up and leave reviews!</Text>
+              )}
+            </View>
+          )}
+          renderItem={({ item }) => <CookRow user={item} />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -115,6 +215,31 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.text,
   },
+  modeRow: {
+    flexDirection: 'row',
+    marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+    backgroundColor: Colors.surfaceElevated,
+    borderRadius: BorderRadius.full,
+    padding: 4,
+  },
+  modeBtn: {
+    flex: 1,
+    paddingVertical: Spacing.sm,
+    alignItems: 'center',
+    borderRadius: BorderRadius.full,
+  },
+  modeBtnActive: {
+    backgroundColor: Colors.white,
+  },
+  modeBtnText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.textTertiary,
+  },
+  modeBtnTextActive: {
+    color: Colors.primary,
+  },
   podiumRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -124,6 +249,11 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   podiumItem: {
+    flex: 1,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  cookPodiumItem: {
     flex: 1,
     borderRadius: BorderRadius.lg,
     overflow: 'hidden',
@@ -178,6 +308,9 @@ const styles = StyleSheet.create({
     width: 30,
     textAlign: 'center',
   },
+  avatarWrap: {
+    marginHorizontal: Spacing.md,
+  },
   rowImage: {
     width: 50,
     height: 50,
@@ -197,5 +330,19 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textTertiary,
     marginTop: 2,
+  },
+  cookScore: {
+    fontSize: FontSize.md,
+    fontWeight: '800',
+    color: Colors.primary,
+    minWidth: 36,
+    textAlign: 'right',
+  },
+  emptyCooks: {
+    flex: 1,
+    textAlign: 'center',
+    color: Colors.textSecondary,
+    paddingVertical: Spacing.xl,
+    fontSize: FontSize.sm,
   },
 });

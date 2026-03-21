@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { RecipeRating } from '@/types';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
 import { Avatar } from './Avatar';
-import { RatingBadge } from './RatingBadge';
+import { MakeAgainBadge } from './MakeAgainBadge';
+import { DifficultyPips } from './DifficultyPips';
 import { SocialActions } from './SocialActions';
 
 interface FeedCardProps {
@@ -13,9 +14,7 @@ interface FeedCardProps {
 }
 
 export function FeedCard({ rating, onPress, onUserPress }: FeedCardProps) {
-  const withText = rating.withUsers?.length
-    ? `with ${rating.withUsers.map((u) => u.name.split(' ')[0]).join(', ')}`
-    : '';
+  const { review } = rating;
 
   return (
     <View style={styles.card}>
@@ -26,29 +25,20 @@ export function FeedCard({ rating, onPress, onUserPress }: FeedCardProps) {
         <View style={styles.headerText}>
           <Text style={styles.headerLine}>
             <Text style={styles.userName}>{rating.user.name.split(' ')[0]}</Text>
-            <Text style={styles.action}> rated </Text>
+            <Text style={styles.action}> reviewed </Text>
             <Text style={styles.recipeName}>{rating.recipe.name}</Text>
           </Text>
-          {withText ? (
-            <Text style={styles.withText}>{withText}</Text>
-          ) : null}
           <Text style={styles.cuisine}>{rating.recipe.cuisine} · {rating.recipe.category}</Text>
         </View>
-        <RatingBadge rating={rating.rating} />
       </TouchableOpacity>
 
-      {rating.favoritePart && (
-        <Text style={styles.favoritePart}>
-          <Text style={styles.label}>Favorite Part: </Text>
-          {rating.favoritePart}
-        </Text>
-      )}
+      <View style={styles.reviewMeta}>
+        <MakeAgainBadge value={review.makeAgain} />
+        <DifficultyPips value={review.difficulty} />
+      </View>
 
-      {rating.notes ? (
-        <Text style={styles.notes}>
-          <Text style={styles.label}>Notes: </Text>
-          {rating.notes}
-        </Text>
+      {review.comment ? (
+        <Text style={styles.comment}>{review.comment}</Text>
       ) : null}
 
       <Text style={styles.likesCount}>{rating.likes} likes</Text>
@@ -97,30 +87,22 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.text,
   },
-  withText: {
-    fontSize: FontSize.sm,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
   cuisine: {
     fontSize: FontSize.sm,
     color: Colors.textTertiary,
     marginTop: 2,
   },
-  favoritePart: {
-    fontSize: FontSize.md,
-    color: Colors.text,
-    marginBottom: Spacing.sm,
-    lineHeight: 21,
+  reviewMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.md,
   },
-  notes: {
+  comment: {
     fontSize: FontSize.md,
     color: Colors.text,
     marginBottom: Spacing.md,
     lineHeight: 21,
-  },
-  label: {
-    fontWeight: '600',
   },
   likesCount: {
     fontSize: FontSize.sm,

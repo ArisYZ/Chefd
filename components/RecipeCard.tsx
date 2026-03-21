@@ -27,7 +27,7 @@ export function RecipeCard({ recipe, onPress, showRating = true, rank }: RecipeC
               {recipe.cuisine} · {recipe.difficulty} · {recipe.prepTime + recipe.cookTime} min
             </Text>
           </View>
-          {showRating && <RatingBadge rating={recipe.averageRating} size="sm" />}
+          {showRating && <RatingBadge rating={recipe.totalRatings === 0 ? null : recipe.averageRating} size="sm" />}
         </View>
         <View style={styles.stats}>
           <View style={styles.stat}>

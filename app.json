@@ -34,10 +34,14 @@
           "photosPermission": "Allow Chef'd to access your photos to add recipe images.",
           "cameraPermission": "Allow Chef'd to use your camera to take recipe photos."
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
-    "experiments": {
-      "typedRoutes": true
+    "experiments": {},
+    "extra": {
+      "googleWebClientId": "",
+      "googleIosClientId": "",
+      "googleAndroidClientId": ""
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, FontSize } from '@/constants/Colors';
-import { View, StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 export default function TabLayout() {
   return (
@@ -43,17 +43,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
-        options={{
-          title: 'Search',
-          tabBarIcon: ({ color, size }) => (
-            <View style={styles.addButton}>
-              <Ionicons name="add" size={28} color={Colors.white} />
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="leaderboard"
         options={{
           title: 'Leaderboard',
@@ -71,18 +60,10 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="search"
+        options={{ href: null }}
+      />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  addButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-});

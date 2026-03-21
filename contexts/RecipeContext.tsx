@@ -2,8 +2,11 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Recipe } from '@/types';
 import { recipes as seedRecipes } from '@/constants/MockData';
+import { useAuth } from '@/contexts/AuthContext';
 
-const STORAGE_KEY = '@chefd_user_recipes';
+function storageKeyForUser(userId: string | null) {
+  return userId ? `@chefd_user_recipes_${userId}` : '@chefd_user_recipes_anonymous';
+}
 
 type RecipeContextValue = {
   recipes: Recipe[];
@@ -14,13 +17,17 @@ type RecipeContextValue = {
 const RecipeContext = createContext<RecipeContextValue | null>(null);
 
 export function RecipeProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
   const [userRecipes, setUserRecipes] = useState<Recipe[]>([]);
 
   useEffect(() => {
     let cancelled = false;
+    setUserRecipes([]);
     (async () => {
+      const key = storageKeyForUser(userId);
       try {
-        const raw = await AsyncStorage.getItem(STORAGE_KEY);
+        const raw = await AsyncStorage.getItem(key);
         if (cancelled) return;
         if (raw) {
           const parsed = JSON.parse(raw) as Recipe[];
@@ -33,15 +40,19 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [userId]);
 
-  const persist = useCallback(async (next: Recipe[]) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  const persist = useCallback(
+    async (next: Recipe[]) => {
+      const key = storageKeyForUser(userId);
+      try {
+        await AsyncStorage.setItem(key, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+    },
+    [userId],
+  );
 
   const recipes = useMemo(
     () => [...seedRecipes, ...userRecipes],

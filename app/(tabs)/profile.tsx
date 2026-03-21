@@ -1,27 +1,39 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
+import { exportAccountsJsonForRepo } from '@/database/db';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { Avatar } from '@/components/Avatar';
-import { RatingBadge } from '@/components/RatingBadge';
-import { currentUser, recipes, feedRatings } from '@/constants/MockData';
-
-const recentRatings = feedRatings.filter((r) => r.user.id === currentUser.id).length > 0
-  ? feedRatings.slice(0, 3)
-  : feedRatings.slice(0, 3);
-
-const PROFILE_MENU = [
-  { icon: 'bookmark-outline', label: 'Saved Recipes', count: 24 },
-  { icon: 'heart-outline', label: 'Liked Ratings', count: 89 },
-  { icon: 'people-outline', label: 'Following', count: currentUser.followingCount },
-  { icon: 'settings-outline', label: 'Settings' },
-  { icon: 'help-circle-outline', label: 'Help & Feedback' },
-];
+import { useAuth } from '@/contexts/AuthContext';
+import { useRecipes } from '@/contexts/RecipeContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { user, signOut, refreshUser } = useAuth();
+  const { recipes } = useRecipes();
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshUser();
+    }, [refreshUser]),
+  );
+
+  const avatarUri = user?.avatarUri || 'https://i.pravatar.cc/150?img=11';
+
+  const PROFILE_MENU = [
+    { icon: 'bookmark-outline' as const, label: 'Saved Recipes', count: undefined },
+    { icon: 'heart-outline' as const, label: 'Liked Ratings', count: undefined },
+    {
+      icon: 'people-outline' as const,
+      label: 'Following',
+      count: user?.followingCount,
+    },
+    { icon: 'settings-outline' as const, label: 'Settings' },
+    { icon: 'help-circle-outline' as const, label: 'Help & Feedback' },
+  ];
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -33,26 +45,47 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.profileSection}>
-          <Avatar uri={currentUser.avatar} size={80} />
-          <Text style={styles.name}>{currentUser.name}</Text>
-          <Text style={styles.username}>@{currentUser.username}</Text>
-          <Text style={styles.bio}>{currentUser.bio}</Text>
+          <Avatar uri={avatarUri} size={80} />
+          <Text style={styles.name}>{user?.displayName ?? 'Chef'}</Text>
+          <Text style={styles.username}>@{user?.username ?? '—'}</Text>
+          {user?.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
+
+          <View style={styles.rankPill}>
+            <Ionicons name="trophy" size={16} color={Colors.accent} />
+            <Text style={styles.rankPillText}>
+              Cook rank #{user?.leaderboardRank ?? '—'} · Score {user?.rankingScore ?? 0}
+            </Text>
+          </View>
 
           <View style={styles.statsRow}>
-            <TouchableOpacity style={styles.statItem} activeOpacity={0.7}>
-              <Text style={styles.statNumber}>{currentUser.recipesRated}</Text>
-              <Text style={styles.statLabel}>Rated</Text>
-            </TouchableOpacity>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{user?.recipeCount ?? 0}</Text>
+              <Text style={styles.statLabel}>Recipes</Text>
+            </View>
             <View style={styles.statDivider} />
-            <TouchableOpacity style={styles.statItem} activeOpacity={0.7}>
-              <Text style={styles.statNumber}>{currentUser.followersCount}</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{user?.reviewCount ?? 0}</Text>
+              <Text style={styles.statLabel}>Reviews</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>
+                {user && user.reviewCount > 0 ? user.averageRating.toFixed(1) : '—'}
+              </Text>
+              <Text style={styles.statLabel}>Avg score</Text>
+            </View>
+          </View>
+
+          <View style={[styles.statsRow, styles.statsRowPair, { marginTop: Spacing.md }]}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{user?.followersCount ?? 0}</Text>
               <Text style={styles.statLabel}>Followers</Text>
-            </TouchableOpacity>
+            </View>
             <View style={styles.statDivider} />
-            <TouchableOpacity style={styles.statItem} activeOpacity={0.7}>
-              <Text style={styles.statNumber}>{currentUser.followingCount}</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{user?.followingCount ?? 0}</Text>
               <Text style={styles.statLabel}>Following</Text>
-            </TouchableOpacity>
+            </View>
           </View>
 
           <TouchableOpacity style={styles.editButton} activeOpacity={0.7}>
@@ -61,7 +94,7 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.topRatedSection}>
-          <Text style={styles.sectionTitle}>Your Top Rated</Text>
+          <Text style={styles.sectionTitle}>Trending recipes</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.topRatedScroll}>
             {recipes.slice(0, 4).map((recipe) => (
               <TouchableOpacity
@@ -76,7 +109,9 @@ export default function ProfileScreen() {
                   <Text style={styles.topRatedName} numberOfLines={1}>{recipe.name}</Text>
                   <View style={styles.topRatedRating}>
                     <Ionicons name="star" size={12} color="#FFD700" />
-                    <Text style={styles.topRatedScore}>{recipe.averageRating.toFixed(1)}</Text>
+                    <Text style={styles.topRatedScore}>
+                      {recipe.totalRatings === 0 ? '—' : recipe.averageRating.toFixed(1)}
+                    </Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -88,7 +123,7 @@ export default function ProfileScreen() {
           {PROFILE_MENU.map((item) => (
             <TouchableOpacity key={item.label} style={styles.menuItem} activeOpacity={0.7}>
               <View style={styles.menuLeft}>
-                <Ionicons name={item.icon as any} size={22} color={Colors.text} />
+                <Ionicons name={item.icon} size={22} color={Colors.text} />
                 <Text style={styles.menuLabel}>{item.label}</Text>
               </View>
               <View style={styles.menuRight}>
@@ -101,9 +136,34 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.logoutButton} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.logoutButton} activeOpacity={0.7} onPress={() => signOut()}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
+
+        {__DEV__ ? (
+          <View style={styles.devSyncSection}>
+            <Text style={styles.devSyncTitle}>Git — shared accounts</Text>
+            <Text style={styles.devSyncHint}>
+              Copy JSON, replace data/accounts.json, commit and push. Pull merges on next launch (restart Metro
+              after pulls so the bundle picks up the file).
+            </Text>
+            <TouchableOpacity
+              style={styles.devSyncButton}
+              activeOpacity={0.7}
+              onPress={async () => {
+                try {
+                  const json = await exportAccountsJsonForRepo();
+                  await Clipboard.setStringAsync(json);
+                  Alert.alert('Copied', 'Paste into data/accounts.json in the repo, then commit.');
+                } catch (e) {
+                  Alert.alert('Export failed', e instanceof Error ? e.message : 'Unknown error');
+                }
+              }}
+            >
+              <Text style={styles.devSyncButtonText}>Copy accounts JSON</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
 
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -126,6 +186,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xxl,
+  },
+  rankPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    backgroundColor: Colors.accent + '22',
+    borderRadius: BorderRadius.full,
+  },
+  rankPillText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.text,
   },
   name: {
     fontSize: FontSize.xl,
@@ -152,16 +227,20 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: BorderRadius.lg,
     paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.xxl,
+    paddingHorizontal: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.borderLight,
+    alignSelf: 'stretch',
+  },
+  statsRowPair: {
+    paddingHorizontal: Spacing.xxl,
   },
   statItem: {
     flex: 1,
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: FontSize.xl,
+    fontSize: FontSize.lg,
     fontWeight: '800',
     color: Colors.primary,
   },
@@ -169,6 +248,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textTertiary,
     marginTop: 2,
+    textAlign: 'center',
   },
   statDivider: {
     width: 1,
@@ -285,5 +365,38 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     fontWeight: '600',
     color: Colors.heart,
+  },
+  devSyncSection: {
+    marginHorizontal: Spacing.lg,
+    marginTop: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.white,
+  },
+  devSyncTitle: {
+    fontSize: FontSize.sm,
+    fontWeight: '700',
+    color: Colors.text,
+    marginBottom: Spacing.sm,
+  },
+  devSyncHint: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    lineHeight: 18,
+    marginBottom: Spacing.md,
+  },
+  devSyncButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary,
+  },
+  devSyncButtonText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.white,
   },
 });

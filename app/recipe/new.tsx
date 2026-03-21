@@ -18,12 +18,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
 import { useRecipes } from '@/contexts/RecipeContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'] as const;
 
 export default function NewRecipeScreen() {
   const router = useRouter();
   const { addRecipe } = useRecipes();
+  const { user, onUserCreatedRecipe } = useAuth();
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -110,7 +112,7 @@ export default function NewRecipeScreen() {
     });
   };
 
-  const save = () => {
+  const save = async () => {
     const prep = parseInt(prepTime, 10);
     const cook = parseInt(cookTime, 10);
     const serv = parseInt(servings, 10);
@@ -148,7 +150,7 @@ export default function NewRecipeScreen() {
       cuisine: cuisine.trim() || 'Other',
       category: category.trim() || 'General',
       tags: selectedTags,
-      image: imageUri,
+      image: imageUri ?? '',
       prepTime: prep,
       cookTime: cook,
       servings: serv,
@@ -157,6 +159,7 @@ export default function NewRecipeScreen() {
       instructions: steps,
     });
 
+    if (user) await onUserCreatedRecipe();
     router.replace(`/recipe/${id}`);
   };
 
