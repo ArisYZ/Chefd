@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Chef'd",
+    "slug": "chefd",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "chefd",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#2D5A3D"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chefd.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#2D5A3D"
+      },
+      "package": "com.chefd.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
