@@ -14,6 +14,8 @@ export interface Recipe {
   name: string;
   cuisine: string;
   category: string;
+  /** Dietary / style labels (e.g. vegan, high-protein) */
+  tags: string[];
   image: string;
   prepTime: number;
   cookTime: number;

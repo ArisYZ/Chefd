@@ -27,7 +27,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Chef'd to access your photos to add recipe images.",
+          "cameraPermission": "Allow Chef'd to use your camera to take recipe photos."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

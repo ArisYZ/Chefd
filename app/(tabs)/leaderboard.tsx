@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,8 +6,9 @@ import { useRouter } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RatingBadge } from '@/components/RatingBadge';
-import { leaderboardData, cuisineFilters } from '@/constants/MockData';
+import { buildLeaderboard, cuisineFilters } from '@/constants/MockData';
 import { LeaderboardEntry } from '@/types';
+import { useRecipes } from '@/contexts/RecipeContext';
 
 function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: number }) {
   const heights = [140, 160, 130];
@@ -44,7 +45,10 @@ function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: 
 
 export default function LeaderboardScreen() {
   const router = useRouter();
+  const { recipes } = useRecipes();
   const [activeCuisine, setActiveCuisine] = useState('All');
+
+  const leaderboardData = useMemo(() => buildLeaderboard(recipes), [recipes]);
 
   const filtered = activeCuisine === 'All'
     ? leaderboardData

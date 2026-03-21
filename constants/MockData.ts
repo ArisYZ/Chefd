@@ -61,6 +61,7 @@ export const recipes: Recipe[] = [
     name: 'Cacio e Pepe',
     cuisine: 'Italian',
     category: 'Pasta',
+    tags: ['Vegetarian', 'Quick'],
     image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600',
     prepTime: 5,
     cookTime: 15,
@@ -82,6 +83,7 @@ export const recipes: Recipe[] = [
     name: 'Butter Chicken',
     cuisine: 'Indian',
     category: 'Curry',
+    tags: ['High-protein', 'Meal prep'],
     image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600',
     prepTime: 20,
     cookTime: 40,
@@ -103,6 +105,7 @@ export const recipes: Recipe[] = [
     name: 'Sourdough Bread',
     cuisine: 'French',
     category: 'Bread',
+    tags: ['Vegan', 'Low-carb'],
     image: 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=600',
     prepTime: 30,
     cookTime: 45,
@@ -124,6 +127,7 @@ export const recipes: Recipe[] = [
     name: 'Spicy Miso Ramen',
     cuisine: 'Japanese',
     category: 'Soup',
+    tags: ['Dairy-free', 'Quick'],
     image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600',
     prepTime: 15,
     cookTime: 30,
@@ -145,6 +149,7 @@ export const recipes: Recipe[] = [
     name: 'Classic Tiramisu',
     cuisine: 'Italian',
     category: 'Dessert',
+    tags: ['Vegetarian', 'Meal prep'],
     image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600',
     prepTime: 30,
     cookTime: 0,
@@ -166,6 +171,7 @@ export const recipes: Recipe[] = [
     name: 'Thai Green Curry',
     cuisine: 'Thai',
     category: 'Curry',
+    tags: ['Gluten-free', 'Quick', 'High-protein'],
     image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600',
     prepTime: 15,
     cookTime: 25,
@@ -187,6 +193,7 @@ export const recipes: Recipe[] = [
     name: 'NY-Style Pizza Dough',
     cuisine: 'American',
     category: 'Bread',
+    tags: ['Vegan', 'Meal prep'],
     image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600',
     prepTime: 20,
     cookTime: 12,
@@ -208,6 +215,7 @@ export const recipes: Recipe[] = [
     name: 'Crispy Tacos al Pastor',
     cuisine: 'Mexican',
     category: 'Tacos',
+    tags: ['High-protein', 'Gluten-free'],
     image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600',
     prepTime: 30,
     cookTime: 20,
@@ -368,15 +376,17 @@ export const userLists: RecipeList[] = [
   },
 ];
 
-export const leaderboardData: LeaderboardEntry[] = recipes
-  .sort((a, b) => b.averageRating - a.averageRating)
-  .map((recipe, index) => ({
-    rank: index + 1,
-    recipe,
-    averageRating: recipe.averageRating,
-    totalRatings: recipe.totalRatings,
-    cuisine: recipe.cuisine,
-  }));
+export function buildLeaderboard(recipeList: Recipe[]): LeaderboardEntry[] {
+  return [...recipeList]
+    .sort((a, b) => b.averageRating - a.averageRating)
+    .map((recipe, index) => ({
+      rank: index + 1,
+      recipe,
+      averageRating: recipe.averageRating,
+      totalRatings: recipe.totalRatings,
+      cuisine: recipe.cuisine,
+    }));
+}
 
 export const cuisineFilters = [
   'All',

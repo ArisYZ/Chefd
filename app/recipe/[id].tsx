@@ -4,14 +4,17 @@ import { useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { RatingBadge } from '@/components/RatingBadge';
-import { recipes, feedRatings } from '@/constants/MockData';
+import { RecipeTagChips } from '@/components/RecipeTagChips';
+import { feedRatings } from '@/constants/MockData';
 import { Avatar } from '@/components/Avatar';
+import { useRecipes } from '@/contexts/RecipeContext';
 
 const { width } = Dimensions.get('window');
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const recipe = recipes.find((r) => r.id === id);
+  const { getRecipeById } = useRecipes();
+  const recipe = getRecipeById(id ?? '');
   const relatedRatings = feedRatings.filter((r) => r.recipe.id === id);
   const [activeTab, setActiveTab] = useState<'recipe' | 'ratings'>('recipe');
 
@@ -32,6 +35,11 @@ export default function RecipeDetailScreen() {
           <View style={styles.titleText}>
             <Text style={styles.name}>{recipe.name}</Text>
             <Text style={styles.cuisine}>{recipe.cuisine} · {recipe.category}</Text>
+            {recipe.tags.length > 0 && (
+              <View style={styles.tagsSection}>
+                <RecipeTagChips tags={recipe.tags} />
+              </View>
+            )}
           </View>
           <RatingBadge rating={recipe.averageRating} size="lg" />
         </View>
@@ -196,6 +204,9 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     color: Colors.textSecondary,
     marginTop: 4,
+  },
+  tagsSection: {
+    marginTop: Spacing.md,
   },
   metaRow: {
     flexDirection: 'row',

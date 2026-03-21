@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,10 +7,11 @@ import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RecipeCard } from '@/components/RecipeCard';
-import { recipes, cuisineFilters, categoryFilters } from '@/constants/MockData';
+import { cuisineFilters } from '@/constants/MockData';
+import { useRecipes } from '@/contexts/RecipeContext';
 
 const QUICK_ACTIONS = [
-  { icon: 'add-circle-outline', label: 'Rate a Recipe', color: Colors.primary },
+  { icon: 'add-circle-outline', label: 'Create Recipe', color: Colors.primary },
   { icon: 'camera-outline', label: 'Snap a Dish', color: Colors.accent },
   { icon: 'bookmark-outline', label: 'Save Recipe', color: Colors.primaryLight },
   { icon: 'share-outline', label: 'Share List', color: Colors.ratingYellow },
@@ -18,17 +19,24 @@ const QUICK_ACTIONS = [
 
 export default function SearchScreen() {
   const router = useRouter();
+  const { recipes } = useRecipes();
   const [searchText, setSearchText] = useState('');
   const [activeCuisine, setActiveCuisine] = useState('All');
 
-  const filteredRecipes = recipes.filter((recipe) => {
-    const matchesSearch = searchText === '' ||
-      recipe.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      recipe.cuisine.toLowerCase().includes(searchText.toLowerCase()) ||
-      recipe.ingredients.some(i => i.toLowerCase().includes(searchText.toLowerCase()));
-    const matchesCuisine = activeCuisine === 'All' || recipe.cuisine === activeCuisine;
-    return matchesSearch && matchesCuisine;
-  });
+  const filteredRecipes = useMemo(() => {
+    const q = searchText.trim().toLowerCase();
+    return recipes.filter((recipe) => {
+      const matchesSearch =
+        q === '' ||
+        recipe.name.toLowerCase().includes(q) ||
+        recipe.cuisine.toLowerCase().includes(q) ||
+        recipe.category.toLowerCase().includes(q) ||
+        recipe.tags.some((t) => t.toLowerCase().includes(q)) ||
+        recipe.ingredients.some((i) => i.toLowerCase().includes(q));
+      const matchesCuisine = activeCuisine === 'All' || recipe.cuisine === activeCuisine;
+      return matchesSearch && matchesCuisine;
+    });
+  }, [recipes, searchText, activeCuisine]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -44,7 +52,14 @@ export default function SearchScreen() {
 
       <View style={styles.quickActions}>
         {QUICK_ACTIONS.map((action) => (
-          <TouchableOpacity key={action.label} style={styles.quickAction} activeOpacity={0.7}>
+          <TouchableOpacity
+            key={action.label}
+            style={styles.quickAction}
+            activeOpacity={0.7}
+            onPress={() => {
+              if (action.label === 'Create Recipe') router.push('/recipe/new');
+            }}
+          >
             <View style={[styles.quickActionIcon, { backgroundColor: action.color + '15' }]}>
               <Ionicons name={action.icon as any} size={24} color={action.color} />
             </View>
