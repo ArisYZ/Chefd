@@ -1,0 +1,384 @@
+{
+  "u_test_account_1": {
+    "recipes": [
+      {
+        "id": "r1",
+        "name": "Cacio e Pepe",
+        "cuisine": "Italian",
+        "category": "Pasta",
+        "tags": ["Vegetarian", "Quick"],
+        "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600",
+        "prepTime": 5,
+        "cookTime": 15,
+        "servings": 2,
+        "difficulty": "Medium",
+        "ingredients": ["Spaghetti", "Pecorino Romano", "Black pepper", "Salt", "Pasta water"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Bring a large pot of salted water to a boil",
+          "Toast black pepper in a dry pan",
+          "Cook pasta 1 minute less than package directions",
+          "Combine cheese and pepper with pasta water",
+          "Toss pasta in the sauce until creamy"
+        ],
+        "averageRating": 9.2,
+        "totalRatings": 342,
+        "reviews": [
+          {
+            "id": "rev1",
+            "user": {
+              "id": "u2",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 94
+            },
+            "recipeId": "r1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "comment": "The simplicity of this dish is what makes it incredible. Key is the pasta water!",
+            "likes": 12,
+            "liked": true,
+            "timestamp": "5 minutes ago"
+          },
+          {
+            "id": "rev7",
+            "user": {
+              "id": "u1",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 67
+            },
+            "recipeId": "r1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "likes": 5,
+            "liked": false,
+            "timestamp": "1 day ago"
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "name": "Butter Chicken",
+        "cuisine": "Indian",
+        "category": "Curry",
+        "tags": ["High-protein", "Meal prep"],
+        "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600",
+        "prepTime": 20,
+        "cookTime": 40,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredients": ["Chicken thighs", "Yogurt", "Tomato sauce", "Butter", "Cream", "Garam masala", "Turmeric", "Ginger", "Garlic"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Marinate chicken in yogurt and spices for 1 hour",
+          "Cook chicken in a hot pan until charred",
+          "Simmer tomato sauce with butter and spices",
+          "Add chicken and cream, cook 20 minutes",
+          "Finish with butter and serve with naan"
+        ],
+        "averageRating": 9.0,
+        "totalRatings": 567,
+        "reviews": [
+          {
+            "id": "rev3",
+            "user": {
+              "id": "u4",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 112
+            },
+            "recipeId": "r2",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "comment": "My go-to butter chicken recipe. Restaurant quality at home!",
+            "likes": 18,
+            "liked": false,
+            "timestamp": "1 hour ago"
+          }
+        ]
+      },
+      {
+        "id": "r3",
+        "name": "Sourdough Bread",
+        "cuisine": "French",
+        "category": "Bread",
+        "tags": ["Vegan", "Low-carb"],
+        "image": "https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=600",
+        "prepTime": 30,
+        "cookTime": 45,
+        "servings": 1,
+        "difficulty": "Hard",
+        "ingredients": ["Bread flour", "Sourdough starter", "Water", "Salt"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Mix flour, water, and starter. Autolyse 30 min",
+          "Add salt and perform stretch & folds every 30 min",
+          "Bulk ferment 4-6 hours at room temp",
+          "Shape and cold proof overnight",
+          "Bake in Dutch oven at 500°F then 450°F"
+        ],
+        "averageRating": 8.8,
+        "totalRatings": 234,
+        "reviews": [
+          {
+            "id": "rev6",
+            "user": {
+              "id": "u2",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 94
+            },
+            "recipeId": "r3",
+            "makeAgain": "maybe",
+            "difficulty": 5,
+            "comment": "Took me 3 attempts to get right but so worth the effort.",
+            "likes": 31,
+            "liked": true,
+            "timestamp": "5 hours ago"
+          }
+        ]
+      },
+      {
+        "id": "r4",
+        "name": "Spicy Miso Ramen",
+        "cuisine": "Japanese",
+        "category": "Soup",
+        "tags": ["Dairy-free", "Quick"],
+        "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600",
+        "prepTime": 15,
+        "cookTime": 30,
+        "servings": 2,
+        "difficulty": "Medium",
+        "ingredients": ["Ramen noodles", "Miso paste", "Chili oil", "Pork belly", "Soft-boiled egg", "Green onions", "Nori", "Chicken broth"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Prepare broth with miso paste and chili",
+          "Cook pork belly until caramelized",
+          "Boil eggs for 6.5 minutes for jammy center",
+          "Cook noodles according to package",
+          "Assemble bowl with toppings"
+        ],
+        "averageRating": 9.1,
+        "totalRatings": 445,
+        "reviews": [
+          {
+            "id": "rev4",
+            "user": {
+              "id": "u5",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 45
+            },
+            "recipeId": "r4",
+            "makeAgain": "maybe",
+            "difficulty": 2,
+            "comment": "Perfect for a cold night. The spicy miso broth is addictive.",
+            "likes": 8,
+            "liked": true,
+            "timestamp": "2 hours ago"
+          }
+        ]
+      },
+      {
+        "id": "r5",
+        "name": "Classic Tiramisu",
+        "cuisine": "Italian",
+        "category": "Dessert",
+        "tags": ["Vegetarian", "Meal prep"],
+        "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600",
+        "prepTime": 30,
+        "cookTime": 0,
+        "servings": 8,
+        "difficulty": "Medium",
+        "ingredients": ["Mascarpone", "Eggs", "Sugar", "Espresso", "Ladyfingers", "Cocoa powder", "Marsala wine"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Whip egg yolks and sugar until pale",
+          "Fold in mascarpone until smooth",
+          "Whip egg whites to stiff peaks and fold in",
+          "Dip ladyfingers in espresso mixture",
+          "Layer cream and ladyfingers, dust with cocoa"
+        ],
+        "averageRating": 8.7,
+        "totalRatings": 289,
+        "reviews": [
+          {
+            "id": "rev5",
+            "user": {
+              "id": "u2",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 94
+            },
+            "recipeId": "r5",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "comment": "Made this for a dinner party and everyone loved it. Make it a day ahead!",
+            "likes": 15,
+            "liked": false,
+            "timestamp": "3 hours ago"
+          }
+        ]
+      },
+      {
+        "id": "r6",
+        "name": "Thai Green Curry",
+        "cuisine": "Thai",
+        "category": "Curry",
+        "tags": ["Gluten-free", "Quick", "High-protein"],
+        "image": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600",
+        "prepTime": 15,
+        "cookTime": 25,
+        "servings": 4,
+        "difficulty": "Easy",
+        "ingredients": ["Green curry paste", "Coconut milk", "Chicken", "Thai basil", "Bamboo shoots", "Fish sauce", "Palm sugar", "Thai eggplant"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Fry curry paste in coconut cream until fragrant",
+          "Add chicken and cook through",
+          "Pour in remaining coconut milk",
+          "Add vegetables and simmer 10 min",
+          "Season with fish sauce and sugar, top with basil"
+        ],
+        "averageRating": 8.9,
+        "totalRatings": 398,
+        "reviews": []
+      },
+      {
+        "id": "r7",
+        "name": "NY-Style Pizza Dough",
+        "cuisine": "American",
+        "category": "Bread",
+        "tags": ["Vegan", "Meal prep"],
+        "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600",
+        "prepTime": 20,
+        "cookTime": 12,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredients": ["Bread flour", "Water", "Yeast", "Salt", "Sugar", "Olive oil"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Combine water, yeast, and sugar",
+          "Mix in flour, salt, and olive oil",
+          "Knead 10 minutes until smooth",
+          "Cold ferment 24-72 hours",
+          "Stretch and bake at highest oven temp"
+        ],
+        "averageRating": 9.3,
+        "totalRatings": 512,
+        "reviews": [
+          {
+            "id": "rev9",
+            "user": {
+              "id": "u4",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 112
+            },
+            "recipeId": "r7",
+            "makeAgain": "no",
+            "difficulty": 4,
+            "comment": "Too much effort for the result. I'll just order pizza.",
+            "likes": 3,
+            "liked": false,
+            "timestamp": "2 days ago"
+          }
+        ]
+      },
+      {
+        "id": "r8",
+        "name": "Crispy Tacos al Pastor",
+        "cuisine": "Mexican",
+        "category": "Tacos",
+        "tags": ["High-protein", "Gluten-free"],
+        "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600",
+        "prepTime": 30,
+        "cookTime": 20,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredients": ["Pork shoulder", "Pineapple", "Achiote paste", "Corn tortillas", "Onion", "Cilantro", "Lime"],
+        "ingredientsMeasured": [],
+        "instructions": [
+          "Marinate pork in achiote and pineapple juice",
+          "Grill or broil pork until charred",
+          "Grill pineapple slices",
+          "Warm tortillas on a comal",
+          "Assemble with onion, cilantro, and lime"
+        ],
+        "averageRating": 9.4,
+        "totalRatings": 623,
+        "reviews": [
+          {
+            "id": "rev2",
+            "user": {
+              "id": "u3",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 156
+            },
+            "recipeId": "r8",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "comment": "Best tacos I've ever made at home. The achiote marinade is a game changer.",
+            "likes": 24,
+            "liked": false,
+            "timestamp": "15 minutes ago"
+          },
+          {
+            "id": "rev8",
+            "user": {
+              "id": "u5",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 45
+            },
+            "recipeId": "r8",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "comment": "The charred pineapple is the star. Will definitely make again.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "1 day ago"
+          }
+        ]
+      }
+    ]
+  }
+}

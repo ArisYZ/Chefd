@@ -8,7 +8,6 @@ import { MakeAgainBadge } from '@/components/MakeAgainBadge';
 import { DifficultyPips } from '@/components/DifficultyPips';
 import { ReviewModal } from '@/components/ReviewModal';
 import { RecipeTagChips } from '@/components/RecipeTagChips';
-import { getReviewsForRecipe } from '@/constants/MockData';
 import { Avatar } from '@/components/Avatar';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,14 +17,12 @@ const { width } = Dimensions.get('window');
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getRecipeById } = useRecipes();
+  const { getRecipeById, getReviewsForRecipe, addReview } = useRecipes();
   const { user, onUserSubmittedReview } = useAuth();
   const recipe = getRecipeById(id ?? '');
   const [activeTab, setActiveTab] = useState<'recipe' | 'reviews'>('recipe');
   const [showReviewModal, setShowReviewModal] = useState(false);
-  const [localReviews, setLocalReviews] = useState<Review[]>(() =>
-    getReviewsForRecipe(id ?? ''),
-  );
+  const localReviews = getReviewsForRecipe(id ?? '');
 
   if (!recipe) {
     return (
@@ -200,7 +197,7 @@ export default function RecipeDetailScreen() {
             id: user?.id ?? 'local',
             name: user?.displayName ?? 'You',
             username: user?.username ?? 'you',
-            avatar: user?.avatarUri ?? 'https://i.pravatar.cc/150?img=11',
+            avatar: user?.avatarUri ?? '',
             bio: user?.bio ?? '',
             followersCount: user?.followersCount ?? 0,
             followingCount: user?.followingCount ?? 0,
@@ -217,7 +214,7 @@ export default function RecipeDetailScreen() {
             liked: false,
             timestamp: 'Just now',
           };
-          setLocalReviews((prev) => [newReview, ...prev]);
+          addReview(newReview);
           setShowReviewModal(false);
           setActiveTab('reviews');
           if (user) await onUserSubmittedReview(data.makeAgain);

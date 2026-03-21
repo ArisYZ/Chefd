@@ -1,6 +1,17 @@
-import React, { useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import * as Clipboard from 'expo-clipboard';
+import * as ImagePicker from 'expo-image-picker';
+import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
 import { exportAccountsJsonForRepo } from '@/database/db';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,8 +23,9 @@ import { useRecipes } from '@/contexts/RecipeContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, signOut, refreshUser } = useAuth();
+  const { user, signOut, refreshUser, updateProfile } = useAuth();
   const { recipes } = useRecipes();
+  const [avatarBusy, setAvatarBusy] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -21,7 +33,37 @@ export default function ProfileScreen() {
     }, [refreshUser]),
   );
 
-  const avatarUri = user?.avatarUri || 'https://i.pravatar.cc/150?img=11';
+  const pickProfilePhoto = async () => {
+    if (!user || avatarBusy) return;
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('Permission needed', 'Photo library access is required to set your profile photo.');
+      return;
+    }
+    setAvatarBusy(true);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.9,
+      });
+      if (result.canceled || !result.assets[0]) return;
+      const src = result.assets[0].uri;
+      const base = documentDirectory;
+      let destUri = src;
+      if (base) {
+        destUri = `${base}avatar-${user.id}-${Date.now()}.jpg`;
+        await copyAsync({ from: src, to: destUri });
+      }
+      const res = await updateProfile({ avatarUri: destUri });
+      if (!res.ok) Alert.alert('Profile', res.message);
+    } catch (e) {
+      Alert.alert('Profile', e instanceof Error ? e.message : 'Could not update photo.');
+    } finally {
+      setAvatarBusy(false);
+    }
+  };
 
   const PROFILE_MENU = [
     { icon: 'bookmark-outline' as const, label: 'Saved Recipes', count: undefined },
@@ -45,7 +87,24 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.profileSection}>
-          <Avatar uri={avatarUri} size={80} />
+          <TouchableOpacity
+            style={styles.avatarTouchable}
+            onPress={pickProfilePhoto}
+            activeOpacity={0.85}
+            disabled={avatarBusy}
+            accessibilityRole="button"
+            accessibilityLabel="Change profile photo"
+          >
+            <Avatar uri={user?.avatarUri} size={80} />
+            <View style={styles.avatarCameraBadge}>
+              {avatarBusy ? (
+                <ActivityIndicator size="small" color={Colors.white} />
+              ) : (
+                <Ionicons name="camera" size={18} color={Colors.white} />
+              )}
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.avatarHint}>Tap photo to change</Text>
           <Text style={styles.name}>{user?.displayName ?? 'Chef'}</Text>
           <Text style={styles.username}>@{user?.username ?? '—'}</Text>
           {user?.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
@@ -187,6 +246,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xxl,
   },
+  avatarTouchable: {
+    position: 'relative',
+  },
+  avatarCameraBadge: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: Colors.background,
+  },
+  avatarHint: {
+    fontSize: FontSize.xs,
+    color: Colors.textTertiary,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.xs,
+  },
   rankPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -206,7 +287,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xl,
     fontWeight: '800',
     color: Colors.text,
-    marginTop: Spacing.md,
+    marginTop: Spacing.sm,
   },
   username: {
     fontSize: FontSize.md,

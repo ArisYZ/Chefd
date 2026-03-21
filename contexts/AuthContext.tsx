@@ -21,6 +21,7 @@ import {
   incrementRecipeCount,
   mergeAccountsFromRepo,
   recordUserReview,
+  updateProfile as persistProfile,
 } from '@/database/db';
 import { hashPassword, verifyPassword } from '@/lib/password';
 
@@ -50,6 +51,11 @@ type AuthContextValue = {
   onUserSubmittedReview: (makeAgain: 'yes' | 'no' | 'maybe') => Promise<void>;
   /** When the logged-in user creates a new recipe. */
   onUserCreatedRecipe: () => Promise<void>;
+  updateProfile: (patch: {
+    displayName?: string;
+    bio?: string;
+    avatarUri?: string | null;
+  }) => Promise<{ ok: true } | { ok: false; message: string }>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -198,6 +204,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await refreshUser();
   }, [user?.id, refreshUser]);
 
+  const updateProfile = useCallback(
+    async (patch: { displayName?: string; bio?: string; avatarUri?: string | null }) => {
+      const id = user?.id;
+      if (!id) return { ok: false as const, message: 'Not signed in.' };
+      try {
+        await persistProfile(id, patch);
+        await refreshUser();
+        return { ok: true as const };
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : 'Could not update profile.';
+        return { ok: false as const, message: msg };
+      }
+    },
+    [user?.id, refreshUser],
+  );
+
   const value = useMemo(
     () => ({
       ready,
@@ -209,6 +231,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       refreshUser,
       onUserSubmittedReview,
       onUserCreatedRecipe,
+      updateProfile,
     }),
     [
       ready,
@@ -220,6 +243,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       refreshUser,
       onUserSubmittedReview,
       onUserCreatedRecipe,
+      updateProfile,
     ],
   );
 

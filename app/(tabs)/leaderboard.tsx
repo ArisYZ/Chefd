@@ -7,6 +7,7 @@ import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RatingBadge } from '@/components/RatingBadge';
 import { Avatar } from '@/components/Avatar';
+import { defaultAvatarSource } from '@/constants/avatarAsset';
 import { buildLeaderboard, cuisineFilters } from '@/constants/MockData';
 import { LeaderboardEntry } from '@/types';
 import type { StoredUser } from '@/types/auth';
@@ -52,11 +53,13 @@ function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: 
 function CookTopCard({ user: u, position }: { user: StoredUser; position: number }) {
   const heights = [130, 150, 120];
   const medals = ['🥈', '🥇', '🥉'];
-  const uri = u.avatarUri || 'https://i.pravatar.cc/150?img=3';
 
   return (
     <View style={[styles.cookPodiumItem, { height: heights[position] }]}>
-      <Image source={{ uri }} style={styles.podiumImage} />
+      <Image
+        source={u.avatarUri ? { uri: u.avatarUri } : defaultAvatarSource}
+        style={styles.podiumImage}
+      />
       <View style={styles.podiumOverlay} />
       <View style={styles.podiumContent}>
         <Text style={styles.podiumMedal}>{medals[position]}</Text>
@@ -68,12 +71,11 @@ function CookTopCard({ user: u, position }: { user: StoredUser; position: number
 }
 
 function CookRow({ user: u }: { user: StoredUser }) {
-  const uri = u.avatarUri || 'https://i.pravatar.cc/150?img=3';
   return (
     <View style={styles.row}>
       <Text style={styles.rankText}>{u.leaderboardRank}</Text>
       <View style={styles.avatarWrap}>
-        <Avatar uri={uri} size={50} />
+        <Avatar uri={u.avatarUri} size={50} />
       </View>
       <View style={styles.rowContent}>
         <Text style={styles.rowName}>@{u.username}</Text>

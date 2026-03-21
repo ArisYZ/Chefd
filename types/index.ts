@@ -23,6 +23,11 @@ export interface Review {
   timestamp: string;
 }
 
+export interface IngredientMeasured {
+  name: string;
+  measurement: string;
+}
+
 export interface Recipe {
   id: string;
   name: string;
@@ -35,6 +40,7 @@ export interface Recipe {
   servings: number;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   ingredients: string[];
+  ingredientsMeasured: IngredientMeasured[];
   instructions: string[];
   averageRating: number;
   totalRatings: number;
