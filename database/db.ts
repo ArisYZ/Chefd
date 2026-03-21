@@ -4,6 +4,7 @@
  */
 import { Platform } from 'react-native';
 import type { StoredUser } from '@/types/auth';
+import type { RepoAccountsFile } from './accountRepo';
 
 type DbModule = typeof import('./db.native');
 
@@ -86,6 +87,15 @@ export async function updateProfile(
 
 export async function mergeAccountsFromRepo(): Promise<void> {
   return (await impl()).mergeAccountsFromRepo();
+}
+
+export async function mergeAccountsFromPayload(file: RepoAccountsFile): Promise<void> {
+  return (await impl()).mergeAccountsFromPayload(file);
+}
+
+export async function mergeAccountsFromJsonString(json: string): Promise<void> {
+  const parsed = JSON.parse(json) as RepoAccountsFile;
+  return (await impl()).mergeAccountsFromPayload(parsed);
 }
 
 export async function exportAccountsJsonForRepo(): Promise<string> {

@@ -2,16 +2,19 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Recipe, Review } from '@/types';
 import seedRecipesFile from '@/data/recipes.json';
-import { parseRecipesFile, RepoRecipesFile } from '@/data/recipeRepo';
+import {
+  buildMergedRecipesRepoFile,
+  parseRecipesFile,
+  type RepoRecipesFile,
+} from '@/data/recipeRepo';
+import { mergeAccountsFromJsonString } from '@/database/db';
+import type { RepoAccountsFile } from '@/database/accountRepo';
 import { useAuth } from '@/contexts/AuthContext';
 
 const RECIPES_STORAGE_KEY = '@chefd_user_recipes';
 const REVIEWS_STORAGE_KEY = '@chefd_user_reviews';
-
-/** Seed data parsed once from the bundled JSON. */
-const { recipes: seedRecipes, reviewsByRecipeId: seedReviews } = parseRecipesFile(
-  seedRecipesFile as unknown as RepoRecipesFile,
-);
+const RECIPES_OVERRIDE_KEY = '@chefd_recipes_json_override';
+const ACCOUNTS_PARSE_OVERRIDE_KEY = '@chefd_accounts_json_parse_override';
 
 type RecipeContextValue = {
   recipes: Recipe[];
@@ -19,6 +22,10 @@ type RecipeContextValue = {
   addRecipe: (recipe: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings' | 'ingredientsMeasured'>) => string;
   getReviewsForRecipe: (recipeId: string) => Review[];
   addReview: (review: Review) => void;
+  /** Serialized `data/recipes.json` including session reviews and user-added recipes. */
+  exportMergedRecipesJson: () => string;
+  /** After pulling from GitHub: merge accounts into DB and refresh recipe seed + name map. */
+  applyPulledDataJson: (accountsJson: string, recipesJson: string) => Promise<void>;
 };
 
 const RecipeContext = createContext<RecipeContextValue | null>(null);
@@ -28,6 +35,43 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
   const userId = user?.id ?? null;
   const [userRecipes, setUserRecipes] = useState<Recipe[]>([]);
   const [userReviews, setUserReviews] = useState<Record<string, Review[]>>({});
+  const [recipesSeedOverride, setRecipesSeedOverride] = useState<RepoRecipesFile | null>(null);
+  const [accountsNameOverride, setAccountsNameOverride] = useState<RepoAccountsFile | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [rRaw, aRaw] = await Promise.all([
+          AsyncStorage.getItem(RECIPES_OVERRIDE_KEY),
+          AsyncStorage.getItem(ACCOUNTS_PARSE_OVERRIDE_KEY),
+        ]);
+        if (cancelled) return;
+        if (rRaw) {
+          const parsed = JSON.parse(rRaw) as RepoRecipesFile;
+          setRecipesSeedOverride(parsed);
+        }
+        if (aRaw) {
+          setAccountsNameOverride(JSON.parse(aRaw) as RepoAccountsFile);
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const seedBundle = useMemo(
+    () => recipesSeedOverride ?? (seedRecipesFile as unknown as RepoRecipesFile),
+    [recipesSeedOverride],
+  );
+
+  const { seedRecipes, seedReviews } = useMemo(() => {
+    const parsed = parseRecipesFile(seedBundle, accountsNameOverride);
+    return { seedRecipes: parsed.recipes, seedReviews: parsed.reviewsByRecipeId };
+  }, [seedBundle, accountsNameOverride]);
 
   // Load user-created recipes from AsyncStorage
   useEffect(() => {
@@ -40,14 +84,24 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
         if (cancelled) return;
         if (raw) {
           const parsed = JSON.parse(raw) as Recipe[];
-          if (Array.isArray(parsed)) setUserRecipes(parsed);
+          if (Array.isArray(parsed)) {
+            setUserRecipes(
+              parsed.map((r) => ({
+                ...r,
+                createdByUserId: r.createdByUserId ?? userId,
+                createdByName: r.createdByName ?? user?.displayName ?? user?.username ?? 'You',
+              })),
+            );
+          }
         }
       } catch {
         /* ignore */
       }
     })();
-    return () => { cancelled = true; };
-  }, [userId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.displayName, user?.username, userId]);
 
   // Load user-submitted reviews from AsyncStorage
   useEffect(() => {
@@ -65,7 +119,9 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
         /* ignore */
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const persistRecipes = useCallback(
@@ -88,10 +144,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const recipes = useMemo(
-    () => [...seedRecipes, ...userRecipes],
-    [userRecipes],
-  );
+  const recipes = useMemo(() => [...seedRecipes, ...userRecipes], [seedRecipes, userRecipes]);
 
   const getRecipeById = useCallback(
     (id: string) => recipes.find((r) => r.id === id),
@@ -107,6 +160,8 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
         averageRating: 0,
         totalRatings: 0,
         ingredientsMeasured: [],
+        createdByUserId: userId,
+        createdByName: user?.displayName ?? user?.username ?? 'You',
       };
       setUserRecipes((prev) => {
         const merged = [...prev, next];
@@ -115,7 +170,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       });
       return id;
     },
-    [persistRecipes],
+    [persistRecipes, user?.displayName, user?.username, userId],
   );
 
   const getReviewsForRecipe = useCallback(
@@ -124,7 +179,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       const user = userReviews[recipeId] ?? [];
       return [...user, ...seed];
     },
-    [userReviews],
+    [seedReviews, userReviews],
   );
 
   const addReview = useCallback(
@@ -139,6 +194,27 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     [persistReviews],
   );
 
+  const exportMergedRecipesJson = useCallback(() => {
+    return JSON.stringify(
+      buildMergedRecipesRepoFile({
+        baseSeed: seedBundle,
+        seedReviewsByRecipeId: seedReviews,
+        userReviewsByRecipeId: userReviews,
+        userRecipes,
+      }),
+      null,
+      2,
+    );
+  }, [seedBundle, seedReviews, userReviews, userRecipes]);
+
+  const applyPulledDataJson = useCallback(async (accountsJson: string, recipesJson: string) => {
+    await mergeAccountsFromJsonString(accountsJson);
+    await AsyncStorage.setItem(ACCOUNTS_PARSE_OVERRIDE_KEY, accountsJson);
+    setAccountsNameOverride(JSON.parse(accountsJson) as RepoAccountsFile);
+    await AsyncStorage.setItem(RECIPES_OVERRIDE_KEY, recipesJson);
+    setRecipesSeedOverride(JSON.parse(recipesJson) as RepoRecipesFile);
+  }, []);
+
   const value = useMemo(
     () => ({
       recipes,
@@ -146,8 +222,18 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       addRecipe,
       getReviewsForRecipe,
       addReview,
+      exportMergedRecipesJson,
+      applyPulledDataJson,
     }),
-    [recipes, getRecipeById, addRecipe, getReviewsForRecipe, addReview],
+    [
+      recipes,
+      getRecipeById,
+      addRecipe,
+      getReviewsForRecipe,
+      addReview,
+      exportMergedRecipesJson,
+      applyPulledDataJson,
+    ],
   );
 
   return <RecipeContext.Provider value={value}>{children}</RecipeContext.Provider>;

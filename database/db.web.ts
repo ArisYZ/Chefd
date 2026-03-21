@@ -228,8 +228,7 @@ export async function updateProfile(
   await save(data);
 }
 
-export async function mergeAccountsFromRepo(): Promise<void> {
-  const file = seedAccounts as RepoAccountsFile;
+export async function mergeAccountsFromPayload(file: RepoAccountsFile): Promise<void> {
   if (!file?.users?.length) return;
   const data = await load();
   const seedIds = new Set(file.users.map((u) => u.id));
@@ -237,6 +236,10 @@ export async function mergeAccountsFromRepo(): Promise<void> {
   data.users = [...localOnly, ...file.users];
   await recomputeLeaderboardRanksInternal(data);
   await save(data);
+}
+
+export async function mergeAccountsFromRepo(): Promise<void> {
+  return mergeAccountsFromPayload(seedAccounts as RepoAccountsFile);
 }
 
 export async function exportAccountsJsonForRepo(): Promise<string> {

@@ -30,6 +30,10 @@ export interface IngredientMeasured {
 
 export interface Recipe {
   id: string;
+  /** Account id of the recipe creator when known. */
+  createdByUserId?: string | null;
+  /** Human-friendly creator name to display in UI. */
+  createdByName?: string;
   name: string;
   cuisine: string;
   category: string;

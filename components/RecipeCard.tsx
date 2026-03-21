@@ -13,6 +13,8 @@ interface RecipeCardProps {
 }
 
 export function RecipeCard({ recipe, onPress, showRating = true, rank }: RecipeCardProps) {
+  const creatorLabel = recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <Image source={{ uri: recipe.image }} style={styles.image} />
@@ -26,6 +28,7 @@ export function RecipeCard({ recipe, onPress, showRating = true, rank }: RecipeC
             <Text style={styles.meta}>
               {recipe.cuisine} · {recipe.difficulty} · {recipe.prepTime + recipe.cookTime} min
             </Text>
+            <Text style={styles.creator} numberOfLines={1}>By {creatorLabel}</Text>
           </View>
           {showRating && <RatingBadge rating={recipe.totalRatings === 0 ? null : recipe.averageRating} size="sm" />}
         </View>
@@ -94,6 +97,12 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textTertiary,
     marginTop: 2,
+  },
+  creator: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    marginTop: 2,
+    fontWeight: '500',
   },
   stats: {
     flexDirection: 'row',

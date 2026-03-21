@@ -238,9 +238,8 @@ export async function updateProfile(userId: string, patch: { displayName?: strin
   );
 }
 
-/** Merge rows from data/accounts.json (bundled) into SQLite; repo file wins for matching ids. */
-export async function mergeAccountsFromRepo(): Promise<void> {
-  const file = seedAccounts as RepoAccountsFile;
+/** Merge account rows into SQLite; repo payload wins for matching ids. */
+export async function mergeAccountsFromPayload(file: RepoAccountsFile): Promise<void> {
   if (!file?.users?.length) return;
   const db = await getDatabase();
   for (const u of file.users) {
@@ -271,6 +270,11 @@ export async function mergeAccountsFromRepo(): Promise<void> {
     );
   }
   await recomputeLeaderboardRanks();
+}
+
+/** Merge rows from bundled data/accounts.json into SQLite. */
+export async function mergeAccountsFromRepo(): Promise<void> {
+  return mergeAccountsFromPayload(seedAccounts as RepoAccountsFile);
 }
 
 /** Full snapshot for replacing data/accounts.json in git (includes password hashes). */

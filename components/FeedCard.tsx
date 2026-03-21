@@ -15,6 +15,9 @@ interface FeedCardProps {
 
 export function FeedCard({ rating, onPress, onUserPress }: FeedCardProps) {
   const { review } = rating;
+  const creatorLabel =
+    rating.recipe.createdByName ??
+    (rating.recipe.createdByUserId ? `@${rating.recipe.createdByUserId}` : 'Unknown cook');
 
   return (
     <View style={styles.card}>
@@ -29,6 +32,7 @@ export function FeedCard({ rating, onPress, onUserPress }: FeedCardProps) {
             <Text style={styles.recipeName}>{rating.recipe.name}</Text>
           </Text>
           <Text style={styles.cuisine}>{rating.recipe.cuisine} · {rating.recipe.category}</Text>
+          <Text style={styles.creator}>By {creatorLabel}</Text>
         </View>
       </TouchableOpacity>
 
@@ -91,6 +95,12 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     color: Colors.textTertiary,
     marginTop: 2,
+  },
+  creator: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    marginTop: 2,
+    fontWeight: '500',
   },
   reviewMeta: {
     flexDirection: 'row',

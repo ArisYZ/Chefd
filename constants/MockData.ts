@@ -7,21 +7,32 @@ const { recipes: parsedRecipes, reviewsByRecipeId: parsedReviews } = parseRecipe
   seedRecipesFile as unknown as RepoRecipesFile,
 );
 
+/** Matches data/accounts.json — test login for bundled seed recipes (see data/recipes.json). */
 export const currentUser: User = {
-  id: 'u1',
-  name: 'Alex Chen',
-  username: 'alexcooks',
+  id: 'u_test_account_1',
+  name: 'test',
+  username: 'test',
   avatar: 'https://i.pravatar.cc/150?img=11',
-  bio: 'Home cook exploring global flavors. Pasta enthusiast.',
-  followersCount: 234,
-  followingCount: 189,
-  recipesRated: 67,
+  bio: 'Test account — seed recipes author',
+  followersCount: 12,
+  followingCount: 8,
+  recipesRated: 8,
 };
 
+/** Feed / list avatars — ids align with data/accounts.json and review authors in data/recipes.json */
 export const users: User[] = [
-  currentUser,
   {
-    id: 'u2',
+    id: 'u_fake_alex_c',
+    name: 'Alex Chen',
+    username: 'alexcooks',
+    avatar: 'https://i.pravatar.cc/150?img=11',
+    bio: 'Home cook exploring global flavors. Pasta enthusiast.',
+    followersCount: 234,
+    followingCount: 189,
+    recipesRated: 67,
+  },
+  {
+    id: 'u_fake_sarah_k',
     name: 'Sarah Kim',
     username: 'sarahbakes',
     avatar: 'https://i.pravatar.cc/150?img=5',
@@ -31,7 +42,7 @@ export const users: User[] = [
     recipesRated: 94,
   },
   {
-    id: 'u3',
+    id: 'u_fake_marcus_j',
     name: 'Marcus Johnson',
     username: 'chefmarcus',
     avatar: 'https://i.pravatar.cc/150?img=12',
@@ -41,7 +52,7 @@ export const users: User[] = [
     recipesRated: 156,
   },
   {
-    id: 'u4',
+    id: 'u_fake_priya_p',
     name: 'Priya Patel',
     username: 'priyacooks',
     avatar: 'https://i.pravatar.cc/150?img=9',
@@ -51,7 +62,7 @@ export const users: User[] = [
     recipesRated: 112,
   },
   {
-    id: 'u5',
+    id: 'u_fake_emma_w',
     name: 'Emma Wilson',
     username: 'emmaeats',
     avatar: 'https://i.pravatar.cc/150?img=20',

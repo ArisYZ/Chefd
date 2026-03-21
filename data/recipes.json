@@ -27,7 +27,7 @@
           {
             "id": "rev1",
             "user": {
-              "id": "u2",
+              "id": "u_fake_sarah_k",
               "name": "Sarah Kim",
               "username": "sarahbakes",
               "avatar": "https://i.pravatar.cc/150?img=5",
@@ -47,7 +47,7 @@
           {
             "id": "rev7",
             "user": {
-              "id": "u1",
+              "id": "u_fake_alex_c",
               "name": "Alex Chen",
               "username": "alexcooks",
               "avatar": "https://i.pravatar.cc/150?img=11",
@@ -91,7 +91,7 @@
           {
             "id": "rev3",
             "user": {
-              "id": "u4",
+              "id": "u_fake_priya_p",
               "name": "Priya Patel",
               "username": "priyacooks",
               "avatar": "https://i.pravatar.cc/150?img=9",
@@ -136,7 +136,7 @@
           {
             "id": "rev6",
             "user": {
-              "id": "u2",
+              "id": "u_fake_sarah_k",
               "name": "Sarah Kim",
               "username": "sarahbakes",
               "avatar": "https://i.pravatar.cc/150?img=5",
@@ -181,7 +181,7 @@
           {
             "id": "rev4",
             "user": {
-              "id": "u5",
+              "id": "u_fake_emma_w",
               "name": "Emma Wilson",
               "username": "emmaeats",
               "avatar": "https://i.pravatar.cc/150?img=20",
@@ -226,7 +226,7 @@
           {
             "id": "rev5",
             "user": {
-              "id": "u2",
+              "id": "u_fake_sarah_k",
               "name": "Sarah Kim",
               "username": "sarahbakes",
               "avatar": "https://i.pravatar.cc/150?img=5",
@@ -295,7 +295,7 @@
           {
             "id": "rev9",
             "user": {
-              "id": "u4",
+              "id": "u_fake_priya_p",
               "name": "Priya Patel",
               "username": "priyacooks",
               "avatar": "https://i.pravatar.cc/150?img=9",
@@ -340,7 +340,7 @@
           {
             "id": "rev2",
             "user": {
-              "id": "u3",
+              "id": "u_fake_marcus_j",
               "name": "Marcus Johnson",
               "username": "chefmarcus",
               "avatar": "https://i.pravatar.cc/150?img=12",
@@ -360,7 +360,7 @@
           {
             "id": "rev8",
             "user": {
-              "id": "u5",
+              "id": "u_fake_emma_w",
               "name": "Emma Wilson",
               "username": "emmaeats",
               "avatar": "https://i.pravatar.cc/150?img=20",

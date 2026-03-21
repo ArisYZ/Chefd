@@ -20,6 +20,8 @@ function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: 
   const heights = [140, 160, 130];
   const medals = ['🥈', '🥇', '🥉'];
   const score = entry.totalRatings === 0 ? null : entry.averageRating;
+  const creatorLabel =
+    entry.recipe.createdByName ?? (entry.recipe.createdByUserId ? `@${entry.recipe.createdByUserId}` : 'Unknown cook');
 
   return (
     <View style={[styles.podiumItem, { height: heights[position] }]}>
@@ -28,6 +30,7 @@ function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: 
       <View style={styles.podiumContent}>
         <Text style={styles.podiumMedal}>{medals[position]}</Text>
         <Text style={styles.podiumName} numberOfLines={1}>{entry.recipe.name}</Text>
+        <Text style={styles.podiumCreator} numberOfLines={1}>By {creatorLabel}</Text>
         <Text style={styles.podiumRating}>{score == null ? '—' : score.toFixed(1)}</Text>
       </View>
     </View>
@@ -35,6 +38,9 @@ function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: 
 }
 
 function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: () => void }) {
+  const creatorLabel =
+    entry.recipe.createdByName ?? (entry.recipe.createdByUserId ? `@${entry.recipe.createdByUserId}` : 'Unknown cook');
+
   return (
     <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
       <Text style={styles.rankText}>{entry.rank}</Text>
@@ -42,7 +48,7 @@ function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: 
       <View style={styles.rowContent}>
         <Text style={styles.rowName}>{entry.recipe.name}</Text>
         <Text style={styles.rowMeta}>
-          {entry.cuisine} · {entry.totalRatings} ratings
+          {entry.cuisine} · {entry.totalRatings} ratings · By {creatorLabel}
         </Text>
       </View>
       <RatingBadge rating={entry.totalRatings === 0 ? null : entry.averageRating} size="sm" />
@@ -289,6 +295,13 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     fontWeight: '800',
     color: Colors.white,
+    marginTop: 2,
+  },
+  podiumCreator: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.white,
+    opacity: 0.95,
     marginTop: 2,
   },
   listContent: {

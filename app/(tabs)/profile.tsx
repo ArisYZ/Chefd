@@ -13,6 +13,7 @@ import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
 import { exportAccountsJsonForRepo } from '@/database/db';
+import { getGithubDataSyncConfig, pullDataJsonFilesFromGithub, pushDataJsonFilesToGithub } from '@/lib/githubDataSync';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -24,8 +25,9 @@ import { useRecipes } from '@/contexts/RecipeContext';
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, signOut, refreshUser, updateProfile } = useAuth();
-  const { recipes } = useRecipes();
+  const { recipes, exportMergedRecipesJson, applyPulledDataJson } = useRecipes();
   const [avatarBusy, setAvatarBusy] = useState(false);
+  const [dataSyncBusy, setDataSyncBusy] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -201,25 +203,96 @@ export default function ProfileScreen() {
 
         {__DEV__ ? (
           <View style={styles.devSyncSection}>
-            <Text style={styles.devSyncTitle}>Git — shared accounts</Text>
+            <Text style={styles.devSyncTitle}>Data — push / pull (JSON)</Text>
             <Text style={styles.devSyncHint}>
-              Copy JSON, replace data/accounts.json, commit and push. Pull merges on next launch (restart Metro
-              after pulls so the bundle picks up the file).
+              Push commits current SQLite accounts and merged session recipes (including reviews) to GitHub via the
+              Contents API — not local git. Set EXPO_PUBLIC_GITHUB_TOKEN and EXPO_PUBLIC_GITHUB_REPO (owner/repo) in
+              .env. Pull applies remote data to this device (accounts DB + recipe override). Tokens in EXPO_PUBLIC_ are
+              visible in the bundle — use a fine-scoped PAT for dev only.
             </Text>
+            {getGithubDataSyncConfig() ? (
+              <Text style={styles.devSyncOk}>GitHub: configured</Text>
+            ) : (
+              <Text style={styles.devSyncWarn}>GitHub: not configured — use Copy for manual paste</Text>
+            )}
+            <View style={styles.devSyncRow}>
+              <TouchableOpacity
+                style={[styles.devSyncButton, dataSyncBusy && styles.devSyncButtonDisabled]}
+                activeOpacity={0.7}
+                disabled={dataSyncBusy}
+                onPress={async () => {
+                  if (!getGithubDataSyncConfig()) {
+                    Alert.alert(
+                      'GitHub',
+                      'Add EXPO_PUBLIC_GITHUB_TOKEN (repo scope) and EXPO_PUBLIC_GITHUB_REPO=owner/name to .env, then restart Metro.',
+                    );
+                    return;
+                  }
+                  setDataSyncBusy(true);
+                  try {
+                    const accountsJson = await exportAccountsJsonForRepo();
+                    const recipesJson = exportMergedRecipesJson();
+                    await pushDataJsonFilesToGithub({ accountsJson, recipesJson });
+                    Alert.alert('Pushed', 'data/accounts.json and data/recipes.json committed on the remote branch.');
+                  } catch (e) {
+                    Alert.alert('Push failed', e instanceof Error ? e.message : 'Unknown error');
+                  } finally {
+                    setDataSyncBusy(false);
+                  }
+                }}
+              >
+                <View style={styles.devSyncButtonInner}>
+                  {dataSyncBusy ? (
+                    <ActivityIndicator color={Colors.white} size="small" />
+                  ) : null}
+                  <Text style={styles.devSyncButtonText}>Push data</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.devSyncButtonSecondary, dataSyncBusy && styles.devSyncButtonDisabled]}
+                activeOpacity={0.7}
+                disabled={dataSyncBusy}
+                onPress={async () => {
+                  if (!getGithubDataSyncConfig()) {
+                    Alert.alert(
+                      'GitHub',
+                      'Add EXPO_PUBLIC_GITHUB_TOKEN and EXPO_PUBLIC_GITHUB_REPO to .env, then restart Metro.',
+                    );
+                    return;
+                  }
+                  setDataSyncBusy(true);
+                  try {
+                    const { accountsJson, recipesJson } = await pullDataJsonFilesFromGithub();
+                    await applyPulledDataJson(accountsJson, recipesJson);
+                    await refreshUser();
+                    Alert.alert('Pulled', 'Accounts merged and recipes updated on this device.');
+                  } catch (e) {
+                    Alert.alert('Pull failed', e instanceof Error ? e.message : 'Unknown error');
+                  } finally {
+                    setDataSyncBusy(false);
+                  }
+                }}
+              >
+                <Text style={styles.devSyncButtonSecondaryText}>Pull data</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              style={styles.devSyncButton}
+              style={styles.devSyncButtonOutline}
               activeOpacity={0.7}
+              disabled={dataSyncBusy}
               onPress={async () => {
                 try {
-                  const json = await exportAccountsJsonForRepo();
-                  await Clipboard.setStringAsync(json);
-                  Alert.alert('Copied', 'Paste into data/accounts.json in the repo, then commit.');
+                  const accountsJson = await exportAccountsJsonForRepo();
+                  const recipesJson = exportMergedRecipesJson();
+                  const blob = `=== data/accounts.json ===\n${accountsJson}\n\n=== data/recipes.json ===\n${recipesJson}\n`;
+                  await Clipboard.setStringAsync(blob);
+                  Alert.alert('Copied', 'Paste each block into the matching file in the repo, then commit locally.');
                 } catch (e) {
-                  Alert.alert('Export failed', e instanceof Error ? e.message : 'Unknown error');
+                  Alert.alert('Copy failed', e instanceof Error ? e.message : 'Unknown error');
                 }
               }}
             >
-              <Text style={styles.devSyncButtonText}>Copy accounts JSON</Text>
+              <Text style={styles.devSyncButtonOutlineText}>Copy both JSON (manual git)</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -466,18 +539,76 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textSecondary,
     lineHeight: 18,
+    marginBottom: Spacing.sm,
+  },
+  devSyncOk: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.primary,
+    marginBottom: Spacing.sm,
+  },
+  devSyncWarn: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: '#B45309',
+    marginBottom: Spacing.sm,
+  },
+  devSyncRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
     marginBottom: Spacing.md,
   },
+  devSyncButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
   devSyncButton: {
-    alignSelf: 'flex-start',
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
     backgroundColor: Colors.primary,
+    minWidth: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 40,
+  },
+  devSyncButtonDisabled: {
+    opacity: 0.55,
   },
   devSyncButtonText: {
     fontSize: FontSize.sm,
     fontWeight: '600',
     color: Colors.white,
+  },
+  devSyncButtonSecondary: {
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    minWidth: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 40,
+  },
+  devSyncButtonSecondaryText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.primary,
+  },
+  devSyncButtonOutline: {
+    alignSelf: 'flex-start',
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  devSyncButtonOutlineText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.textSecondary,
   },
 });

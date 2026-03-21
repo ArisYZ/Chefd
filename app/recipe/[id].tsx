@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
@@ -35,6 +35,9 @@ export default function RecipeDetailScreen() {
   const score = computeScore(localReviews);
   const yesCount = localReviews.filter((r) => r.makeAgain === 'yes').length;
   const yesPercent = localReviews.length > 0 ? Math.round((yesCount / localReviews.length) * 100) : 0;
+  const creatorLabel = recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
+  const isOwnRecipe = Boolean(user?.id && recipe.createdByUserId && user.id === recipe.createdByUserId);
+  const canReview = !isOwnRecipe;
 
   return (
     <>
@@ -46,6 +49,7 @@ export default function RecipeDetailScreen() {
             <View style={styles.titleText}>
               <Text style={styles.name}>{recipe.name}</Text>
               <Text style={styles.cuisine}>{recipe.cuisine} · {recipe.category}</Text>
+              <Text style={styles.creator}>By {creatorLabel}</Text>
               {recipe.tags.length > 0 && (
                 <View style={styles.tagsSection}>
                   <RecipeTagChips tags={recipe.tags} />
@@ -99,12 +103,19 @@ export default function RecipeDetailScreen() {
 
           <View style={styles.actionRow}>
             <TouchableOpacity
-              style={styles.rateButton}
+              style={[styles.rateButton, !canReview && styles.rateButtonDisabled]}
               activeOpacity={0.8}
-              onPress={() => setShowReviewModal(true)}
+              onPress={() => {
+                if (!canReview) {
+                  Alert.alert('Own recipe', 'You cannot review a recipe you created.');
+                  return;
+                }
+                setShowReviewModal(true);
+              }}
+              disabled={!canReview}
             >
               <Ionicons name="create-outline" size={18} color={Colors.white} />
-              <Text style={styles.rateButtonText}>Write a Review</Text>
+              <Text style={styles.rateButtonText}>{canReview ? 'Write a Review' : 'Your Recipe'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
               <Ionicons name="bookmark-outline" size={22} color={Colors.primary} />
@@ -193,6 +204,10 @@ export default function RecipeDetailScreen() {
         recipeName={recipe.name}
         onClose={() => setShowReviewModal(false)}
         onSubmit={async (data) => {
+          if (isOwnRecipe) {
+            Alert.alert('Own recipe', 'You cannot review a recipe you created.');
+            return;
+          }
           const reviewUser: User = {
             id: user?.id ?? 'local',
             name: user?.displayName ?? 'You',
@@ -267,6 +282,12 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     marginTop: 4,
   },
+  creator: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    marginTop: 6,
+    fontWeight: '600',
+  },
   tagsSection: {
     marginTop: Spacing.md,
   },
@@ -339,6 +360,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     borderRadius: BorderRadius.full,
     gap: Spacing.sm,
+  },
+  rateButtonDisabled: {
+    opacity: 0.55,
   },
   rateButtonText: {
     color: Colors.white,
