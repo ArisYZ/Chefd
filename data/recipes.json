@@ -3313,29 +3313,8 @@
           "1 tsp Flaky salt"
         ],
         "averageRating": 5,
-        "totalRatings": 6,
+        "totalRatings": 5,
         "reviews": [
-          {
-            "id": "rev_r_jordan_1_test",
-            "user": {
-              "id": "u_test_account_1",
-              "name": "test",
-              "username": "test",
-              "avatar": "https://i.pravatar.cc/150?img=11",
-              "bio": "Test account — seed recipes author",
-              "followersCount": 12,
-              "followingCount": 8,
-              "recipesRated": 10
-            },
-            "recipeId": "r_jordan_1",
-            "makeAgain": "yes",
-            "difficulty": 2,
-            "tasteRating": 5,
-            "comment": "These are the BEST cookies I've ever made. The brown butter is genius.",
-            "likes": 25,
-            "liked": false,
-            "timestamp": "1d ago"
-          },
           {
             "id": "rev_r_jordan_1_sarah",
             "user": {

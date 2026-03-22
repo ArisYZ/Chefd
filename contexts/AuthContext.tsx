@@ -21,6 +21,7 @@ import {
   incrementRecipeCount,
   mergeAccountsFromRepo,
   recordUserReview,
+  undoUserReview,
   setFavoriteRecipeIds,
   updateProfile as persistProfile,
 } from '@/database/db';
@@ -51,6 +52,8 @@ type AuthContextValue = {
   refreshUser: () => Promise<void>;
   /** When the logged-in user submits a recipe review. */
   onUserSubmittedReview: (makeAgain: 'yes' | 'no' | 'maybe') => Promise<void>;
+  /** When the logged-in user deletes their own recipe review. */
+  onUserDeletedReview: (makeAgain: 'yes' | 'no' | 'maybe') => Promise<void>;
   /** When the logged-in user creates a new recipe. */
   onUserCreatedRecipe: () => Promise<void>;
   updateProfile: (patch: {
@@ -207,6 +210,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await refreshUser();
   }, [user?.id, refreshUser]);
 
+  const onUserDeletedReview = useCallback(async (makeAgain: 'yes' | 'no' | 'maybe') => {
+    const id = user?.id;
+    if (!id) return;
+    await undoUserReview(id, makeAgain);
+    await refreshUser();
+  }, [user?.id, refreshUser]);
+
   const onUserCreatedRecipe = useCallback(async () => {
     const id = user?.id;
     if (!id) return;
@@ -272,6 +282,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       completeGoogleSignIn,
       refreshUser,
       onUserSubmittedReview,
+      onUserDeletedReview,
       onUserCreatedRecipe,
       updateProfile,
       toggleFavoriteRecipe,
@@ -287,6 +298,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       completeGoogleSignIn,
       refreshUser,
       onUserSubmittedReview,
+      onUserDeletedReview,
       onUserCreatedRecipe,
       updateProfile,
       toggleFavoriteRecipe,

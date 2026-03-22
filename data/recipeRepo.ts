@@ -1,6 +1,7 @@
 import type { Recipe, Review } from '@/types';
 import accountsFile from '@/data/accounts.json';
 import type { RepoAccountsFile } from '@/database/accountRepo';
+import { ensureReviewTasteRating } from '@/lib/ensureReviewTasteRating';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
 
 /**
@@ -112,7 +113,7 @@ export function parseRecipesFile(
         createdByName: creatorNameById.get(userId) ?? userId,
       });
       if (reviews && reviews.length > 0) {
-        reviewsByRecipeId[r.id] = reviews;
+        reviewsByRecipeId[r.id] = reviews.map(ensureReviewTasteRating);
       }
     }
   }
@@ -134,11 +135,11 @@ export function buildMergedRecipesRepoFile(input: {
   function mergeReviewLists(recipeId: string): Review[] {
     const user = input.userReviewsByRecipeId[recipeId] ?? [];
     const seed = input.seedReviewsByRecipeId[recipeId] ?? [];
-    const merged = [...user, ...seed];
-    const seen = new Set<string>();
+    const merged = [...user, ...seed].map(ensureReviewTasteRating);
+    const seenUserIds = new Set<string>();
     return merged.filter((r) => {
-      if (seen.has(r.id)) return false;
-      seen.add(r.id);
+      if (seenUserIds.has(r.user.id)) return false;
+      seenUserIds.add(r.user.id);
       return true;
     });
   }

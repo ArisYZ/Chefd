@@ -18,6 +18,7 @@ import {
 } from '@/database/db';
 import type { RepoAccountsFile } from '@/database/accountRepo';
 import { useAuth } from '@/contexts/AuthContext';
+import { ensureReviewTasteRating } from '@/lib/ensureReviewTasteRating';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
 import { getGithubDataSyncConfig, pushDataJsonFilesToGithub } from '@/lib/githubDataSync';
 
@@ -48,6 +49,8 @@ type RecipeContextValue = {
   deleteRecipe: (recipeId: string) => Promise<boolean>;
   getReviewsForRecipe: (recipeId: string) => Review[];
   addReview: (review: Review) => void;
+  /** Removes a review from user storage (e.g. your own). Returns true if a row was removed. */
+  removeReview: (recipeId: string, reviewId: string) => boolean;
   /** Serialized `data/recipes.json` including session reviews and user-added recipes. */
   exportMergedRecipesJson: () => string;
   /** After pulling from GitHub: merge accounts into DB and refresh recipe seed + name map. */
@@ -355,27 +358,54 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     (recipeId: string): Review[] => {
       const seed = seedReviews[recipeId] ?? [];
       const user = userReviews[recipeId] ?? [];
-      return [...user, ...seed];
+      const merged = [...user, ...seed].map(ensureReviewTasteRating);
+      const seenUserIds = new Set<string>();
+      return merged.filter((r) => {
+        if (seenUserIds.has(r.user.id)) return false;
+        seenUserIds.add(r.user.id);
+        return true;
+      });
     },
     [seedReviews, userReviews],
   );
 
   const addReview = useCallback(
     (review: Review) => {
+      const normalized = ensureReviewTasteRating(review);
       setUserReviews((prev) => {
-        const existing = prev[review.recipeId] ?? [];
-        const existingIdx = existing.findIndex((r) => r.user.id === review.user.id);
+        const existing = prev[normalized.recipeId] ?? [];
+        const existingIdx = existing.findIndex((r) => r.user.id === normalized.user.id);
         let updated: Review[];
         if (existingIdx >= 0) {
           updated = [...existing];
-          updated[existingIdx] = review;
+          updated[existingIdx] = normalized;
         } else {
-          updated = [review, ...existing];
+          updated = [normalized, ...existing];
         }
-        const next = { ...prev, [review.recipeId]: updated };
+        const next = { ...prev, [normalized.recipeId]: updated };
         persistReviews(next);
         return next;
       });
+    },
+    [persistReviews],
+  );
+
+  const removeReview = useCallback(
+    (recipeId: string, reviewId: string): boolean => {
+      let removed = false;
+      setUserReviews((prev) => {
+        const list = prev[recipeId];
+        if (!list) return prev;
+        const nextList = list.filter((r) => r.id !== reviewId);
+        if (nextList.length === list.length) return prev;
+        removed = true;
+        const next = { ...prev };
+        if (nextList.length === 0) delete next[recipeId];
+        else next[recipeId] = nextList;
+        void persistReviews(next);
+        return next;
+      });
+      return removed;
     },
     [persistReviews],
   );
@@ -410,6 +440,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       deleteRecipe,
       getReviewsForRecipe,
       addReview,
+      removeReview,
       exportMergedRecipesJson,
       applyPulledDataJson,
     }),
@@ -421,6 +452,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       deleteRecipe,
       getReviewsForRecipe,
       addReview,
+      removeReview,
       exportMergedRecipesJson,
       applyPulledDataJson,
     ],

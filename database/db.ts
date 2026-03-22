@@ -66,6 +66,10 @@ export async function recordUserReview(userId: string, makeAgain: 'yes' | 'no' |
   return (await impl()).recordUserReview(userId, makeAgain);
 }
 
+export async function undoUserReview(userId: string, makeAgain: 'yes' | 'no' | 'maybe'): Promise<void> {
+  return (await impl()).undoUserReview(userId, makeAgain);
+}
+
 export async function incrementRecipeCount(userId: string): Promise<void> {
   return (await impl()).incrementRecipeCount(userId);
 }

@@ -58,7 +58,9 @@ export function ReviewModal({ visible, recipeName, existingReview, onClose, onSu
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    onSubmit({ makeAgain: makeAgain!, difficulty, tasteRating, flavorNotes, comment });
+    let taste = tasteRating;
+    if (taste > 0 && taste < 1) taste = 1;
+    onSubmit({ makeAgain: makeAgain!, difficulty, tasteRating: taste, flavorNotes, comment });
     resetFields();
   };
 
@@ -77,7 +79,11 @@ export function ReviewModal({ visible, recipeName, existingReview, onClose, onSu
 
   const handleStarPress = (star: number) => {
     if (tasteRating === star) {
-      setTasteRating(star - 0.5);
+      if (star === 1) {
+        setTasteRating(0);
+      } else {
+        setTasteRating(star - 0.5);
+      }
     } else if (tasteRating === star - 0.5) {
       setTasteRating(0);
     } else {
@@ -164,7 +170,8 @@ export function ReviewModal({ visible, recipeName, existingReview, onClose, onSu
 
             {/* Taste Rating (optional) */}
             <Text style={styles.sectionLabel}>
-              Taste Rating <Text style={styles.optional}>(optional, tap twice for half-star)</Text>
+              Taste Rating{' '}
+              <Text style={styles.optional}>(optional, min 1.0; tap twice for half-star)</Text>
             </Text>
             <View style={styles.starsRow}>
               {[1, 2, 3, 4, 5].map((star) => {

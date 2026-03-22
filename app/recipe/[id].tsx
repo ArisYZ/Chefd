@@ -35,8 +35,8 @@ const { width } = Dimensions.get('window');
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { getRecipeById, getReviewsForRecipe, addReview, deleteRecipe } = useRecipes();
-  const { user, onUserSubmittedReview, removeRecipeFromFavorites } = useAuth();
+  const { getRecipeById, getReviewsForRecipe, addReview, removeReview, deleteRecipe } = useRecipes();
+  const { user, onUserSubmittedReview, onUserDeletedReview, removeRecipeFromFavorites } = useAuth();
   const { isBookmarked, toggleBookmark, removeRecipeFromBookmarks } = useBookmarks();
   const { isLiked, getLikeCount, toggleLike } = useSocial();
   const recipe = getRecipeById(id ?? '');
@@ -118,7 +118,7 @@ export default function RecipeDetailScreen() {
                 </View>
               )}
             </View>
-            <RatingBadge rating={score} size="lg" label="Encore" scale="/ 5.0" />
+            <RatingBadge rating={score} size="lg" label="Encore" />
           </View>
 
           {/* Score summary */}
@@ -134,7 +134,6 @@ export default function RecipeDetailScreen() {
                   {avgDifficulty != null ? formatOutOf5(Number(avgDifficulty)) : '— / 5.0'}
                 </Text>
                 <Text style={styles.scoreLabel}>Difficulty</Text>
-                <Text style={styles.scoreHint}>{localReviews.length} reviews</Text>
               </View>
               <View style={styles.scoreDivider} />
               <View style={styles.scoreItem}>
@@ -360,6 +359,33 @@ export default function RecipeDetailScreen() {
                           </TouchableOpacity>
                           <Text style={styles.reviewTime}>{review.timestamp}</Text>
                         </View>
+                        {user?.id === review.user.id ? (
+                          <TouchableOpacity
+                            hitSlop={10}
+                            onPress={() => {
+                              const run = () => {
+                                const removed = removeReview(recipe.id, review.id);
+                                if (removed && user?.id) void onUserDeletedReview(review.makeAgain);
+                              };
+                              if (Platform.OS === 'web') {
+                                if (
+                                  typeof window !== 'undefined' &&
+                                  window.confirm('Delete your review for this recipe?')
+                                ) {
+                                  run();
+                                }
+                                return;
+                              }
+                              Alert.alert('Delete review', 'Remove your review for this recipe?', [
+                                { text: 'Cancel', style: 'cancel' },
+                                { text: 'Delete', style: 'destructive', onPress: run },
+                              ]);
+                            }}
+                            accessibilityLabel="Delete your review"
+                          >
+                            <Ionicons name="trash-outline" size={20} color={Colors.textTertiary} />
+                          </TouchableOpacity>
+                        ) : null}
                       </View>
                       <View style={styles.reviewMetaRow}>
                         <MakeAgainBadge value={review.makeAgain} />
@@ -494,7 +520,6 @@ const styles = StyleSheet.create({
   scoreItem: { flex: 1, alignItems: 'center' },
   scoreValue: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
   scoreLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2, textAlign: 'center' },
-  scoreHint: { fontSize: 10, color: Colors.textTertiary, marginTop: 4, textAlign: 'center' },
   scoreDivider: { width: 1, backgroundColor: Colors.primary + '20' },
   metaRow: {
     flexDirection: 'row',
@@ -626,7 +651,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
-  reviewHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md },
+  reviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+    gap: Spacing.sm,
+  },
   reviewHeaderText: { flex: 1, marginLeft: Spacing.md },
   reviewUser: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
   reviewTime: { fontSize: FontSize.xs, color: Colors.textTertiary },

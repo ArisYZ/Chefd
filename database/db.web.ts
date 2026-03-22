@@ -186,6 +186,26 @@ export async function recordUserReview(userId: string, makeAgain: 'yes' | 'no' |
   await save(data);
 }
 
+/** Reverses one `recordUserReview` (e.g. when the user deletes their review). */
+export async function undoUserReview(userId: string, makeAgain: 'yes' | 'no' | 'maybe'): Promise<void> {
+  const data = await load();
+  const u = data.users.find((x) => x.id === userId);
+  if (!u || u.reviewCount <= 0) return;
+  const points = makeAgainToPoints(makeAgain);
+  const oldScore = makeAgainToScore(makeAgain);
+  const prevCount = u.reviewCount;
+  const n = prevCount - 1;
+  u.reviewCount = n;
+  u.averageRating =
+    n === 0
+      ? 0
+      : parseFloat(((u.averageRating * prevCount - oldScore) / n).toFixed(2));
+  if (u.rankingScore >= points) u.rankingScore -= points;
+  else u.rankingScore = 0;
+  await recomputeLeaderboardRanksInternal(data);
+  await save(data);
+}
+
 export async function incrementRecipeCount(userId: string): Promise<void> {
   const data = await load();
   const u = data.users.find((x) => x.id === userId);
