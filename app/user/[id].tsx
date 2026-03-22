@@ -229,7 +229,7 @@ export default function UserProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   profileSection: {
     alignItems: 'center',

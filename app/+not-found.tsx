@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: Spacing.xl,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.appCanvas,
   },
   title: {
     fontSize: FontSize.xl,

@@ -58,7 +58,7 @@ export default function ProfileBookmarksScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.appCanvas,
   },
   subtitle: {
     fontSize: FontSize.sm,

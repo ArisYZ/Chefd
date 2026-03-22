@@ -124,7 +124,7 @@ export default function EditProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   content: { padding: Spacing.xxl },
   avatarSection: { alignItems: 'center', marginBottom: Spacing.xxl },
   changePhoto: {

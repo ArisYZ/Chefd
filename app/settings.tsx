@@ -165,7 +165,7 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   section: { marginTop: Spacing.lg },
   sectionTitle: {
     fontSize: FontSize.xs,

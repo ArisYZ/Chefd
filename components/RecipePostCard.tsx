@@ -4,6 +4,7 @@ import type { Recipe, User } from '@/types';
 import { Colors, Spacing, FontSize, Fonts, BorderRadius } from '@/constants/Colors';
 import { Avatar } from './Avatar';
 import { RemoteImage } from './RemoteImage';
+import { RatingBadge } from './RatingBadge';
 import { SocialActions } from './SocialActions';
 
 function recipeTeaserText(recipe: Recipe): string | null {
@@ -50,6 +51,9 @@ export function RecipePostCard({
             {recipe.cuisine} · {recipe.category}
           </Text>
         </View>
+        {recipe.totalRatings > 0 && recipe.averageRating > 0 ? (
+          <RatingBadge rating={recipe.averageRating} size="sm" />
+        ) : null}
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -67,14 +71,9 @@ export function RecipePostCard({
         ) : null}
       </TouchableOpacity>
 
-      {recipe.averageRating > 0 ? (
-        <Text style={styles.ratingLine}>
-          {recipe.averageRating.toFixed(1)} ★ · {recipe.totalRatings} rating
-          {recipe.totalRatings !== 1 ? 's' : ''}
-        </Text>
-      ) : (
+      {!(recipe.totalRatings > 0 && recipe.averageRating > 0) ? (
         <Text style={styles.newRecipe}>New recipe — be the first to rate it</Text>
-      )}
+      ) : null}
 
       <SocialActions
         comments={0}
@@ -104,7 +103,8 @@ const styles = StyleSheet.create({
   headerText: {
     flex: 1,
     marginLeft: Spacing.md,
-    marginRight: Spacing.md,
+    marginRight: Spacing.sm,
+    minWidth: 0,
   },
   headerLine: {
     fontSize: FontSize.md,
@@ -143,13 +143,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: Colors.textSecondary,
     fontFamily: Fonts.body,
-  },
-  ratingLine: {
-    fontSize: FontSize.sm,
-    color: Colors.textSecondary,
-    marginBottom: Spacing.md,
-    fontFamily: Fonts.bodyMedium,
-    fontWeight: '500',
   },
   newRecipe: {
     fontSize: FontSize.sm,

@@ -84,6 +84,8 @@ export default function RecipeDetailScreen() {
     ? recipe.ingredientsMeasured.map((item) => formatIngredientLine(item))
     : recipe.ingredients;
 
+  const recipeTagChips = Array.from(new Set([...recipe.tags, ...(recipe.flavorTags ?? [])]));
+
   return (
     <>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -105,19 +107,15 @@ export default function RecipeDetailScreen() {
               {recipe.description ? (
                 <Text style={styles.description}>{recipe.description}</Text>
               ) : null}
-              {recipe.tags.length > 0 && (
-                <View style={styles.tagsSection}>
-                  <RecipeTagChips tags={recipe.tags} maxVisible={3} />
-                </View>
-              )}
-              {recipe.flavorTags && recipe.flavorTags.length > 0 && (
-                <View style={styles.tagsSection}>
-                  <RecipeTagChips tags={recipe.flavorTags} size="sm" maxVisible={3} />
-                </View>
-              )}
             </View>
-            <RatingBadge rating={score} size="lg" label="Encore" />
+            <RatingBadge rating={score} size="xl" label="Encore" />
           </View>
+
+          {recipeTagChips.length > 0 && (
+            <View style={styles.tagsSection}>
+              <RecipeTagChips tags={recipeTagChips} horizontalScroll />
+            </View>
+          )}
 
           {/* Score summary */}
           {localReviews.length > 0 && (
@@ -473,7 +471,7 @@ export default function RecipeDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   heroImage: { width, height: width * 0.65, backgroundColor: '#f2f2f2' },
   content: {
@@ -500,7 +498,8 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
     lineHeight: 20,
   },
-  tagsSection: { marginTop: Spacing.md },
+  /** Full content width below title row so tag scroll isn’t squeezed beside the Encore badge. */
+  tagsSection: { marginBottom: Spacing.xs },
   scoreSummary: {
     flexDirection: 'row',
     backgroundColor: Colors.primary + '0A',

@@ -60,7 +60,7 @@ export default function CategoryScreen() {
         )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.list}
-        style={{ backgroundColor: Colors.background }}
+        style={{ backgroundColor: Colors.appCanvas }}
       />
     </>
   );

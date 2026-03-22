@@ -66,7 +66,7 @@ export default function ListsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.appCanvas,
   },
   header: {
     flexDirection: 'row',

@@ -168,7 +168,7 @@ export default function FeedScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',

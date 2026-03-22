@@ -7,7 +7,7 @@ export interface RecipeTagConfig {
 /** Predefined category tags with associated icon and color. */
 export const RECIPE_TAG_OPTIONS: RecipeTagConfig[] = [
   { label: 'High-Protein', icon: 'barbell-outline', color: '#D32F2F' },
-  { label: 'Budget-Friendly', icon: 'cash-outline', color: '#388E3C' },
+  { label: 'Budget', icon: 'cash-outline', color: '#388E3C' },
   { label: 'Quick & Easy', icon: 'flash-outline', color: '#F9A825' },
   { label: 'Meal Prep', icon: 'calendar-outline', color: '#1565C0' },
   { label: 'Vegetarian', icon: 'leaf-outline', color: '#2E7D32' },

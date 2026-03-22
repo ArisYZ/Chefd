@@ -184,7 +184,7 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   /** Keeps filter rows from growing when the screen reflows (RN Web flex + horizontal ScrollView). */
   filtersSection: {
     flexGrow: 0,

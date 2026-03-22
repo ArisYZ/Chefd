@@ -93,7 +93,7 @@ export default function ListDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.appCanvas,
   },
   center: {
     flex: 1,

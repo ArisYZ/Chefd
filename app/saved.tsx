@@ -173,7 +173,7 @@ export default function SavedRecipesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   listContent: { paddingBottom: Spacing.xxl },
   tabRow: {
     flexDirection: 'row',

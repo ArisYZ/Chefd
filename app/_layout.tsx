@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, GildaDisplay_400Regular } from '@expo-google-fonts/gilda-display';
 import {
@@ -18,6 +18,7 @@ import { RecipeProvider } from '@/contexts/RecipeContext';
 import { BookmarkProvider } from '@/contexts/BookmarkContext';
 import { SocialProvider } from '@/contexts/SocialContext';
 import { FollowProvider } from '@/contexts/FollowContext';
+import { AppBackground } from '@/components/AppBackground';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,7 +46,26 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutReady}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: Platform.OS === 'web' ? 'transparent' : Colors.background,
+      }}
+      onLayout={onLayoutReady}
+    >
+      {Platform.OS === 'web' && (
+        <>
+          <AppBackground />
+          <View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFillObject,
+              { zIndex: 1, backgroundColor: 'rgba(248, 248, 246, 0.76)' },
+            ]}
+          />
+        </>
+      )}
+      <View style={{ flex: 1, zIndex: Platform.OS === 'web' ? 2 : 0 }}>
     <AuthProvider>
     <FollowProvider>
     <RecipeProvider>
@@ -55,7 +75,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: Colors.background },
+          contentStyle: { backgroundColor: Colors.appCanvas },
         }}
       >
         <Stack.Screen name="index" />
@@ -199,6 +219,7 @@ export default function RootLayout() {
     </RecipeProvider>
     </FollowProvider>
     </AuthProvider>
+      </View>
     </View>
   );
 }

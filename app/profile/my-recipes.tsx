@@ -57,7 +57,7 @@ export default function MyPostedRecipesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: Colors.appCanvas,
   },
   subtitle: {
     fontSize: FontSize.sm,

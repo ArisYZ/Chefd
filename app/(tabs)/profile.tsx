@@ -442,7 +442,7 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

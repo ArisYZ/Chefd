@@ -76,12 +76,17 @@ export interface Recipe {
  * Encore Score (1–5): average of each review’s **“Would you make it again?”** answer.
  * yes = 5, maybe = 3, no = 1. Returns null when there are no reviews.
  */
+/** Single-review Encore value from “make again” (same scale as `computeScore`). */
+export function encoreScoreFromMakeAgain(makeAgain: MakeAgain): number {
+  if (makeAgain === 'yes') return 5;
+  if (makeAgain === 'maybe') return 3;
+  return 1;
+}
+
 export function computeScore(reviews: Review[]): number | null {
   if (reviews.length === 0) return null;
   const total = reviews.reduce((sum, r) => {
-    if (r.makeAgain === 'yes') return sum + 5;
-    if (r.makeAgain === 'maybe') return sum + 3;
-    return sum + 1;
+    return sum + encoreScoreFromMakeAgain(r.makeAgain);
   }, 0);
   return parseFloat((total / reviews.length).toFixed(1));
 }

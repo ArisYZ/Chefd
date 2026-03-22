@@ -715,7 +715,7 @@ export default function NewRecipeScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   content: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.md },
   photoBox: {
     borderRadius: BorderRadius.lg,

@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native';
-import { RecipeRating } from '@/types';
-import { Colors, Spacing, BorderRadius, FontSize, Fonts } from '@/constants/Colors';
+import { RecipeRating, encoreScoreFromMakeAgain } from '@/types';
+import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 import { Avatar } from './Avatar';
+import { RatingBadge } from './RatingBadge';
 import { MakeAgainBadge } from './MakeAgainBadge';
 import { DifficultyPips } from './DifficultyPips';
 import { SocialActions } from './SocialActions';
@@ -36,6 +37,7 @@ export function FeedCard({ rating, onPress, onUserPress, onBookmarkPress, isBook
           <Text style={styles.cuisine}>{rating.recipe.cuisine} · {rating.recipe.category}</Text>
           <Text style={styles.creator}>By {creatorLabel}</Text>
         </View>
+        <RatingBadge rating={encoreScoreFromMakeAgain(review.makeAgain)} size="sm" />
       </TouchableOpacity>
 
       <View style={styles.reviewMeta}>
@@ -75,7 +77,8 @@ const styles = StyleSheet.create({
   headerText: {
     flex: 1,
     marginLeft: Spacing.md,
-    marginRight: Spacing.md,
+    marginRight: Spacing.sm,
+    minWidth: 0,
   },
   headerLine: {
     fontSize: FontSize.md,

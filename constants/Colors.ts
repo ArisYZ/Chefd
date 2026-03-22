@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export const Colors = {
   primary: '#1B3A5C',
   primaryLight: '#2A5080',
@@ -5,6 +7,8 @@ export const Colors = {
   accent: '#D4AF37',
   accentLight: '#E5CC60',
   background: '#F8F8F6',
+  /** Main scroll/safe-area fill: transparent on web so ColorBends + root tint show through. */
+  appCanvas: Platform.select({ web: 'transparent', default: '#F8F8F6' }) ?? '#F8F8F6',
   surface: '#FFFFFF',
   surfaceElevated: '#F0F2F4',
   text: '#16233B',

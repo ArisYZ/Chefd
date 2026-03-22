@@ -119,8 +119,8 @@ export default function FollowListScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.appCanvas },
   listContent: { paddingVertical: Spacing.sm },
   row: {
     flexDirection: 'row',

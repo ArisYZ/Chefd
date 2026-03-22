@@ -404,7 +404,7 @@ export default function ImportRecipeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.appCanvas },
   content: { padding: Spacing.xxl },
   urlSection: {
     flexDirection: 'row',

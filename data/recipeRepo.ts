@@ -113,10 +113,19 @@ function ensureOfficialTags(recipe: Recipe): string[] {
     tags.add('High-Protein');
   }
 
-  // 6. Budget-Friendly
-  const budgetKeywords = ['budget', 'cheap', 'affordable', 'easy on the wallet', 'rice', 'beans', 'pasta', 'lentils', 'egg'];
-  if (budgetKeywords.some(k => name.includes(k) || desc.includes(k) || ingr.includes(k))) {
-    tags.add('Budget-Friendly');
+  // 6. Budget (keyword-based — staples alone are not enough; see normalization for legacy tags)
+  const budgetKeywords = [
+    'budget',
+    'cheap',
+    'affordable',
+    'easy on the wallet',
+    'frugal',
+    'inexpensive',
+    'value meal',
+    'economical',
+  ];
+  if (budgetKeywords.some((k) => name.includes(k) || desc.includes(k) || ingr.includes(k))) {
+    tags.add('Budget');
   }
 
   // 7. Comfort Food
@@ -141,6 +150,24 @@ function ensureOfficialTags(recipe: Recipe): string[] {
   if (tags.has('Gluten-free')) {
     tags.delete('Gluten-free');
     tags.add('Gluten-Free');
+  }
+
+  // Budget: merge legacy / alternate labels into official `Budget`
+  const budgetAliases = [
+    'Budget Friendly',
+    'Budget-friendly',
+    'budget friendly',
+    'Budget-Friendly',
+    'budget-friendly',
+    'Low cost',
+    'Low-cost',
+    'low cost',
+  ];
+  for (const alias of budgetAliases) {
+    if (tags.has(alias)) {
+      tags.delete(alias);
+      tags.add('Budget');
+    }
   }
 
   return Array.from(tags);
