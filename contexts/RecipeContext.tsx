@@ -22,6 +22,7 @@ import { ensureReviewTasteRating } from '@/lib/ensureReviewTasteRating';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
 import { normalizeStoredRecipeImageUrl } from '@/lib/imageUri';
 import { getGithubDataSyncConfig, pushDataJsonFilesToGithub } from '@/lib/githubDataSync';
+import { isRecipeDoneForAccount } from '@/lib/recipeDoneForUser';
 
 function isAutoPushGitHubDataEnabled(): boolean {
   if (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_AUTO_PUSH_DATA === '1') return true;
@@ -56,6 +57,8 @@ type RecipeContextValue = {
   exportMergedRecipesJson: () => string;
   /** After pulling from GitHub: merge accounts into DB and refresh recipe seed + name map. */
   applyPulledDataJson: (accountsJson: string, recipesJson: string) => Promise<void>;
+  /** True if the signed-in user created this recipe or has reviewed it. */
+  isRecipeDoneForAccount: (recipe: Recipe) => boolean;
 };
 
 const RecipeContext = createContext<RecipeContextValue | null>(null);
@@ -500,6 +503,11 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     setRecipesSeedOverride(JSON.parse(recipesJson) as RepoRecipesFile);
   }, []);
 
+  const isRecipeDoneForAccountCb = useCallback(
+    (recipe: Recipe) => isRecipeDoneForAccount(recipe, userId, getReviewsForRecipe),
+    [userId, getReviewsForRecipe],
+  );
+
   const value = useMemo(
     () => ({
       recipes,
@@ -512,6 +520,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       removeReview,
       exportMergedRecipesJson,
       applyPulledDataJson,
+      isRecipeDoneForAccount: isRecipeDoneForAccountCb,
     }),
     [
       recipes,
@@ -524,6 +533,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       removeReview,
       exportMergedRecipesJson,
       applyPulledDataJson,
+      isRecipeDoneForAccountCb,
     ],
   );
 

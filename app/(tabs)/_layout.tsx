@@ -1,10 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { Tabs, router } from 'expo-router';
+import { TransitionPresets } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, FontSize, Spacing, BorderRadius, Fonts } from '@/constants/Colors';
 import {
   Platform,
   View,
+  Image,
   StyleSheet,
   Alert,
   Modal,
@@ -12,6 +14,13 @@ import {
   TouchableOpacity,
   Pressable,
 } from 'react-native';
+
+/** Create-tab FAB: one size + half radius keeps shadow + clip + image aligned. */
+const CREATE_TAB_FAB_SIZE = 74;
+const CREATE_TAB_FAB_RADIUS = CREATE_TAB_FAB_SIZE / 2;
+/** Android elevation needs an opaque circle; smaller than the asset so less white peeks past the art. */
+const CREATE_TAB_FAB_ANDROID_SHADOW_SIZE = 56;
+const CREATE_TAB_FAB_ANDROID_SHADOW_RADIUS = CREATE_TAB_FAB_ANDROID_SHADOW_SIZE / 2;
 
 export default function TabLayout() {
   const [createWebOpen, setCreateWebOpen] = useState(false);
@@ -32,6 +41,7 @@ export default function TabLayout() {
     <>
     <Tabs
       screenOptions={{
+        ...TransitionPresets.FadeTransition,
         headerShown: false,
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.textTertiary,
@@ -73,8 +83,16 @@ export default function TabLayout() {
         options={{
           title: 'Create',
           tabBarIcon: () => (
-            <View style={styles.fab}>
-              <Ionicons name="add" size={28} color={Colors.white} />
+            <View style={styles.fabShadow}>
+              {Platform.OS === 'android' && <View style={styles.fabAndroidShadowCaster} />}
+              <View style={styles.fabClip}>
+                <Image
+                  source={require('../../assets/images/create-tab-button.png')}
+                  style={styles.fabImage}
+                  resizeMode="cover"
+                  accessibilityLabel="Create recipe"
+                />
+              </View>
             </View>
           ),
           tabBarLabel: () => null,
@@ -91,7 +109,7 @@ export default function TabLayout() {
         options={{
           title: 'Leaderboard',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trophy-outline" size={size} color={color} />
+            <Ionicons name="stats-chart-outline" size={size} color={color} />
           ),
         }}
       />
@@ -159,19 +177,54 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  fab: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+  /** Shadow on rounded outer layer so iOS draws a circular drop shadow (not a square). */
+  fabShadow: {
+    width: CREATE_TAB_FAB_SIZE,
+    height: CREATE_TAB_FAB_SIZE,
+    borderRadius: CREATE_TAB_FAB_RADIUS,
     marginBottom: 4,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        backgroundColor: 'transparent',
+        shadowColor: Colors.primaryDark,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
+      },
+      android: {
+        backgroundColor: 'transparent',
+      },
+      default: {
+        backgroundColor: 'transparent',
+        shadowColor: Colors.primaryDark,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 10,
+      },
+    }),
+  },
+  /** Android: small white disk under the art so elevation casts a round shadow without a full 68px halo. */
+  fabAndroidShadowCaster: {
+    position: 'absolute',
+    width: CREATE_TAB_FAB_ANDROID_SHADOW_SIZE,
+    height: CREATE_TAB_FAB_ANDROID_SHADOW_SIZE,
+    borderRadius: CREATE_TAB_FAB_ANDROID_SHADOW_RADIUS,
+    backgroundColor: Colors.white,
+    elevation: 8,
+  },
+  /** Clips the PNG to a circle so no square bounds show through. */
+  fabClip: {
+    width: CREATE_TAB_FAB_SIZE,
+    height: CREATE_TAB_FAB_SIZE,
+    borderRadius: CREATE_TAB_FAB_RADIUS,
+    overflow: 'hidden',
+    zIndex: 1,
+  },
+  fabImage: {
+    width: CREATE_TAB_FAB_SIZE,
+    height: CREATE_TAB_FAB_SIZE,
   },
   modalBackdrop: {
     flex: 1,

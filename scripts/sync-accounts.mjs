@@ -1,7 +1,7 @@
 /**
  * Recomputes data/accounts.json from data/recipes.json so:
  * - recipeCount / reviewCount match real authored recipes and written reviews
- * - averageRating = avg 0–10 from reviews this user wrote (make again)
+ * - averageRating = encore avg /5.0 from reviews this user wrote (yes=5, maybe=3, no=1), same as recipe encore
  * - rankingScore / leaderboardRank = cook leaderboard score (dishes × quality × engagement)
  *
  * Run: node scripts/sync-accounts.mjs
@@ -24,13 +24,14 @@ function encoreAvgFromReviews(reviews) {
   return { avg: sum / reviews.length, total: reviews.length };
 }
 
-function reviewerAvg10(reviews) {
+/** Mean encore score (1–5) for reviews this user wrote; matches per-review weights in encoreAvgFromReviews. */
+function reviewerEncoreAvg5(reviews) {
   if (!reviews?.length) return 0;
   let sum = 0;
   for (const r of reviews) {
-    sum += r.makeAgain === 'yes' ? 10 : r.makeAgain === 'maybe' ? 5 : 0;
+    sum += r.makeAgain === 'yes' ? 5 : r.makeAgain === 'maybe' ? 3 : 1;
   }
-  return Math.round((sum / reviews.length) * 100) / 100;
+  return parseFloat((sum / reviews.length).toFixed(1));
 }
 
 function computeCookScore(recipeCount, dishEncoreWeighted, ratingsReceived) {
@@ -81,7 +82,7 @@ for (const u of accounts.users) {
   const weighted = den > 0 ? Math.round((num / den) * 100) / 100 : null;
   const written = reviewsByReviewer.get(u.id) || [];
   const reviewCount = written.length;
-  const averageRating = reviewCount > 0 ? reviewerAvg10(written) : 0;
+  const averageRating = reviewCount > 0 ? reviewerEncoreAvg5(written) : 0;
   const cookScore = computeCookScore(recipeCount, weighted, den);
 
   u.recipeCount = recipeCount;

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
+import { TabScreenHeader } from '@/components/TabScreenHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RecipeCard } from '@/components/RecipeCard';
@@ -13,11 +14,14 @@ import { cuisineFilters, featuredLists } from '@/constants/MockData';
 import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { countAccountDoneRecipes } from '@/lib/recipeDoneForUser';
 
 export default function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ q?: string }>();
-  const { recipes } = useRecipes();
+  const { user } = useAuth();
+  const { recipes, getRecipeById, getReviewsForRecipe, isRecipeDoneForAccount } = useRecipes();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const [searchText, setSearchText] = useState('');
   const [activeCuisine, setActiveCuisine] = useState('All');
@@ -44,6 +48,20 @@ export default function SearchScreen() {
     );
   };
 
+  const discoverFeaturedLists = useMemo(() => {
+    const uid = user?.id;
+    return featuredLists.map((list) => {
+      const resolved = list.recipes.map((r) => getRecipeById(r.id) ?? r);
+      const tried = countAccountDoneRecipes(resolved, uid, getReviewsForRecipe);
+      return {
+        ...list,
+        recipes: resolved,
+        userProgress:
+          resolved.length > 0 ? { tried, total: resolved.length } : undefined,
+      };
+    });
+  }, [user?.id, getRecipeById, getReviewsForRecipe]);
+
   const filteredRecipes = useMemo(() => {
     const q = searchText.trim().toLowerCase();
     return recipes.filter((recipe) => {
@@ -67,16 +85,19 @@ export default function SearchScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Discover</Text>
-        <TouchableOpacity
-          onPress={() => setSortBy((s) => (s === 'default' ? 'taste' : 'default'))}
-          style={styles.sortBtn}
-        >
-          <Ionicons name="funnel-outline" size={18} color={Colors.primary} />
-          <Text style={styles.sortText}>{sortBy === 'taste' ? 'By Taste' : 'Default'}</Text>
-        </TouchableOpacity>
-      </View>
+      <TabScreenHeader
+        title="Discover"
+        right={
+          <TouchableOpacity
+            onPress={() => setSortBy((s) => (s === 'default' ? 'taste' : 'default'))}
+            style={styles.sortBtn}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="funnel-outline" size={18} color={Colors.primary} />
+            <Text style={styles.sortText}>{sortBy === 'taste' ? 'By Taste' : 'Default'}</Text>
+          </TouchableOpacity>
+        }
+      />
 
       <View style={styles.filtersSection}>
         <SearchBar
@@ -156,7 +177,7 @@ export default function SearchScreen() {
               contentContainerStyle={styles.featuredContainer}
               keyboardShouldPersistTaps="handled"
             >
-              {featuredLists.map((list) => (
+              {discoverFeaturedLists.map((list) => (
                 <FeaturedListCard
                   key={list.id}
                   list={list}
@@ -174,6 +195,7 @@ export default function SearchScreen() {
             onPress={() => router.push(`/recipe/${item.id}`)}
             onBookmarkPress={() => toggleBookmark(item.id)}
             isBookmarked={isBookmarked(item.id)}
+            isDone={isRecipeDoneForAccount(item)}
           />
         )}
         showsVerticalScrollIndicator={false}
@@ -207,14 +229,6 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 0,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.lg,
-  },
-  title: { fontSize: FontSize.xxl, fontWeight: '800', fontFamily: Fonts.display, color: Colors.text },
   sortBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -224,7 +238,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     backgroundColor: Colors.primary + '12',
   },
-  sortText: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
+  sortText: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
+    color: Colors.primary,
+    letterSpacing: 0.2,
+  },
   categoryRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -274,7 +294,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.sm,
     fontSize: FontSize.sm,
+    fontFamily: Fonts.bodyMedium,
+    fontWeight: '500',
     color: Colors.textTertiary,
+    letterSpacing: 0.15,
   },
   listContent: { paddingBottom: Spacing.xxl },
 });

@@ -14,6 +14,8 @@ interface RecipeCardProps {
   rank?: number;
   onBookmarkPress?: () => void;
   isBookmarked?: boolean;
+  /** You reviewed or created this recipe (signed-in account). */
+  isDone?: boolean;
 }
 
 export function RecipeCard({
@@ -23,6 +25,7 @@ export function RecipeCard({
   rank,
   onBookmarkPress,
   isBookmarked,
+  isDone,
 }: RecipeCardProps) {
   const creatorLabel =
     recipe.createdByName ??
@@ -37,7 +40,14 @@ export function RecipeCard({
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      <RemoteImage uri={recipe.image} style={styles.image} />
+      <View style={styles.imageWrap}>
+        <RemoteImage uri={recipe.image} style={styles.image} />
+        {isDone && (
+          <View style={styles.doneBadge} accessibilityLabel="Done for you">
+            <Ionicons name="checkmark-circle" size={22} color={Colors.white} />
+          </View>
+        )}
+      </View>
       <View style={styles.content}>
         <View style={styles.topRow}>
           {rank !== undefined && <Text style={styles.rank}>#{rank}</Text>}
@@ -103,10 +113,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
+  imageWrap: {
+    position: 'relative',
+    width: 90,
+    height: 90,
+  },
   image: {
     width: 90,
     height: 90,
     backgroundColor: '#f2f2f2',
+  },
+  doneBadge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.full,
+    padding: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   content: {
     flex: 1,

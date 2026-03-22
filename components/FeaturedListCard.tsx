@@ -21,7 +21,7 @@ export function FeaturedListCard({ list, onPress }: FeaturedListCardProps) {
         <Text style={styles.title} numberOfLines={2}>{list.title}</Text>
         {list.userProgress && (
           <Text style={styles.progress}>
-            You've made {list.userProgress.tried} of {list.userProgress.total}
+            {"You've done"} {list.userProgress.tried} of {list.userProgress.total}
           </Text>
         )}
       </View>

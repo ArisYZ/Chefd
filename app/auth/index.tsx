@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -11,7 +12,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,6 +24,7 @@ type Mode = 'signin' | 'signup';
 
 export default function AuthScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { ready, user, signIn, signUp, completeGoogleSignIn } = useAuth();
   const [mode, setMode] = useState<Mode>('signin');
   const [username, setUsername] = useState('');
@@ -95,18 +97,33 @@ export default function AuthScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safe} edges={['bottom']}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.scroll}
+          contentContainerStyle={[
+            styles.scroll,
+            {
+              /** Tighter than full safe-area top — keeps clear of status bar / notch */
+              paddingTop: Math.max(insets.top - 20, Spacing.sm),
+            },
+          ]}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.logo}>Chef <Text style={styles.logoAccent}>'d</Text></Text>
-          <Text style={styles.tagline}>Cook it. Rate it. Make it again.</Text>
+          <View style={styles.brandBlock}>
+            <Image
+              source={require('../../assets/images/chefd-app-logo.png')}
+              style={styles.brandLogo}
+              resizeMode="contain"
+              accessibilityIgnoresInvertColors
+              accessibilityLabel="Chef'd app logo"
+            />
+            <Text style={styles.wordmark}>{"Chef 'd"}</Text>
+            <Text style={styles.tagline}>Cook it. Rate it. Make it again.</Text>
+          </View>
 
           <View style={styles.segment}>
             <TouchableOpacity
@@ -235,24 +252,32 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: Spacing.xxl,
-    paddingTop: Spacing.xxxl,
     paddingBottom: Spacing.xxl,
   },
-  logo: {
-    fontSize: FontSize.display + 4,
-    fontWeight: '800',
-    fontFamily: Fonts.display,
-    color: Colors.primary,
-    textAlign: 'center',
+  brandBlock: {
+    alignItems: 'center',
+    marginTop: Spacing.xxxl,
   },
-  logoAccent: {
+  brandLogo: {
+    width: 200,
+    height: 200,
+    marginBottom: Spacing.xs - (5 * Spacing.xs),
+  },
+  /** Gilda Display — same wordmark as in-app tab headers; full gold */
+  wordmark: {
+    fontSize: FontSize.display,
+    fontFamily: Fonts.display,
     color: Colors.accent,
+    textAlign: 'center',
+    lineHeight: FontSize.display,
+    marginBottom: Spacing.xs,
   },
   tagline: {
     fontSize: FontSize.md,
+    fontFamily: Fonts.bodyMedium,
+    fontWeight: '500',
     color: Colors.textSecondary,
     textAlign: 'center',
-    marginTop: Spacing.sm,
     marginBottom: Spacing.xxxl,
   },
   segment: {

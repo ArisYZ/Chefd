@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
+import { TabScreenHeader } from '@/components/TabScreenHeader';
 import { userLists } from '@/constants/MockData';
 import { RecipeList } from '@/types';
 import { RemoteImage } from '@/components/RemoteImage';
@@ -27,12 +28,14 @@ export default function ListsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Your Lists</Text>
-        <TouchableOpacity style={styles.addButton} activeOpacity={0.7}>
-          <Ionicons name="add" size={24} color={Colors.primary} />
-        </TouchableOpacity>
-      </View>
+      <TabScreenHeader
+        title="Your Lists"
+        right={
+          <TouchableOpacity style={styles.addButton} activeOpacity={0.7}>
+            <Ionicons name="add" size={24} color={Colors.primary} />
+          </TouchableOpacity>
+        }
+      />
 
       <View style={styles.statsRow}>
         <View style={styles.statCard}>
@@ -67,19 +70,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.appCanvas,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.lg,
-  },
-  title: {
-    fontSize: FontSize.xxl,
-    fontWeight: '800',
-    fontFamily: Fonts.display,
-    color: Colors.text,
   },
   addButton: {
     width: 40,

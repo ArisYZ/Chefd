@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
+import { TabScreenHeader } from '@/components/TabScreenHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { SectionHeader } from '@/components/SectionHeader';
 import { FeedCard } from '@/components/FeedCard';
@@ -74,32 +75,34 @@ export default function FeedScreen() {
 
   const renderHeader = () => (
     <View>
-      <View style={styles.topBar}>
-        <Text style={styles.logo}>{"Chef 'd"}</Text>
-        <View style={styles.topBarRight}>
-          <TouchableOpacity
-            style={styles.iconButton}
-            activeOpacity={0.7}
-            onPress={() => router.push('/saved')}
-          >
-            <Ionicons name="bookmark-outline" size={24} color={Colors.text} />
-            {bookmarkedIds.length > 0 ? (
-              <View style={styles.savedBadge}>
-                <Text style={styles.savedBadgeText}>
-                  {bookmarkedIds.length > 99 ? '99+' : bookmarkedIds.length}
-                </Text>
-              </View>
-            ) : null}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.iconButton}
-            activeOpacity={0.7}
-            onPress={() => router.push('/settings')}
-          >
-            <Ionicons name="menu-outline" size={26} color={Colors.text} />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <TabScreenHeader
+        title={"Chef 'd"}
+        right={
+          <>
+            <TouchableOpacity
+              style={styles.iconButton}
+              activeOpacity={0.7}
+              onPress={() => router.push('/saved')}
+            >
+              <Ionicons name="bookmark-outline" size={24} color={Colors.text} />
+              {bookmarkedIds.length > 0 ? (
+                <View style={styles.savedBadge}>
+                  <Text style={styles.savedBadgeText}>
+                    {bookmarkedIds.length > 99 ? '99+' : bookmarkedIds.length}
+                  </Text>
+                </View>
+              ) : null}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              activeOpacity={0.7}
+              onPress={() => router.push('/settings')}
+            >
+              <Ionicons name="menu-outline" size={26} color={Colors.text} />
+            </TouchableOpacity>
+          </>
+        }
+      />
 
       <TouchableOpacity activeOpacity={1} onPress={() => router.push('/search')}>
         <View pointerEvents="none">
@@ -169,19 +172,6 @@ export default function FeedScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.appCanvas },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
-  logo: {
-    fontSize: FontSize.xxl + 4,
-    fontFamily: Fonts.display,
-    color: Colors.primary,
-  },
-  topBarRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   iconButton: { padding: Spacing.xs, position: 'relative' },
   savedBadge: {
     position: 'absolute',

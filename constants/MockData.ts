@@ -43,11 +43,7 @@ export function getUserById(id: string): User | undefined {
 /** Bundled catalog (same ids as merged RecipeContext after load). Featured lists use this snapshot. */
 export const recipes: Recipe[] = parsedRecipes;
 
-function listProgress(recipeList: Recipe[]) {
-  const total = recipeList.length;
-  return total > 0 ? { tried: 0, total } : undefined;
-}
-
+/** Featured list templates; Discover resolves recipes and per-account progress at runtime. */
 export const featuredLists: RecipeList[] = [
   {
     id: 'fl1',
@@ -56,16 +52,14 @@ export const featuredLists: RecipeList[] = [
     image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600',
     recipes: recipes.filter(r => r.category === 'Pasta'),
     createdBy: getUserById('u_fake_luca_g') ?? users[0],
-    userProgress: listProgress(recipes.filter(r => r.category === 'Pasta')),
   },
   {
     id: 'fl2',
     title: 'Best Weeknight Dinners',
     description: 'Quick and delicious meals under 30 min',
     image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600',
-    recipes: recipes.filter(r => r.tags.includes('Quick')).slice(0, 4),
+    recipes: recipes.filter(r => r.tags.includes('Quick & Easy')).slice(0, 4),
     createdBy: getUserById('u_fake_maya_l') ?? users[0],
-    userProgress: listProgress(recipes.filter(r => r.tags.includes('Quick')).slice(0, 4)),
   },
   {
     id: 'fl3',
@@ -74,16 +68,22 @@ export const featuredLists: RecipeList[] = [
     image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600',
     recipes: recipes.filter((_, i) => i % 3 === 0).slice(0, 4),
     createdBy: getUserById('u_fake_alex_c') ?? users[0],
-    userProgress: listProgress(recipes.filter((_, i) => i % 3 === 0).slice(0, 4)),
   },
   {
     id: 'fl4',
     title: "Baker's Corner",
     description: 'From breads to pastries to desserts',
-    image: 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=600',
+    image: 'https://altonbrown.com/wp-content/uploads/2021/04/very-basic-bread.jpeg',
     recipes: recipes.filter(r => ['Bread', 'Dessert', 'Pastry'].includes(r.category)).slice(0, 4),
     createdBy: getUserById('u_fake_sarah_k') ?? users[0],
-    userProgress: listProgress(recipes.filter(r => ['Bread', 'Dessert', 'Pastry'].includes(r.category)).slice(0, 4)),
+  },
+  {
+    id: 'fl5',
+    title: 'Gym Meals',
+    description: 'High-protein options to fuel training and recovery',
+    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600',
+    recipes: recipes.filter(r => r.tags.includes('High-Protein')).slice(0, 8),
+    createdBy: getUserById('u_fake_marcus_j') ?? users[0],
   },
 ];
 

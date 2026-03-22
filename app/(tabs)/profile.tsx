@@ -20,6 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
+import { TabScreenHeader } from '@/components/TabScreenHeader';
 import { Avatar } from '@/components/Avatar';
 import { RemoteImage } from '@/components/RemoteImage';
 import { RecipeCard } from '@/components/RecipeCard';
@@ -28,6 +29,7 @@ import { useRecipes } from '@/contexts/RecipeContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
 import { useFollow } from '@/contexts/FollowContext';
 import { RecipeList } from '@/types';
+import { formatOutOf5 } from '@/lib/formatScore';
 
 function ListCard({ list, onPress }: { list: RecipeList; onPress: () => void }) {
   return (
@@ -99,11 +101,14 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/settings')}>
-            <Ionicons name="settings-outline" size={24} color={Colors.text} />
-          </TouchableOpacity>
-        </View>
+        <TabScreenHeader
+          title="Profile"
+          right={
+            <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/settings')}>
+              <Ionicons name="settings-outline" size={24} color={Colors.text} />
+            </TouchableOpacity>
+          }
+        />
 
         <View style={styles.profileSection}>
           <TouchableOpacity
@@ -150,9 +155,9 @@ export default function ProfileScreen() {
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>
-                {user && user.reviewCount > 0 ? user.averageRating.toFixed(1) : '—'}
+                {user && user.reviewCount > 0 ? formatOutOf5(user.averageRating) : '—'}
               </Text>
-              <Text style={styles.statLabel}>Avg score</Text>
+              <Text style={styles.statLabel}>Avg encore</Text>
             </View>
           </View>
 
@@ -443,12 +448,6 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.appCanvas },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
   profileSection: {
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
@@ -480,8 +479,15 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   rankPillText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.text },
-  name: { fontSize: FontSize.xl, fontWeight: '800', fontFamily: Fonts.display, color: Colors.text, marginTop: Spacing.sm },
-  username: { fontSize: FontSize.md, color: Colors.textSecondary, marginTop: 2 },
+  name: { fontSize: FontSize.xl, fontFamily: Fonts.display, color: Colors.text, marginTop: Spacing.sm },
+  username: {
+    fontSize: FontSize.md,
+    fontFamily: Fonts.bodyMedium,
+    fontWeight: '500',
+    color: Colors.textSecondary,
+    marginTop: 2,
+    letterSpacing: 0.15,
+  },
   bio: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
@@ -544,12 +550,12 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   myRecipesSectionTitle: {
-    fontSize: FontSize.md,
-    fontWeight: '700',
-    fontFamily: Fonts.bodyBold,
-    color: Colors.text,
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
+    color: Colors.textSecondary,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   myRecipesHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   myRecipesCount: { fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.primary },

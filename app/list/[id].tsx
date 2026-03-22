@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,9 @@ import { Avatar } from '@/components/Avatar';
 import { RemoteImage } from '@/components/RemoteImage';
 import { featuredLists, userLists } from '@/constants/MockData';
 import { useBookmarks } from '@/contexts/BookmarkContext';
+import { useRecipes } from '@/contexts/RecipeContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { countAccountDoneRecipes } from '@/lib/recipeDoneForUser';
 
 const { width } = Dimensions.get('window');
 const allLists = [...featuredLists, ...userLists];
@@ -15,8 +18,21 @@ const allLists = [...featuredLists, ...userLists];
 export default function ListDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { user } = useAuth();
+  const { getRecipeById, getReviewsForRecipe, isRecipeDoneForAccount } = useRecipes();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const list = allLists.find((l) => l.id === id);
+
+  const mergedRecipes = useMemo(
+    () => (list ? list.recipes.map((r) => getRecipeById(r.id) ?? r) : []),
+    [list, getRecipeById],
+  );
+
+  const userProgress = useMemo(() => {
+    if (mergedRecipes.length === 0) return undefined;
+    const tried = countAccountDoneRecipes(mergedRecipes, user?.id, getReviewsForRecipe);
+    return { tried, total: mergedRecipes.length };
+  }, [mergedRecipes, user?.id, getReviewsForRecipe]);
 
   if (!list) {
     return (
@@ -41,24 +57,24 @@ export default function ListDetailScreen() {
         <View style={styles.statsRow}>
           <View style={styles.stat}>
             <Ionicons name="restaurant-outline" size={16} color={Colors.primary} />
-            <Text style={styles.statText}>{list.recipes.length} recipes</Text>
+            <Text style={styles.statText}>{mergedRecipes.length} recipes</Text>
           </View>
-          {list.userProgress && (
+          {userProgress && (
             <View style={styles.stat}>
               <Ionicons name="checkmark-circle-outline" size={16} color={Colors.primary} />
               <Text style={styles.statText}>
-                {list.userProgress.tried}/{list.userProgress.total} made
+                {userProgress.tried}/{userProgress.total} done
               </Text>
             </View>
           )}
         </View>
 
-        {list.userProgress && (
+        {userProgress && (
           <View style={styles.progressBar}>
             <View
               style={[
                 styles.progressFill,
-                { width: `${(list.userProgress.tried / list.userProgress.total) * 100}%` },
+                { width: `${(userProgress.tried / userProgress.total) * 100}%` },
               ]}
             />
           </View>
@@ -71,7 +87,7 @@ export default function ListDetailScreen() {
 
   return (
     <FlatList
-      data={list.recipes}
+      data={mergedRecipes}
       keyExtractor={(item) => item.id}
       ListHeaderComponent={renderHeader}
       renderItem={({ item, index }) => (
@@ -81,6 +97,7 @@ export default function ListDetailScreen() {
           onPress={() => router.push(`/recipe/${item.id}`)}
           onBookmarkPress={() => toggleBookmark(item.id)}
           isBookmarked={isBookmarked(item.id)}
+          isDone={isRecipeDoneForAccount(item)}
         />
       )}
       showsVerticalScrollIndicator={false}

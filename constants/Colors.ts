@@ -68,3 +68,10 @@ export const Fonts = {
   bodyBold: 'HankenGrotesk_700Bold',
   bodyExtraBold: 'HankenGrotesk_800ExtraBold',
 };
+
+/** Gilda Display wordmark / screen titles — matches Activity “Chef'd” header. Do not set fontWeight (single master). */
+export const TabHeaderTitle = {
+  fontSize: FontSize.xxl + 4,
+  fontFamily: Fonts.display,
+  color: Colors.primary,
+} as const;

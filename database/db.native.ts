@@ -189,10 +189,11 @@ function makeAgainToPoints(makeAgain: string): number {
   return 3;
 }
 
+/** Encore points toward user avg /5.0 (matches recipe encore: yes=5, maybe=3, no=1). */
 function makeAgainToScore(makeAgain: string): number {
-  if (makeAgain === 'yes') return 10;
-  if (makeAgain === 'maybe') return 5;
-  return 0;
+  if (makeAgain === 'yes') return 5;
+  if (makeAgain === 'maybe') return 3;
+  return 1;
 }
 
 export async function recordUserReview(userId: string, makeAgain: 'yes' | 'no' | 'maybe'): Promise<void> {
