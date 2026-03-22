@@ -25,7 +25,6 @@ import { SocialActions } from '@/components/SocialActions';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
-import { useSocial } from '@/contexts/SocialContext';
 import { computeScore, computeTasteScore, Review, User } from '@/types';
 import { formatIngredientLine } from '@/lib/ingredients';
 import { formatOutOf5 } from '@/lib/formatScore';
@@ -38,7 +37,6 @@ export default function RecipeDetailScreen() {
   const { getRecipeById, getReviewsForRecipe, addReview, removeReview, deleteRecipe } = useRecipes();
   const { user, onUserSubmittedReview, onUserDeletedReview, removeRecipeFromFavorites } = useAuth();
   const { isBookmarked, toggleBookmark, removeRecipeFromBookmarks } = useBookmarks();
-  const { isLiked, getLikeCount, toggleLike } = useSocial();
   const recipe = getRecipeById(id ?? '');
   const [activeTab, setActiveTab] = useState<'recipe' | 'reviews'>('recipe');
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -339,8 +337,6 @@ export default function RecipeDetailScreen() {
                 </View>
               ) : (
                 localReviews.map((review) => {
-                  const liked = isLiked(review.id, review.liked);
-                  const likes = getLikeCount(review.id, review.likes);
                   return (
                     <View key={review.id} style={styles.reviewCard}>
                       <View style={styles.reviewHeader}>
@@ -410,14 +406,8 @@ export default function RecipeDetailScreen() {
                       )}
 
                       <View style={styles.reviewSocial}>
-                        <Text style={styles.reviewLikes}>
-                          {likes} {likes === 1 ? 'like' : 'likes'}
-                        </Text>
                         <SocialActions
-                          likes={likes}
-                          liked={liked}
                           comments={0}
-                          onLike={() => toggleLike(review.id, review.likes, review.liked)}
                           onShare={() =>
                             Share.share({
                               message: `Check out ${review.user.name}'s review of "${recipe.name}" on Chef'd!`,

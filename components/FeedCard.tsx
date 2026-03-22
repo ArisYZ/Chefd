@@ -6,7 +6,6 @@ import { Avatar } from './Avatar';
 import { MakeAgainBadge } from './MakeAgainBadge';
 import { DifficultyPips } from './DifficultyPips';
 import { SocialActions } from './SocialActions';
-import { useSocial } from '@/contexts/SocialContext';
 
 interface FeedCardProps {
   rating: RecipeRating;
@@ -17,15 +16,10 @@ interface FeedCardProps {
 }
 
 export function FeedCard({ rating, onPress, onUserPress, onBookmarkPress, isBookmarked }: FeedCardProps) {
-  const { isLiked, getLikeCount, toggleLike } = useSocial();
   const { review } = rating;
   const creatorLabel =
     rating.recipe.createdByName ??
     (rating.recipe.createdByUserId ? `@${rating.recipe.createdByUserId}` : 'Unknown cook');
-
-  const likeId = review.id || rating.id;
-  const liked = isLiked(likeId, rating.liked);
-  const likes = getLikeCount(likeId, rating.likes);
 
   return (
     <View style={styles.card}>
@@ -53,13 +47,8 @@ export function FeedCard({ rating, onPress, onUserPress, onBookmarkPress, isBook
         <Text style={styles.comment}>{review.comment}</Text>
       ) : null}
 
-      <Text style={styles.likesCount}>{likes} {likes === 1 ? 'like' : 'likes'}</Text>
-
       <SocialActions
-        likes={likes}
         comments={rating.comments}
-        liked={liked}
-        onLike={() => toggleLike(likeId, rating.likes, rating.liked)}
         onShare={() => Share.share({ message: `Check out "${rating.recipe.name}" on Chef'd!` })}
         onBookmark={onBookmarkPress}
         isBookmarked={isBookmarked}
