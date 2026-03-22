@@ -9,8 +9,9 @@ import {
   Alert,
   Linking,
   Share,
+  Platform,
 } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { RatingBadge } from '@/components/RatingBadge';
@@ -30,9 +31,10 @@ const { width } = Dimensions.get('window');
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getRecipeById, getReviewsForRecipe, addReview } = useRecipes();
-  const { user, onUserSubmittedReview } = useAuth();
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const router = useRouter();
+  const { getRecipeById, getReviewsForRecipe, addReview, deleteRecipe } = useRecipes();
+  const { user, onUserSubmittedReview, removeRecipeFromFavorites } = useAuth();
+  const { isBookmarked, toggleBookmark, removeRecipeFromBookmarks } = useBookmarks();
   const recipe = getRecipeById(id ?? '');
   const [activeTab, setActiveTab] = useState<'recipe' | 'reviews'>('recipe');
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -67,6 +69,10 @@ export default function RecipeDetailScreen() {
   const creatorLabel =
     recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
   const isOwnRecipe = Boolean(user?.id && recipe.createdByUserId && user.id === recipe.createdByUserId);
+  /** User-created recipes use `ur-` ids and live in local storage — safe to delete for owner. */
+  const canDeleteRecipe = Boolean(
+    isOwnRecipe && recipe.id.startsWith('ur-'),
+  );
   const existingReview = localReviews.find((r) => r.user.id === user?.id);
   const canReview = !isOwnRecipe;
   const bookmarked = isBookmarked(recipe.id);
@@ -193,6 +199,47 @@ export default function RecipeDetailScreen() {
               <Ionicons name="share-outline" size={22} color={Colors.primary} />
             </TouchableOpacity>
           </View>
+
+          {canDeleteRecipe ? (
+            <TouchableOpacity
+              style={styles.deleteRecipeBtn}
+              activeOpacity={0.75}
+              onPress={() => {
+                const run = async () => {
+                  const ok = await deleteRecipe(recipe.id);
+                  if (!ok) {
+                    Alert.alert('Cannot delete', 'This recipe could not be removed.');
+                    return;
+                  }
+                  removeRecipeFromBookmarks(recipe.id);
+                  await removeRecipeFromFavorites(recipe.id);
+                  router.replace('/(tabs)' as any);
+                };
+                if (Platform.OS === 'web') {
+                  if (
+                    typeof window !== 'undefined'
+                    && window.confirm(
+                      'Delete this recipe permanently? This cannot be undone.',
+                    )
+                  ) {
+                    void run();
+                  }
+                  return;
+                }
+                Alert.alert(
+                  'Delete recipe',
+                  'This removes your recipe, its local reviews, and any bookmarks.',
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Delete', style: 'destructive', onPress: () => void run() },
+                  ],
+                );
+              }}
+            >
+              <Ionicons name="trash-outline" size={18} color={Colors.heart} />
+              <Text style={styles.deleteRecipeText}>Delete recipe</Text>
+            </TouchableOpacity>
+          ) : null}
 
           <View style={styles.tabBar}>
             <TouchableOpacity
@@ -433,6 +480,19 @@ const styles = StyleSheet.create({
   actionButtonActive: {
     backgroundColor: Colors.primary,
     borderColor: Colors.primary,
+  },
+  deleteRecipeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  deleteRecipeText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.heart,
   },
   tabBar: {
     flexDirection: 'row',

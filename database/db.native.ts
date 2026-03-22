@@ -225,6 +225,18 @@ export async function incrementRecipeCount(userId: string): Promise<void> {
   await recomputeLeaderboardRanks();
 }
 
+export async function decrementRecipeCount(userId: string): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(
+    `UPDATE users SET
+      recipe_count = CASE WHEN recipe_count > 0 THEN recipe_count - 1 ELSE 0 END,
+      ranking_score = CASE WHEN ranking_score >= 8 THEN ranking_score - 8 ELSE 0 END
+    WHERE id = ?`,
+    [userId],
+  );
+  await recomputeLeaderboardRanks();
+}
+
 export async function recomputeLeaderboardRanks(): Promise<void> {
   const db = await getDatabase();
   const rows = await db.getAllAsync<{ id: string }>(

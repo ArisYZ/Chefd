@@ -196,6 +196,16 @@ export async function incrementRecipeCount(userId: string): Promise<void> {
   await save(data);
 }
 
+export async function decrementRecipeCount(userId: string): Promise<void> {
+  const data = await load();
+  const u = data.users.find((x) => x.id === userId);
+  if (!u) return;
+  if (u.recipeCount > 0) u.recipeCount -= 1;
+  if (u.rankingScore >= 8) u.rankingScore -= 8;
+  await recomputeLeaderboardRanksInternal(data);
+  await save(data);
+}
+
 async function recomputeLeaderboardRanksInternal(data: Persisted): Promise<void> {
   const sorted = [...data.users].sort(
     (a, b) => b.rankingScore - a.rankingScore || a.createdAt - b.createdAt,

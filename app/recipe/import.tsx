@@ -8,19 +8,27 @@ import {
   ActivityIndicator,
   ScrollView,
   Alert,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { formatIngredientLine } from '@/lib/ingredients';
+import {
+  extractImageFromHtml,
+  extractPrepCookMinutes,
+  pickRecipeImageUrl,
+} from '@/lib/recipeImportExtract';
+import { RemoteImage } from '@/components/RemoteImage';
 
 interface ParsedRecipe {
   title: string;
   ingredients: string[];
   instructions: string[];
   imageUrl: string;
+  prepTime: number;
+  cookTime: number;
   sourceName: string;
 }
 
@@ -36,6 +44,64 @@ function extractDomain(url: string): string {
 
 function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/** URLs that list many recipes rarely expose a single Recipe JSON-LD block. */
+function isLikelyCollectionOrTopicUrl(url: string): boolean {
+  try {
+    const u = new URL(url);
+    const p = u.pathname.toLowerCase();
+    return (
+      /\/topics?\//i.test(p)
+      || /\/collections?\//i.test(p)
+      || /\/search/i.test(p)
+      || /\/tags?\//i.test(p)
+      || /\/recipes?\/$/i.test(p)
+    );
+  } catch {
+    return false;
+  }
+}
+
+const BROWSER_UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+/**
+ * recipeInstructions in JSON-LD can be a string, array, HowTo, HowToSection[], etc.
+ */
+function extractInstructionStrings(raw: unknown, depth = 0): string[] {
+  if (raw == null || depth > 15) return [];
+  if (typeof raw === 'string') {
+    return raw.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+  }
+  if (Array.isArray(raw)) {
+    const out: string[] = [];
+    for (const item of raw) {
+      if (typeof item === 'string') out.push(item.trim());
+      else if (item && typeof item === 'object') {
+        const o = item as Record<string, unknown>;
+        if (typeof o.text === 'string') out.push(String(o.text).trim());
+        else
+          out.push(
+            ...extractInstructionStrings(o.itemListElement ?? o.step ?? o['@graph'], depth + 1),
+          );
+      }
+    }
+    return out.filter(Boolean);
+  }
+  if (typeof raw === 'object') {
+    const o = raw as Record<string, unknown>;
+    const t = o['@type'];
+    const types = Array.isArray(t) ? t : t != null ? [t] : [];
+    if (types.includes('HowTo') && o.step != null) {
+      return extractInstructionStrings(o.step, depth + 1);
+    }
+    if (types.includes('HowToSection') || o.itemListElement != null) {
+      return extractInstructionStrings(o.itemListElement, depth + 1);
+    }
+    if (typeof o.text === 'string') return [String(o.text).trim()];
+  }
+  return [];
 }
 
 export default function ImportRecipeScreen() {
@@ -64,13 +130,29 @@ export default function ImportRecipeScreen() {
       return;
     }
 
+    if (isLikelyCollectionOrTopicUrl(trimmed)) {
+      setError(
+        'This looks like a topic, search, or collection page — not one recipe. Open a single recipe, copy that page’s URL, then paste it here.',
+      );
+      setParsed(null);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setParsed(null);
 
     try {
-      const resp = await fetch(trimmed);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const resp = await fetch(trimmed, {
+        headers: {
+          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'User-Agent': BROWSER_UA,
+        },
+      });
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
       const html = await resp.text();
 
       const ldMatch = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi);
@@ -103,31 +185,35 @@ export default function ImportRecipeScreen() {
         (html.match(/<h1[^>]*>(.*?)<\/h1>/i)?.[1]?.replace(/<[^>]+>/g, '').trim()) ??
         'Imported Recipe';
 
-      const ingredients: string[] =
-        jsonLd?.recipeIngredient ??
-        [...(html.matchAll(/<li[^>]*class="[^"]*ingredient[^"]*"[^>]*>(.*?)<\/li>/gi) ?? [])].map(
-          (m) => m[1].replace(/<[^>]+>/g, '').trim(),
-        );
-
-      let instructions: string[] = [];
-      if (jsonLd?.recipeInstructions) {
-        if (typeof jsonLd.recipeInstructions === 'string') {
-          instructions = jsonLd.recipeInstructions.split(/\n+/).filter(Boolean);
-        } else if (Array.isArray(jsonLd.recipeInstructions)) {
-          instructions = jsonLd.recipeInstructions.map((s: any) =>
-            typeof s === 'string' ? s : s.text ?? '',
-          ).filter(Boolean);
-        }
+      const rawIngredients = jsonLd?.recipeIngredient;
+      let ingredients: string[] = [];
+      if (Array.isArray(rawIngredients)) {
+        ingredients = rawIngredients
+          .map((item: unknown) => {
+            if (typeof item === 'string') return item;
+            if (item && typeof item === 'object' && 'text' in (item as object)) {
+              return String((item as { text?: string }).text ?? '');
+            }
+            return '';
+          })
+          .map((s) => s.replace(/<[^>]+>/g, '').trim())
+          .filter(Boolean);
+      } else if (typeof rawIngredients === 'string') {
+        ingredients = [rawIngredients.trim()].filter(Boolean);
+      }
+      if (ingredients.length === 0) {
+        ingredients = [
+          ...(html.matchAll(/<li[^>]*class="[^"]*ingredient[^"]*"[^>]*>(.*?)<\/li>/gi) ?? []),
+        ].map((m) => m[1].replace(/<[^>]+>/g, '').trim()).filter(Boolean);
       }
 
-      const imageUrl =
-        (typeof jsonLd?.image === 'string'
-          ? jsonLd.image
-          : Array.isArray(jsonLd?.image)
-            ? jsonLd.image[0]
-            : jsonLd?.image?.url) ??
-        (html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/i)?.[1]) ??
-        '';
+      let instructions: string[] = extractInstructionStrings(jsonLd?.recipeInstructions);
+
+      const { prepTime, cookTime } = extractPrepCookMinutes(jsonLd as Record<string, unknown>);
+
+      const fromLd = pickRecipeImageUrl(jsonLd?.image, trimmed);
+      const fromMeta = extractImageFromHtml(html, trimmed);
+      const imageUrl = fromLd ?? fromMeta ?? '';
 
       const sourceName = capitalize(extractDomain(trimmed));
 
@@ -136,16 +222,40 @@ export default function ImportRecipeScreen() {
         ingredients: ingredients.map((i) => i.slice(0, 200)),
         instructions: instructions.map((i) => i.replace(/<[^>]+>/g, '').trim().slice(0, 300)),
         imageUrl,
+        prepTime,
+        cookTime,
         sourceName,
       };
 
       if (result.ingredients.length === 0 && result.instructions.length === 0) {
-        setError("We couldn't parse this URL. Please enter recipe manually.");
+        if (isLikelyCollectionOrTopicUrl(trimmed)) {
+          setError(
+            'This link looks like a topic or collection page, not a single recipe. Open one recipe from the list, copy that page’s URL, and try again — or enter the recipe manually.',
+          );
+        } else {
+          setError(
+            "We couldn't find recipe ingredients or steps on this page. Try a direct link to one article, or enter the recipe manually.",
+          );
+        }
       } else {
         setParsed(result);
       }
-    } catch {
-      setError("We couldn't parse this URL. Please check connection and try again.");
+    } catch (e) {
+      const failedFetch =
+        e instanceof TypeError
+        || (e instanceof Error && /network|failed to fetch|load failed/i.test(e.message));
+      if (Platform.OS === 'web' && failedFetch) {
+        setError(
+          'Your browser blocked loading this page (common for recipe sites). Try again in the mobile app, or copy the recipe text and use “Enter recipe manually.”',
+        );
+      } else if (e instanceof Error && /^HTTP \d+$/.test(e.message)) {
+        const code = e.message.replace(/^HTTP /, '');
+        setError(
+          `The page returned HTTP ${code}. It may require a login or block automated access. Try a direct recipe link or enter the recipe manually.`,
+        );
+      } else {
+        setError("We couldn't load or parse this URL. Check your connection and try again, or enter the recipe manually.");
+      }
     } finally {
       setLoading(false);
     }
@@ -159,8 +269,8 @@ export default function ImportRecipeScreen() {
       category: 'General',
       tags: [],
       image: parsed.imageUrl || 'https://via.placeholder.com/400x300',
-      prepTime: 0,
-      cookTime: 0,
+      prepTime: parsed.prepTime,
+      cookTime: parsed.cookTime,
       servings: 4,
       difficulty: 'Medium',
       ingredients: parsed.ingredients,
@@ -185,7 +295,7 @@ export default function ImportRecipeScreen() {
           style={styles.urlInput}
           value={url}
           onChangeText={setUrl}
-          placeholder="Paste recipe URL here (e.g., from AllRecipes, NYT Cooking)"
+          placeholder="Paste a single recipe page URL (not a topic or search page)"
           placeholderTextColor={Colors.textTertiary}
           autoCapitalize="none"
           keyboardType="url"
@@ -220,8 +330,20 @@ export default function ImportRecipeScreen() {
             We found {parsed.ingredients.length} ingredients and {parsed.instructions.length} steps
           </Text>
 
+          {parsed.imageUrl ? (
+            <RemoteImage uri={parsed.imageUrl} style={styles.previewImage} resizeMode="cover" />
+          ) : null}
+
           <Text style={styles.previewLabel}>Title</Text>
           <Text style={styles.previewValue}>{parsed.title}</Text>
+
+          <Text style={styles.previewLabel}>Time</Text>
+          <Text style={styles.previewValue}>
+            Prep {parsed.prepTime} min · Cook {parsed.cookTime} min
+            {parsed.prepTime + parsed.cookTime > 0
+              ? ` · Total ${parsed.prepTime + parsed.cookTime} min`
+              : ''}
+          </Text>
 
           {parsed.ingredients.length > 0 && (
             <>
@@ -323,6 +445,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
     marginBottom: Spacing.lg,
+  },
+  previewImage: {
+    width: '100%',
+    height: 160,
+    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.borderLight,
+    marginBottom: Spacing.md,
   },
   previewTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.text, marginBottom: Spacing.sm },
   previewSuccess: {

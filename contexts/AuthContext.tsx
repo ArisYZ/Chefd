@@ -60,6 +60,8 @@ type AuthContextValue = {
   }) => Promise<{ ok: true } | { ok: false; message: string }>;
   /** Toggle favorite for the signed-in user; persisted on the account row (exported in accounts JSON). */
   toggleFavoriteRecipe: (recipeId: string) => Promise<void>;
+  /** Remove id from favorites if present (e.g. when deleting your recipe). */
+  removeRecipeFromFavorites: (recipeId: string) => Promise<void>;
   isFavoriteRecipe: (recipeId: string) => boolean;
 };
 
@@ -242,6 +244,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [user, refreshUser],
   );
 
+  const removeRecipeFromFavorites = useCallback(
+    async (recipeId: string) => {
+      const id = user?.id;
+      if (!id) return;
+      const current = user?.favoriteRecipeIds ?? [];
+      if (!current.includes(recipeId)) return;
+      const next = current.filter((x) => x !== recipeId);
+      await setFavoriteRecipeIds(id, next);
+      await refreshUser();
+    },
+    [user, refreshUser],
+  );
+
   const isFavoriteRecipe = useCallback(
     (recipeId: string) => (user?.favoriteRecipeIds ?? []).includes(recipeId),
     [user?.favoriteRecipeIds],
@@ -260,6 +275,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       onUserCreatedRecipe,
       updateProfile,
       toggleFavoriteRecipe,
+      removeRecipeFromFavorites,
       isFavoriteRecipe,
     }),
     [
@@ -274,6 +290,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       onUserCreatedRecipe,
       updateProfile,
       toggleFavoriteRecipe,
+      removeRecipeFromFavorites,
       isFavoriteRecipe,
     ],
   );

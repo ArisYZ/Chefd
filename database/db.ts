@@ -70,6 +70,10 @@ export async function incrementRecipeCount(userId: string): Promise<void> {
   return (await impl()).incrementRecipeCount(userId);
 }
 
+export async function decrementRecipeCount(userId: string): Promise<void> {
+  return (await impl()).decrementRecipeCount(userId);
+}
+
 export async function recomputeLeaderboardRanks(): Promise<void> {
   return (await impl()).recomputeLeaderboardRanks();
 }

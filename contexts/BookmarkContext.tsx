@@ -10,6 +10,8 @@ type BookmarkContextValue = {
   collections: BookmarkCollection[];
   isBookmarked: (recipeId: string) => boolean;
   toggleBookmark: (recipeId: string) => void;
+  /** Remove a recipe from saved list and all collections (e.g. after delete). */
+  removeRecipeFromBookmarks: (recipeId: string) => void;
   createCollection: (name: string) => string;
   deleteCollection: (id: string) => void;
   renameCollection: (id: string, name: string) => void;
@@ -73,6 +75,22 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
               recipeIds: c.recipeIds.filter((id) => id !== recipeId),
             }))
           : prev.collections;
+        const next = { ...prev, all, collections };
+        persist(next);
+        return next;
+      });
+    },
+    [persist],
+  );
+
+  const removeRecipeFromBookmarks = useCallback(
+    (recipeId: string) => {
+      setData((prev) => {
+        const all = prev.all.filter((id) => id !== recipeId);
+        const collections = prev.collections.map((c) => ({
+          ...c,
+          recipeIds: c.recipeIds.filter((id) => id !== recipeId),
+        }));
         const next = { ...prev, all, collections };
         persist(next);
         return next;
@@ -175,6 +193,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
       collections: data.collections,
       isBookmarked,
       toggleBookmark,
+      removeRecipeFromBookmarks,
       createCollection,
       deleteCollection,
       renameCollection,
@@ -187,6 +206,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
       data.collections,
       isBookmarked,
       toggleBookmark,
+      removeRecipeFromBookmarks,
       createCollection,
       deleteCollection,
       renameCollection,

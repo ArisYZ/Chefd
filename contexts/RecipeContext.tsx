@@ -7,7 +7,7 @@ import {
   parseRecipesFile,
   type RepoRecipesFile,
 } from '@/data/recipeRepo';
-import { mergeAccountsFromJsonString } from '@/database/db';
+import { decrementRecipeCount, mergeAccountsFromJsonString } from '@/database/db';
 import type { RepoAccountsFile } from '@/database/accountRepo';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
@@ -21,6 +21,8 @@ type RecipeContextValue = {
   recipes: Recipe[];
   getRecipeById: (id: string) => Recipe | undefined;
   addRecipe: (recipe: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings'>) => string;
+  /** Removes a user-owned recipe from local storage and session reviews. Returns false if not owned. */
+  deleteRecipe: (recipeId: string) => Promise<boolean>;
   getReviewsForRecipe: (recipeId: string) => Review[];
   addReview: (review: Review) => void;
   /** Serialized `data/recipes.json` including session reviews and user-added recipes. */
@@ -32,7 +34,7 @@ type RecipeContextValue = {
 const RecipeContext = createContext<RecipeContextValue | null>(null);
 
 export function RecipeProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const userId = user?.id ?? null;
   const [userRecipes, setUserRecipes] = useState<Recipe[]>([]);
   const [userReviews, setUserReviews] = useState<Record<string, Review[]>>({});
@@ -182,6 +184,31 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     [persistRecipes, user?.displayName, user?.username, userId],
   );
 
+  const deleteRecipe = useCallback(
+    async (recipeId: string): Promise<boolean> => {
+      if (!userId) return false;
+      const owned = userRecipes.find((r) => r.id === recipeId && r.createdByUserId === userId);
+      if (!owned) return false;
+      const nextRecipes = userRecipes.filter((r) => r.id !== recipeId);
+      setUserRecipes(nextRecipes);
+      await persistRecipes(nextRecipes);
+      setUserReviews((prev) => {
+        if (!prev[recipeId]) return prev;
+        const { [recipeId]: _removed, ...rest } = prev;
+        void persistReviews(rest);
+        return rest;
+      });
+      try {
+        await decrementRecipeCount(userId);
+        await refreshUser();
+      } catch {
+        /* ignore DB refresh errors */
+      }
+      return true;
+    },
+    [userId, userRecipes, persistRecipes, persistReviews, refreshUser],
+  );
+
   const getReviewsForRecipe = useCallback(
     (recipeId: string): Review[] => {
       const seed = seedReviews[recipeId] ?? [];
@@ -237,6 +264,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       recipes,
       getRecipeById,
       addRecipe,
+      deleteRecipe,
       getReviewsForRecipe,
       addReview,
       exportMergedRecipesJson,
@@ -246,6 +274,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       recipes,
       getRecipeById,
       addRecipe,
+      deleteRecipe,
       getReviewsForRecipe,
       addReview,
       exportMergedRecipesJson,
