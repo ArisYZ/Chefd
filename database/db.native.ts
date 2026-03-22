@@ -237,6 +237,14 @@ export async function decrementRecipeCount(userId: string): Promise<void> {
   await recomputeLeaderboardRanks();
 }
 
+/** Set stored recipe count to match actual session recipes (fixes drift vs increment-only updates). */
+export async function setRecipeCount(userId: string, count: number): Promise<void> {
+  const db = await getDatabase();
+  const safe = Math.max(0, Math.floor(count));
+  await db.runAsync('UPDATE users SET recipe_count = ? WHERE id = ?', [safe, userId]);
+  await recomputeLeaderboardRanks();
+}
+
 export async function recomputeLeaderboardRanks(): Promise<void> {
   const db = await getDatabase();
   const rows = await db.getAllAsync<{ id: string }>(

@@ -1,5 +1,6 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import { Recipe, Review } from '@/types';
 import seedRecipesFile from '@/data/recipes.json';
 import {
@@ -7,10 +8,23 @@ import {
   parseRecipesFile,
   type RepoRecipesFile,
 } from '@/data/recipeRepo';
-import { decrementRecipeCount, mergeAccountsFromJsonString } from '@/database/db';
+import {
+  decrementRecipeCount,
+  exportAccountsJsonForRepo,
+  getUserById,
+  mergeAccountsFromJsonString,
+  setRecipeCount,
+} from '@/database/db';
 import type { RepoAccountsFile } from '@/database/accountRepo';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
+import { getGithubDataSyncConfig, pushDataJsonFilesToGithub } from '@/lib/githubDataSync';
+
+function isAutoPushGitHubDataEnabled(): boolean {
+  if (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_AUTO_PUSH_DATA === '1') return true;
+  const extra = Constants.expoConfig?.extra as { autoPushGitHubData?: boolean } | undefined;
+  return extra?.autoPushGitHubData === true;
+}
 
 const RECIPES_STORAGE_KEY = '@chefd_user_recipes';
 const REVIEWS_STORAGE_KEY = '@chefd_user_reviews';
@@ -40,6 +54,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
   const [userReviews, setUserReviews] = useState<Record<string, Review[]>>({});
   const [recipesSeedOverride, setRecipesSeedOverride] = useState<RepoRecipesFile | null>(null);
   const [accountsNameOverride, setAccountsNameOverride] = useState<RepoAccountsFile | null>(null);
+  const autoPushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,7 +91,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     return { seedRecipes: parsed.recipes, seedReviews: parsed.reviewsByRecipeId };
   }, [seedBundle, accountsNameOverride]);
 
-  // Load user-created recipes from AsyncStorage
+  // Load user-created recipes from AsyncStorage; align DB recipe_count with stored list (fixes drift).
   useEffect(() => {
     let cancelled = false;
     setUserRecipes([]);
@@ -85,24 +100,34 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       try {
         const raw = await AsyncStorage.getItem(key);
         if (cancelled) return;
+        let nextList: Recipe[] = [];
         if (raw) {
           const parsed = JSON.parse(raw) as Recipe[];
           if (Array.isArray(parsed)) {
-            setUserRecipes(
-              parsed.map((r) => {
-                const measured = normalizeRecipeIngredientsMeasured(r.ingredientsMeasured ?? []);
-                const ingredients =
-                  measured.length > 0 ? measured.map(formatIngredientLine) : r.ingredients ?? [];
-                return {
-                  ...r,
-                  ingredientsMeasured: measured,
-                  ingredients,
-                  createdByUserId: r.createdByUserId ?? userId,
-                  createdByName: r.createdByName ?? user?.displayName ?? user?.username ?? 'You',
-                };
-              }),
-            );
+            nextList = parsed.map((r) => {
+              const measured = normalizeRecipeIngredientsMeasured(r.ingredientsMeasured ?? []);
+              const ingredients =
+                measured.length > 0 ? measured.map(formatIngredientLine) : r.ingredients ?? [];
+              return {
+                ...r,
+                ingredientsMeasured: measured,
+                ingredients,
+                createdByUserId: r.createdByUserId ?? userId,
+                createdByName: r.createdByName ?? user?.displayName ?? user?.username ?? 'You',
+              };
+            });
           }
+        }
+        setUserRecipes(nextList);
+        if (cancelled || !userId) return;
+        try {
+          const u = await getUserById(userId);
+          if (u && nextList.length !== u.recipeCount) {
+            await setRecipeCount(userId, nextList.length);
+            await refreshUser();
+          }
+        } catch {
+          /* ignore DB sync */
         }
       } catch {
         /* ignore */
@@ -111,7 +136,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user?.displayName, user?.username, userId]);
+  }, [user?.displayName, user?.username, userId, refreshUser]);
 
   const reviewsKey = userId ? `${REVIEWS_STORAGE_KEY}_${userId}` : `${REVIEWS_STORAGE_KEY}_anonymous`;
 
@@ -156,7 +181,54 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [reviewsKey]);
 
-  const recipes = useMemo(() => [...seedRecipes, ...userRecipes], [seedRecipes, userRecipes]);
+  /** Merged seed JSON may already include user-posted recipes; avoid listing the same id twice. */
+  const recipes = useMemo(() => {
+    const seedIds = new Set(seedRecipes.map((r) => r.id));
+    const extraFromUserStorage = userRecipes.filter((r) => !seedIds.has(r.id));
+    return [...seedRecipes, ...extraFromUserStorage];
+  }, [seedRecipes, userRecipes]);
+
+  const persistMergedRecipesSnapshot = useCallback(async () => {
+    try {
+      const merged = buildMergedRecipesRepoFile({
+        baseSeed: seedBundle,
+        seedReviewsByRecipeId: seedReviews,
+        userReviewsByRecipeId: userReviews,
+        userRecipes,
+      });
+      const json = JSON.stringify(merged, null, 2);
+      const prev = await AsyncStorage.getItem(RECIPES_OVERRIDE_KEY);
+      if (prev !== json) {
+        await AsyncStorage.setItem(RECIPES_OVERRIDE_KEY, json);
+        setRecipesSeedOverride(merged);
+        if (isAutoPushGitHubDataEnabled() && getGithubDataSyncConfig()) {
+          if (autoPushTimerRef.current) clearTimeout(autoPushTimerRef.current);
+          autoPushTimerRef.current = setTimeout(() => {
+            autoPushTimerRef.current = null;
+            void (async () => {
+              try {
+                const accountsJson = await exportAccountsJsonForRepo();
+                const recipesJson = await AsyncStorage.getItem(RECIPES_OVERRIDE_KEY);
+                if (!recipesJson) return;
+                await pushDataJsonFilesToGithub({ accountsJson, recipesJson });
+              } catch {
+                /* ignore push failures */
+              }
+            })();
+          }, 2500);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [seedBundle, seedReviews, userReviews, userRecipes]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      void persistMergedRecipesSnapshot();
+    }, 400);
+    return () => clearTimeout(t);
+  }, [persistMergedRecipesSnapshot]);
 
   const getRecipeById = useCallback(
     (id: string) => recipes.find((r) => r.id === id),
@@ -187,26 +259,33 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
   const deleteRecipe = useCallback(
     async (recipeId: string): Promise<boolean> => {
       if (!userId) return false;
-      const owned = userRecipes.find((r) => r.id === recipeId && r.createdByUserId === userId);
-      if (!owned) return false;
+      const meta = recipes.find((r) => r.id === recipeId);
+      if (!meta || !recipeId.startsWith('ur-')) return false;
+      if (meta.createdByUserId != null && meta.createdByUserId !== userId) return false;
+
+      const hadInUserList = userRecipes.some((r) => r.id === recipeId);
       const nextRecipes = userRecipes.filter((r) => r.id !== recipeId);
       setUserRecipes(nextRecipes);
       await persistRecipes(nextRecipes);
+
       setUserReviews((prev) => {
         if (!prev[recipeId]) return prev;
         const { [recipeId]: _removed, ...rest } = prev;
         void persistReviews(rest);
         return rest;
       });
-      try {
-        await decrementRecipeCount(userId);
-        await refreshUser();
-      } catch {
-        /* ignore DB refresh errors */
+
+      if (hadInUserList) {
+        try {
+          await decrementRecipeCount(userId);
+          await refreshUser();
+        } catch {
+          /* ignore DB refresh errors */
+        }
       }
       return true;
     },
-    [userId, userRecipes, persistRecipes, persistReviews, refreshUser],
+    [userId, userRecipes, recipes, persistRecipes, persistReviews, refreshUser],
   );
 
   const getReviewsForRecipe = useCallback(

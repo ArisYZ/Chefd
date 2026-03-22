@@ -129,10 +129,14 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user?.recipeCount ?? 0}</Text>
+            <TouchableOpacity
+              style={styles.statItem}
+              activeOpacity={0.7}
+              onPress={() => router.push('/profile/my-recipes')}
+            >
+              <Text style={styles.statNumber}>{myRecipes.length}</Text>
               <Text style={styles.statLabel}>Recipes</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{user?.reviewCount ?? 0}</Text>
@@ -148,10 +152,14 @@ export default function ProfileScreen() {
           </View>
 
           <View style={[styles.statsRow, styles.statsRowPair, { marginTop: Spacing.md }]}>
-            <View style={styles.statItem}>
+            <TouchableOpacity
+              style={styles.statItem}
+              activeOpacity={0.7}
+              onPress={() => router.push('/profile/bookmarks')}
+            >
               <Text style={styles.statNumber}>{bookmarkedIds.length}</Text>
               <Text style={styles.statLabel}>Bookmarks</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{user?.followersCount ?? 0}</Text>
@@ -197,10 +205,17 @@ export default function ProfileScreen() {
 
         {activeProfileTab === 'recipes' ? (
           <View style={styles.myRecipesSection}>
-            <View style={styles.myRecipesHeader}>
+            <TouchableOpacity
+              style={styles.myRecipesHeader}
+              activeOpacity={0.7}
+              onPress={() => router.push('/profile/my-recipes')}
+            >
               <Text style={styles.myRecipesSectionTitle}>Your recipes</Text>
-              <Text style={styles.myRecipesCount}>{myRecipes.length}</Text>
-            </View>
+              <View style={styles.myRecipesHeaderRight}>
+                <Text style={styles.myRecipesCount}>{myRecipes.length}</Text>
+                <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
+              </View>
+            </TouchableOpacity>
             {myRecipes.length === 0 ? (
               <View style={styles.emptyMyRecipes}>
                 <Ionicons name="restaurant-outline" size={40} color={Colors.textTertiary} />
@@ -477,6 +492,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  myRecipesHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   myRecipesCount: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.primary },
   emptyMyRecipes: {
     alignItems: 'center',

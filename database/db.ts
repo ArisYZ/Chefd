@@ -74,6 +74,10 @@ export async function decrementRecipeCount(userId: string): Promise<void> {
   return (await impl()).decrementRecipeCount(userId);
 }
 
+export async function setRecipeCount(userId: string, count: number): Promise<void> {
+  return (await impl()).setRecipeCount(userId, count);
+}
+
 export async function recomputeLeaderboardRanks(): Promise<void> {
   return (await impl()).recomputeLeaderboardRanks();
 }

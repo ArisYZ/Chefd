@@ -68,11 +68,13 @@ export default function RecipeDetailScreen() {
       : null;
   const creatorLabel =
     recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
-  const isOwnRecipe = Boolean(user?.id && recipe.createdByUserId && user.id === recipe.createdByUserId);
-  /** User-created recipes use `ur-` ids and live in local storage — safe to delete for owner. */
-  const canDeleteRecipe = Boolean(
-    isOwnRecipe && recipe.id.startsWith('ur-'),
+  /** App-created recipes use `ur-` ids; creator may be missing if imported while logged out. */
+  const isOwnRecipe = Boolean(
+    user?.id &&
+      recipe.id.startsWith('ur-') &&
+      (recipe.createdByUserId == null || recipe.createdByUserId === user.id),
   );
+  const canDeleteRecipe = isOwnRecipe;
   const existingReview = localReviews.find((r) => r.user.id === user?.id);
   const canReview = !isOwnRecipe;
   const bookmarked = isBookmarked(recipe.id);

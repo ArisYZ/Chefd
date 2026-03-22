@@ -41,7 +41,8 @@
     "extra": {
       "googleWebClientId": "",
       "googleIosClientId": "",
-      "googleAndroidClientId": ""
+      "googleAndroidClientId": "",
+      "autoPushGitHubData": false
     }
   }
 }

@@ -5,9 +5,10 @@ import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/
 
 /**
  * Recipe storage model:
- * - `data/recipes.json` is the bundled catalog: keyed by author user id (e.g. u_test_account_1), each value has `recipes` + embedded `reviews` (UI seed + scores).
- * - At runtime, `RecipeContext` merges these with per-user AsyncStorage (`@chefd_user_recipes_<userId>`) for locally added recipes and `@chefd_user_reviews` for app-submitted reviews.
- * - Account rows for sign-in live in `data/accounts.json` (merged into SQLite / web store on launch).
+ * - `data/recipes.json` in the repo is the bundled catalog: keyed by author user id, each value has `recipes` + embedded `reviews`.
+ * - User-added recipes and session reviews are merged into this shape via `buildMergedRecipesRepoFile` and persisted to AsyncStorage (`@chefd_recipes_json_override`) so the merged JSON matches what you commit/push.
+ * - After GitHub push or `git pull`, other devices load the same data; the bundle seed is overridden by stored JSON when present.
+ * - Per-user recipe lines still live in `@chefd_user_recipes_<userId>` until merged into the snapshot (deduped in UI by recipe id).
  */
 
 /** Shape of each recipe entry in data/recipes.json (includes embedded reviews). */
@@ -110,6 +111,16 @@ export function buildMergedRecipesRepoFile(input: {
     for (const r of bucket.recipes) {
       r.reviews = mergeReviewLists(r.id);
     }
+  }
+
+  /** Drop user-posted recipes (ur-*) that were removed from storage but left in a previous merged snapshot. */
+  const userRecipeIds = new Set(input.userRecipes.map((r) => r.id));
+  for (const uid of Object.keys(file)) {
+    const bucket = file[uid];
+    if (!bucket?.recipes) continue;
+    bucket.recipes = bucket.recipes.filter(
+      (r) => !r.id.startsWith('ur-') || userRecipeIds.has(r.id),
+    );
   }
 
   for (const ur of input.userRecipes) {

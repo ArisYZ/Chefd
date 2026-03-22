@@ -108,6 +108,28 @@ export default function RootLayout() {
             presentation: 'card',
           }}
         />
+        <Stack.Screen
+          name="profile/my-recipes"
+          options={{
+            headerShown: true,
+            title: 'My recipes',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="profile/bookmarks"
+          options={{
+            headerShown: true,
+            title: 'Bookmarks',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
       </Stack>
     </BookmarkProvider>
     </RecipeProvider>

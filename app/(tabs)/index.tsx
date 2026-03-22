@@ -23,7 +23,7 @@ const FILTER_TABS = [
 export default function FeedScreen() {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState('Trending');
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isBookmarked, toggleBookmark, bookmarkedIds } = useBookmarks();
 
   const renderHeader = () => (
     <View>
@@ -35,10 +35,14 @@ export default function FeedScreen() {
             activeOpacity={0.7}
             onPress={() => router.push('/saved')}
           >
-            <Ionicons name="notifications-outline" size={24} color={Colors.text} />
-            <View style={styles.notifBadge}>
-              <Text style={styles.notifBadgeText}>2</Text>
-            </View>
+            <Ionicons name="bookmark-outline" size={24} color={Colors.text} />
+            {bookmarkedIds.length > 0 ? (
+              <View style={styles.savedBadge}>
+                <Text style={styles.savedBadgeText}>
+                  {bookmarkedIds.length > 99 ? '99+' : bookmarkedIds.length}
+                </Text>
+              </View>
+            ) : null}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconButton}
@@ -139,18 +143,19 @@ const styles = StyleSheet.create({
   },
   topBarRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   iconButton: { padding: Spacing.xs, position: 'relative' },
-  notifBadge: {
+  savedBadge: {
     position: 'absolute',
     top: 0,
     right: 0,
-    width: 18,
+    minWidth: 18,
     height: 18,
+    paddingHorizontal: 4,
     borderRadius: 9,
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  notifBadgeText: { color: Colors.white, fontSize: 10, fontWeight: '700' },
+  savedBadgeText: { color: Colors.white, fontSize: 10, fontWeight: '700' },
   categoryRow: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
