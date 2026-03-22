@@ -49,58 +49,111 @@ Without client IDs, the auth screen explains that Google isn’t configured yet;
 
 ## Getting Started
 
+These steps are for running Chef’d on **your own machine** (macOS, Windows, or Linux) and on a **physical iPhone/Android device** or **simulator/emulator**.
+
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v20 or later
-- [Expo Go](https://expo.dev/go) app on your phone (or an emulator/simulator)
+- [Node.js](https://nodejs.org/) v20 or later (`node -v`)
+- [Git](https://git-scm.com/)
+- For **iOS Simulator**: a Mac with [Xcode](https://developer.apple.com/xcode/) (Apple’s iOS Simulator is macOS-only)
+- For **Android Emulator**: [Android Studio](https://developer.android.com/studio) with a virtual device, or a physical device with USB debugging
+- Optional: [Expo Go](https://expo.dev/go) on your phone for the fastest try-out without building native code
 
-### Install dependencies
+### Clone and install
 
 ```bash
+git clone https://github.com/YOUR_USERNAME/Chefd.git
+cd Chefd
 npm install
 ```
 
+Use your fork’s URL or the repo you were given. Then continue with the API key below (needed for Remy Rat) and start Metro.
+
+### Remy Rat — Fetch AI (ASI:One) API key
+
+**Remy Rat** is the in-app cooking assistant. It talks to **ASI:One** (Fetch AI). You need your **own API key** on every computer where you run the app with AI enabled.
+
+#### How to get your API key
+
+1. Open **[https://asi1.ai](https://asi1.ai)** and sign up or sign in.
+2. Go to the **Developer** area of the dashboard.
+3. Use **Create New** (or equivalent) to create an API key, give it a name, and **copy the key** when it is shown. Store it somewhere safe (you may not be able to see the full key again later).
+4. Optional reference: [ASI:One Developer Quickstart](https://docs.asi1.ai/documentation/getting-started/quickstart) (same API as in that guide: `https://api.asi1.ai/v1/chat/completions`).
+
+#### Add the key to this project (local setup)
+
+Do **not** commit keys to Git. Pick one approach:
+
+**Option A — `secrets` file (recommended for local dev)**  
+1. Create a folder `secrets` in the project root (if it doesn’t exist).  
+2. Create a file `secrets/asi-one.key` and put **only your API key** on the first line, then save.  
+3. That path is **gitignored** (`secrets/*` in `.gitignore`), so it won’t be pushed to GitHub.  
+4. The app loads it via `app.config.js` into `expo.extra.asiOneApiKey`.
+
+**Option B — environment variable**  
+1. In the project root, create a `.env` file (also gitignored).  
+2. Add:
+   ```bash
+   EXPO_PUBLIC_ASI_ONE_API_KEY=your_key_here
+   ```
+3. Restart the dev server after any change.
+
+**Option C — `app.json`** (less ideal; avoid if the repo is shared)  
+You can set `expo.extra.asiOneApiKey` in `app.json` — only for private local experiments; never commit real keys to a public repo.
+
+After adding the key, restart Metro. If the client doesn’t see the key, try:
+
+```bash
+npx expo start -c
+```
+
+**Note:** Values prefixed with `EXPO_PUBLIC_` are included in the client bundle. For production, a small backend that holds the key is safer; for development on your own machine, `secrets/asi-one.key` is the usual approach.
+
 ### Start the development server
+
+From the project root:
 
 ```bash
 npx expo start
 ```
 
+Then choose how to open the app on **iOS** or **Android** below.
+
 ### Running on iOS
 
-**Option A: Expo Go (quickest)**
-1. Install [Expo Go](https://apps.apple.com/app/expo-go/id982107779) from the App Store
-2. Run `npx expo start` in the project root
-3. Scan the QR code with your iPhone camera — it will open in Expo Go
+**Option A — Expo Go on a physical iPhone (simplest)**  
+1. Install [Expo Go](https://apps.apple.com/app/expo-go/id982107779) from the App Store.  
+2. Run `npx expo start` on your computer (same Wi‑Fi as the phone helps).  
+3. Scan the QR code from the terminal or Dev Tools with the Camera app; open in Expo Go.
 
-**Option B: iOS Simulator (requires macOS + Xcode)**
-1. Install [Xcode](https://developer.apple.com/xcode/) from the Mac App Store
-2. Open Xcode and install an iOS Simulator via **Xcode → Settings → Platforms**
-3. Run `npx expo start` then press `i` to open in the iOS Simulator
+**Option B — iOS Simulator (macOS + Xcode)**  
+1. Install [Xcode](https://developer.apple.com/xcode/) from the Mac App Store and open it once to finish setup.  
+2. Install a simulator runtime: **Xcode → Settings → Platforms** (or **Components** in older Xcode).  
+3. From the project folder, run `npx expo start`, then press **`i`**, or run `npx expo start --ios`.
 
-**Option C: Development build**
+**Option C — Native development build (Simulator or device)**  
 ```bash
 npx expo run:ios
 ```
-This builds a native dev client on your simulator or connected device.
+Builds and installs the dev client. Requires Xcode and CocoaPods on macOS.
 
 ### Running on Android
 
-**Option A: Expo Go (quickest)**
-1. Install [Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent) from the Google Play Store
-2. Run `npx expo start` in the project root
-3. Scan the QR code with the Expo Go app
+**Option A — Expo Go on a physical Android phone (simplest)**  
+1. Install [Expo Go](https://play.google.com/store/apps/details?id=host.exp.exponent) from the Play Store.  
+2. Run `npx expo start` on your computer.  
+3. Scan the QR code with Expo Go (or use **adb** / same network per Expo’s prompts).
 
-**Option B: Android Emulator**
-1. Install [Android Studio](https://developer.android.com/studio)
-2. Open Android Studio → **More Actions → Virtual Device Manager** → create an emulator
-3. Start the emulator, then run `npx expo start` and press `a`
+**Option B — Android Emulator**  
+1. Install [Android Studio](https://developer.android.com/studio).  
+2. Open **Device Manager**, create a virtual device, and start it.  
+3. Run `npx expo start`, then press **`a`**, or run `npx expo start --android`.
 
-**Option C: Development build**
+**Option C — Native development build (emulator or USB device)**  
 ```bash
 npx expo run:android
 ```
-This builds a native dev client on your emulator or connected USB device. Make sure USB debugging is enabled.
+On a physical device, enable **Developer options** and **USB debugging**. Ensure `ANDROID_HOME` is set if the CLI asks for it.
 
 ## Project Structure
 

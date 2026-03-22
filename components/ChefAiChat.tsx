@@ -74,15 +74,22 @@ type RichSegment =
   | { type: 'recipe'; value: string }
   | { type: 'profile'; value: string };
 
+/**
+ * Matches [[recipe:id]] / [[profile:id]] with optional spaces (models often emit [[ recipe:r1 ]]).
+ */
 function parseRichContent(content: string): RichSegment[] {
-  const re = /\[\[(recipe|profile):([^\]]+)\]\]/g;
+  const re = /\[\[\s*(recipe|profile)\s*:\s*([^\]]+?)\s*\]\]/gi;
   const out: RichSegment[] = [];
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(content)) !== null) {
     if (m.index > last) out.push({ type: 'text', value: content.slice(last, m.index) });
-    const kind = m[1] === 'recipe' ? 'recipe' : 'profile';
-    out.push({ type: kind, value: m[2] });
+    const rawKind = (m[1] ?? '').toLowerCase();
+    const kind = rawKind === 'profile' ? 'profile' : 'recipe';
+    const id = (m[2] ?? '').trim();
+    if (id.length > 0) {
+      out.push({ type: kind, value: id });
+    }
     last = m.index + m[0].length;
   }
   if (last < content.length) out.push({ type: 'text', value: content.slice(last) });
