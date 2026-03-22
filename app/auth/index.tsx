@@ -213,27 +213,15 @@ export default function AuthScreen() {
             )}
           </TouchableOpacity>
 
-          <View style={styles.dividerRow}>
-            <View style={styles.divider} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.divider} />
-          </View>
-
-          {hasGoogle ? (
-            <GoogleAuthSection busy={busy} onIdToken={onGoogleIdToken} />
-          ) : (
-            <View style={styles.googleInfoBox}>
-              <Ionicons name="logo-google" size={22} color={Colors.textTertiary} style={styles.googleInfoIcon} />
-              <Text style={styles.googleInfoTitle}>Google Sign-In not configured</Text>
-              <Text style={styles.googleInfoBody}>
-                Add OAuth client IDs from Google Cloud Console to app.json → expo.extra (googleWebClientId, etc.)
-                or set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID in a .env file. Restart Metro after changing.
-              </Text>
-              <Text style={styles.googleInfoBody}>
-                You can still use email & password above — no Google setup required.
-              </Text>
-              <Text style={styles.googleInfoLink}>See docs/GOOGLE_SIGNIN.md in the project for step-by-step setup.</Text>
-            </View>
+          {hasGoogle && (
+            <>
+              <View style={styles.dividerRow}>
+                <View style={styles.divider} />
+                <Text style={styles.dividerText}>or</Text>
+                <View style={styles.divider} />
+              </View>
+              <GoogleAuthSection busy={busy} onIdToken={onGoogleIdToken} />
+            </>
           )}
         </ScrollView>
       </KeyboardAvoidingView>
