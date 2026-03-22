@@ -17,6 +17,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { RecipeProvider } from '@/contexts/RecipeContext';
 import { BookmarkProvider } from '@/contexts/BookmarkContext';
 import { SocialProvider } from '@/contexts/SocialContext';
+import { FollowProvider } from '@/contexts/FollowContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,6 +47,7 @@ export default function RootLayout() {
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutReady}>
     <AuthProvider>
+    <FollowProvider>
     <RecipeProvider>
     <BookmarkProvider>
     <SocialProvider>
@@ -170,6 +172,17 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="profile/follow-list"
+          options={{
+            headerShown: true,
+            title: 'Followers',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
           name="user/[id]"
           options={{
             headerShown: true,
@@ -184,6 +197,7 @@ export default function RootLayout() {
     </SocialProvider>
     </BookmarkProvider>
     </RecipeProvider>
+    </FollowProvider>
     </AuthProvider>
     </View>
   );

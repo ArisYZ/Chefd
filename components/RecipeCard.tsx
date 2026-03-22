@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   image: {
     width: 90,
     height: 90,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#f2f2f2',
   },
   content: {
     flex: 1,

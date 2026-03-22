@@ -53,7 +53,7 @@ export const featuredLists: RecipeList[] = [
     id: 'fl1',
     title: 'Ultimate Pasta Bucket List',
     description: 'Every pasta dish you need to master',
-    image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600',
+    image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600',
     recipes: recipes.filter(r => r.category === 'Pasta'),
     createdBy: getUserById('u_fake_luca_g') ?? users[0],
     userProgress: listProgress(recipes.filter(r => r.category === 'Pasta')),
@@ -92,7 +92,7 @@ export const userLists: RecipeList[] = [
     id: 'ul1',
     title: 'My Favorites',
     description: 'Recipes I keep coming back to',
-    image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600',
+    image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600',
     recipes: [recipes[0], recipes[1], recipes[3], recipes[7]],
     createdBy: currentUser,
   },
@@ -156,3 +156,54 @@ export const categoryFilters = [
   'Rice',
   'Pastry',
 ];
+
+/**
+ * Seed follow graph: maps each user id to the list of user ids they follow.
+ * Used to bootstrap the FollowContext before any user-initiated changes.
+ */
+export const SEED_FOLLOW_GRAPH: Record<string, string[]> = {
+  u_test_account_1: [
+    'u_fake_jordan_r', 'u_fake_sofia_t', 'u_fake_luca_g', 'u_fake_marcus_j',
+    'u_fake_priya_p', 'u_fake_maya_l', 'u_fake_sarah_k', 'u_fake_alex_c',
+  ],
+  u_fake_jordan_r: [
+    'u_test_account_1', 'u_fake_sofia_t', 'u_fake_luca_g',
+    'u_fake_priya_p', 'u_fake_emma_w', 'u_fake_nina_k',
+  ],
+  u_fake_sofia_t: [
+    'u_test_account_1', 'u_fake_jordan_r', 'u_fake_luca_g', 'u_fake_marcus_j',
+    'u_fake_maya_l', 'u_fake_nina_k', 'u_fake_alex_c',
+  ],
+  u_fake_luca_g: [
+    'u_test_account_1', 'u_fake_jordan_r', 'u_fake_sofia_t',
+    'u_fake_marcus_j', 'u_fake_priya_p', 'u_fake_sarah_k',
+  ],
+  u_fake_marcus_j: [
+    'u_test_account_1', 'u_fake_sofia_t', 'u_fake_priya_p', 'u_fake_maya_l',
+    'u_fake_emma_w', 'u_fake_sarah_k', 'u_fake_alex_c',
+  ],
+  u_fake_priya_p: [
+    'u_test_account_1', 'u_fake_jordan_r', 'u_fake_luca_g', 'u_fake_marcus_j',
+    'u_fake_maya_l', 'u_fake_nina_k', 'u_fake_sarah_k',
+  ],
+  u_fake_maya_l: [
+    'u_test_account_1', 'u_fake_sofia_t', 'u_fake_luca_g',
+    'u_fake_priya_p', 'u_fake_nina_k', 'u_fake_emma_w',
+  ],
+  u_fake_nina_k: [
+    'u_test_account_1', 'u_fake_jordan_r', 'u_fake_sofia_t', 'u_fake_priya_p',
+    'u_fake_maya_l', 'u_fake_sarah_k', 'u_fake_alex_c', 'u_fake_emma_w',
+  ],
+  u_fake_sarah_k: [
+    'u_test_account_1', 'u_fake_jordan_r', 'u_fake_luca_g', 'u_fake_marcus_j',
+    'u_fake_priya_p', 'u_fake_nina_k', 'u_fake_alex_c', 'u_fake_emma_w',
+  ],
+  u_fake_alex_c: [
+    'u_test_account_1', 'u_fake_sofia_t', 'u_fake_luca_g',
+    'u_fake_maya_l', 'u_fake_nina_k', 'u_fake_sarah_k', 'u_fake_emma_w',
+  ],
+  u_fake_emma_w: [
+    'u_test_account_1', 'u_fake_jordan_r', 'u_fake_sofia_t', 'u_fake_marcus_j',
+    'u_fake_priya_p', 'u_fake_maya_l', 'u_fake_nina_k', 'u_fake_sarah_k',
+  ],
+};

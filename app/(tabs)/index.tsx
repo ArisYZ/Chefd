@@ -13,10 +13,11 @@ import { getUserById as getMockUserById } from '@/constants/MockData';
 import { useBookmarks } from '@/contexts/BookmarkContext';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useFollow } from '@/contexts/FollowContext';
 import type { RecipeRating } from '@/types';
 import {
   formatShortTimeAgo,
-  postedAtMsFromUserRecipeId,
+  recipePostPostedAtMs,
   sortActivityFeedItems,
   userForRecipePost,
   type ActivityFeedItem,
@@ -27,12 +28,14 @@ export default function FeedScreen() {
   const { user: authUser } = useAuth();
   const { isBookmarked, toggleBookmark, bookmarkedIds } = useBookmarks();
   const { recipes, getReviewsForRecipe } = useRecipes();
+  const { connectedUserIds } = useFollow();
 
   const feedItems = useMemo(() => {
     const reviews: { kind: 'review'; rating: RecipeRating }[] = [];
     for (const recipe of recipes) {
       const recipeReviews = getReviewsForRecipe(recipe.id);
       for (const review of recipeReviews) {
+        if (!connectedUserIds.has(review.user.id)) continue;
         reviews.push({
           kind: 'review',
           rating: {
@@ -51,20 +54,23 @@ export default function FeedScreen() {
 
     const posts: ActivityFeedItem[] = [];
     for (const recipe of recipes) {
-      const postedAtMs = postedAtMsFromUserRecipeId(recipe.id);
-      if (postedAtMs == null) continue;
+      if (!recipe.image?.trim()) continue;
+      const user = userForRecipePost(recipe, authUser, getMockUserById);
+      if (authUser?.id != null && user.id === authUser.id) continue;
+      if (!connectedUserIds.has(user.id)) continue;
+      const postedAtMs = recipePostPostedAtMs(recipe);
       posts.push({
         kind: 'recipe_post',
         id: `post_${recipe.id}`,
         recipe,
-        user: userForRecipePost(recipe, authUser, getMockUserById),
+        user,
         postedAtMs,
         ratingScore: recipe.averageRating ?? 0,
       });
     }
 
     return sortActivityFeedItems([...reviews, ...posts]);
-  }, [recipes, getReviewsForRecipe, authUser]);
+  }, [recipes, getReviewsForRecipe, authUser, connectedUserIds]);
 
   const renderHeader = () => (
     <View>

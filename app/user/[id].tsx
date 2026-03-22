@@ -10,6 +10,8 @@ import { MakeAgainBadge } from '@/components/MakeAgainBadge';
 import { DifficultyPips } from '@/components/DifficultyPips';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
+import { useFollow } from '@/contexts/FollowContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { getUserById } from '@/constants/MockData';
 import { authorDishEncoreWeighted } from '@/lib/cookStats';
 import { formatOutOf5 } from '@/lib/formatScore';
@@ -20,7 +22,11 @@ export default function UserProfileScreen() {
   const router = useRouter();
   const { recipes, getReviewsForRecipe } = useRecipes();
   const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isFollowing, followUser, unfollowUser, getFollowersCount, getFollowingCount } = useFollow();
+  const { user: authUser } = useAuth();
   const user = getUserById(id ?? '');
+  const isSelf = authUser?.id === id;
+  const following = isFollowing(id ?? '');
 
   const userRecipes = useMemo(
     () => recipes.filter(r => r.createdByUserId === id),
@@ -105,14 +111,57 @@ export default function UserProfileScreen() {
               </Text>
               <Text style={styles.statLabel}>As reviewer</Text>
             </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>
-                {user.followersCount} / {user.followingCount}
-              </Text>
-              <Text style={styles.statLabel}>Followers / following</Text>
-            </View>
           </View>
+
+          <View style={[styles.statsRow, { marginTop: Spacing.md }]}>
+            <TouchableOpacity
+              style={styles.statItem}
+              activeOpacity={0.7}
+              onPress={() =>
+                router.push({
+                  pathname: '/profile/follow-list',
+                  params: { userId: id ?? '', mode: 'followers' },
+                })
+              }
+            >
+              <Text style={styles.statNumber}>{getFollowersCount(id ?? '')}</Text>
+              <Text style={styles.statLabel}>Followers</Text>
+            </TouchableOpacity>
+            <View style={styles.statDivider} />
+            <TouchableOpacity
+              style={styles.statItem}
+              activeOpacity={0.7}
+              onPress={() =>
+                router.push({
+                  pathname: '/profile/follow-list',
+                  params: { userId: id ?? '', mode: 'following' },
+                })
+              }
+            >
+              <Text style={styles.statNumber}>{getFollowingCount(id ?? '')}</Text>
+              <Text style={styles.statLabel}>Following</Text>
+            </TouchableOpacity>
+          </View>
+
+          {!isSelf && (
+            <TouchableOpacity
+              style={[styles.followButton, following && styles.followButtonActive]}
+              activeOpacity={0.7}
+              onPress={() => {
+                if (following) unfollowUser(id ?? '');
+                else followUser(id ?? '');
+              }}
+            >
+              <Ionicons
+                name={following ? 'checkmark-circle' : 'person-add-outline'}
+                size={18}
+                color={following ? Colors.white : Colors.primary}
+              />
+              <Text style={[styles.followButtonText, following && styles.followButtonTextActive]}>
+                {following ? 'Following' : 'Follow'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {userRecipes.length > 0 && (
@@ -266,4 +315,28 @@ const styles = StyleSheet.create({
   },
   reviewLikes: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textSecondary },
   reviewTime: { fontSize: FontSize.xs, color: Colors.textTertiary },
+  followButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.lg,
+    paddingHorizontal: Spacing.xxxl,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+  },
+  followButtonActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  followButtonText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
+    color: Colors.primary,
+  },
+  followButtonTextActive: {
+    color: Colors.white,
+  },
 });

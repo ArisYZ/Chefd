@@ -1,13 +1,12 @@
 import React from 'react';
-import { Image, ImageProps, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Image, type ImageProps as ExpoImageProps } from 'expo-image';
 import { enhanceRemoteImageUrl, normalizeRemoteImageUri } from '@/lib/imageUri';
 
-export type RemoteImageProps = Omit<ImageProps, 'source'> & {
-  uri: unknown;
-};
+export type RemoteImageProps = Omit<ExpoImageProps, 'source'> & { uri: unknown };
 
 /** Renders a remote image when `uri` resolves to a non-empty URL; otherwise an empty clipped view. */
-export function RemoteImage({ uri, style, ...rest }: RemoteImageProps) {
+export function RemoteImage({ uri, style, contentFit = 'cover', ...rest }: RemoteImageProps) {
   const raw = normalizeRemoteImageUri(uri);
   const src = raw ? enhanceRemoteImageUrl(raw) : null;
 
@@ -18,8 +17,12 @@ export function RemoteImage({ uri, style, ...rest }: RemoteImageProps) {
   return (
     <View style={[style, styles.clip]}>
       <Image
+        key={src}
+        recyclingKey={src}
         source={{ uri: src }}
         style={[StyleSheet.absoluteFill, styles.image]}
+        contentFit={contentFit}
+        cachePolicy="memory-disk"
         {...rest}
       />
     </View>

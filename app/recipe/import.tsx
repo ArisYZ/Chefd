@@ -333,7 +333,7 @@ export default function ImportRecipeScreen() {
           <RemoteImage
             uri={parsed.imageUrl?.trim() ? parsed.imageUrl : ''}
             style={styles.previewImage}
-            resizeMode="cover"
+            contentFit="cover"
           />
 
           <Text style={styles.previewLabel}>Title</Text>

@@ -59,7 +59,7 @@ export function RecipePostCard({
         accessibilityRole="button"
         accessibilityLabel={`Open ${recipe.name}`}
       >
-        <RemoteImage uri={recipe.image} style={styles.heroImage} resizeMode="cover" />
+        <RemoteImage uri={recipe.image} style={styles.heroImage} contentFit="cover" />
         {teaser ? (
           <Text style={styles.teaser} numberOfLines={3} ellipsizeMode="tail">
             {teaser}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     borderRadius: BorderRadius.md,
-    backgroundColor: Colors.borderLight,
+    backgroundColor: '#f2f2f2',
   },
   teaser: {
     marginTop: Spacing.sm,

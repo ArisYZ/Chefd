@@ -475,7 +475,7 @@ export default function RecipeDetailScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  heroImage: { width, height: width * 0.65, backgroundColor: '#E0E0E0' },
+  heroImage: { width, height: width * 0.65, backgroundColor: '#f2f2f2' },
   content: {
     paddingHorizontal: Spacing.lg,
     marginTop: -Spacing.xl,

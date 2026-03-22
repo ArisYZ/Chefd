@@ -287,10 +287,6 @@ export default function NewRecipeScreen() {
 
     const existingImage = editId ? getRecipeById(editId)?.image : undefined;
     const resolvedImage = (imageUri ?? existingImage ?? '').trim();
-    if (!resolvedImage) {
-      Alert.alert('Photo required', 'Add a photo for your recipe.');
-      return;
-    }
     if (!name.trim()) { Alert.alert('Name required', 'Enter a recipe name.'); return; }
     if (Number.isNaN(prep) || Number.isNaN(cook)) {
       Alert.alert('Time', 'Enter valid prep and cook times (0 or more).');

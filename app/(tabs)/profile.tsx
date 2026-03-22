@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  DevSettings,
+  Platform,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
 import { exportAccountsJsonForRepo } from '@/database/db';
 import { getGithubDataSyncConfig, pullDataJsonFilesFromGithub, pushDataJsonFilesToGithub } from '@/lib/githubDataSync';
+import { clearChefdAsyncStorage } from '@/lib/clearAppStorage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -23,6 +26,7 @@ import { RecipeCard } from '@/components/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
+import { useFollow } from '@/contexts/FollowContext';
 import { RecipeList } from '@/types';
 
 function ListCard({ list, onPress }: { list: RecipeList; onPress: () => void }) {
@@ -44,6 +48,7 @@ export default function ProfileScreen() {
   const { user, signOut, refreshUser, updateProfile } = useAuth();
   const { recipes, exportMergedRecipesJson, applyPulledDataJson } = useRecipes();
   const { bookmarkedIds, isBookmarked, toggleBookmark } = useBookmarks();
+  const { getFollowersCount, getFollowingCount } = useFollow();
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [dataSyncBusy, setDataSyncBusy] = useState(false);
   const [activeProfileTab, setActiveProfileTab] = useState<'recipes' | 'activity'>('recipes');
@@ -161,15 +166,37 @@ export default function ProfileScreen() {
               <Text style={styles.statLabel}>Bookmarks</Text>
             </TouchableOpacity>
             <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user?.followersCount ?? 0}</Text>
+            <TouchableOpacity
+              style={styles.statItem}
+              activeOpacity={0.7}
+              disabled={!user}
+              onPress={() =>
+                user &&
+                router.push({
+                  pathname: '/profile/follow-list',
+                  params: { userId: user.id, mode: 'followers' },
+                })
+              }
+            >
+              <Text style={styles.statNumber}>{user ? getFollowersCount(user.id) : 0}</Text>
               <Text style={styles.statLabel}>Followers</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user?.followingCount ?? 0}</Text>
+            <TouchableOpacity
+              style={styles.statItem}
+              activeOpacity={0.7}
+              disabled={!user}
+              onPress={() =>
+                user &&
+                router.push({
+                  pathname: '/profile/follow-list',
+                  params: { userId: user.id, mode: 'following' },
+                })
+              }
+            >
+              <Text style={styles.statNumber}>{user ? getFollowingCount(user.id) : 0}</Text>
               <Text style={styles.statLabel}>Following</Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -373,6 +400,37 @@ export default function ProfileScreen() {
               }}
             >
               <Text style={styles.devSyncButtonOutlineText}>Copy both JSON (manual git)</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.devSyncButtonOutline, { marginTop: 12 }]}
+              activeOpacity={0.7}
+              onPress={() => {
+                Alert.alert(
+                  'Clear local storage',
+                  'Removes cached recipe overrides, saved user recipes, reviews, bookmarks, follows, likes, and sign-in session. Use this after editing bundled recipes.json if images look stale.',
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    {
+                      text: 'Clear & reload',
+                      style: 'destructive',
+                      onPress: async () => {
+                        try {
+                          await clearChefdAsyncStorage();
+                          if (Platform.OS === 'web' && typeof window !== 'undefined') {
+                            window.location.reload();
+                          } else {
+                            DevSettings.reload();
+                          }
+                        } catch (e) {
+                          Alert.alert('Error', e instanceof Error ? e.message : 'Unknown error');
+                        }
+                      },
+                    },
+                  ],
+                );
+              }}
+            >
+              <Text style={styles.devSyncButtonOutlineText}>Clear AsyncStorage & reload</Text>
             </TouchableOpacity>
           </View>
         ) : null}

@@ -1,6 +1,22 @@
 import type { Recipe, Review, User, RecipeRating } from '@/types';
 import type { StoredUser } from '@/types/auth';
 
+const MS_PER_MINUTE = 60 * 1000;
+const MS_PER_HOUR = 60 * MS_PER_MINUTE;
+const MS_PER_DAY = 24 * MS_PER_HOUR;
+
+/**
+ * Bundled catalog recipes get a stable “posted” time in the last ~2 weeks so the feed shows
+ * labels like “Just now”, “1d ago”, “4d ago” instead of years-old account dates.
+ */
+const BUNDLED_DAYS_AGO_BUCKETS = [0, 1, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 12, 14];
+
+function stableHashInt(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  return Math.abs(h);
+}
+
 /** Parses labels like "2d ago", "1h ago" into approximate epoch ms (event time). */
 export function relativeTimestampToApproxMs(label: string, now = Date.now()): number {
   const m = label
@@ -25,6 +41,21 @@ export function postedAtMsFromUserRecipeId(id: string): number | null {
   const m = /^ur-(\d+)$/.exec(id);
   if (!m) return null;
   return parseInt(m[1], 10);
+}
+
+/**
+ * Sort time for recipe photo posts in the activity feed.
+ * User-created `ur-<timestamp>` ids use that embedded time.
+ * Bundled seed recipes use a stable hash into recent day offsets (e.g. 1d ago, 4d ago) for display + sort.
+ */
+export function recipePostPostedAtMs(recipe: Recipe, now = Date.now()): number {
+  const ur = postedAtMsFromUserRecipeId(recipe.id);
+  if (ur != null) return ur;
+  const h = stableHashInt(`${recipe.id}:${recipe.createdByUserId ?? ''}`);
+  const daysAgo = BUNDLED_DAYS_AGO_BUCKETS[h % BUNDLED_DAYS_AGO_BUCKETS.length];
+  const hourJitter = (h >> 5) % 20;
+  const minJitter = (h >> 10) % 55;
+  return now - daysAgo * MS_PER_DAY - hourJitter * MS_PER_HOUR - minJitter * MS_PER_MINUTE;
 }
 
 export function formatShortTimeAgo(ms: number, now = Date.now()): string {
