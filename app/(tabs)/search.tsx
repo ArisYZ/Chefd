@@ -7,7 +7,9 @@ import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colo
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RecipeCard } from '@/components/RecipeCard';
-import { cuisineFilters } from '@/constants/MockData';
+import { SectionHeader } from '@/components/SectionHeader';
+import { FeaturedListCard } from '@/components/FeaturedListCard';
+import { cuisineFilters, featuredLists } from '@/constants/MockData';
 import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
@@ -137,12 +139,35 @@ export default function SearchScreen() {
         />
       </View>
 
-      <Text style={styles.resultsCount}>{filteredRecipes.length} recipes</Text>
-
       <FlatList
         data={filteredRecipes}
         keyExtractor={(item) => item.id}
         style={styles.recipeList}
+        nestedScrollEnabled
+        ListHeaderComponent={
+          <View>
+            <SectionHeader title="Featured Lists" onAction={() => router.push('/saved')} />
+
+            <ScrollView
+              horizontal
+              nestedScrollEnabled
+              showsHorizontalScrollIndicator={false}
+              style={styles.featuredRowScroll}
+              contentContainerStyle={styles.featuredContainer}
+              keyboardShouldPersistTaps="handled"
+            >
+              {featuredLists.map((list) => (
+                <FeaturedListCard
+                  key={list.id}
+                  list={list}
+                  onPress={() => router.push(`/list/${list.id}`)}
+                />
+              ))}
+            </ScrollView>
+
+            <Text style={styles.resultsCount}>{filteredRecipes.length} recipes</Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <RecipeCard
             recipe={item}
@@ -169,6 +194,14 @@ const styles = StyleSheet.create({
   filterRowScroll: {
     flexGrow: 0,
     flexShrink: 0,
+  },
+  featuredRowScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  featuredContainer: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
   recipeList: {
     flex: 1,

@@ -1,58 +1,75 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 import { SearchBar } from '@/components/SearchBar';
-import { FilterTabs } from '@/components/FilterTabs';
 import { SectionHeader } from '@/components/SectionHeader';
-import { FeaturedListCard } from '@/components/FeaturedListCard';
 import { FeedCard } from '@/components/FeedCard';
-import { featuredLists } from '@/constants/MockData';
+import { RecipePostCard } from '@/components/RecipePostCard';
 import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
+import { getUserById as getMockUserById } from '@/constants/MockData';
 import { useBookmarks } from '@/contexts/BookmarkContext';
 import { useRecipes } from '@/contexts/RecipeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import type { RecipeRating } from '@/types';
-
-const FILTER_TABS = [
-  { label: 'Trending', icon: 'trending-up' },
-  { label: 'Friend picks', icon: 'people' },
-  { label: 'Quick meals', icon: 'flash' },
-  { label: 'New', icon: 'sparkles' },
-];
+import {
+  formatShortTimeAgo,
+  postedAtMsFromUserRecipeId,
+  sortActivityFeedItems,
+  userForRecipePost,
+  type ActivityFeedItem,
+} from '@/lib/feedActivity';
 
 export default function FeedScreen() {
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState('Trending');
+  const { user: authUser } = useAuth();
   const { isBookmarked, toggleBookmark, bookmarkedIds } = useBookmarks();
   const { recipes, getReviewsForRecipe } = useRecipes();
 
-  const feedRatings = useMemo(() => {
-    const items: RecipeRating[] = [];
+  const feedItems = useMemo(() => {
+    const reviews: { kind: 'review'; rating: RecipeRating }[] = [];
     for (const recipe of recipes) {
-      const reviews = getReviewsForRecipe(recipe.id);
-      for (const review of reviews) {
-        items.push({
-          id: `fr_${review.id}`,
-          user: review.user,
-          recipe,
-          review,
-          likes: review.likes,
-          comments: 0,
-          liked: false,
-          timestamp: review.timestamp,
+      const recipeReviews = getReviewsForRecipe(recipe.id);
+      for (const review of recipeReviews) {
+        reviews.push({
+          kind: 'review',
+          rating: {
+            id: `fr_${review.id}`,
+            user: review.user,
+            recipe,
+            review,
+            likes: review.likes,
+            comments: 0,
+            liked: false,
+            timestamp: review.timestamp,
+          },
         });
       }
     }
-    items.sort((a, b) => b.likes - a.likes);
-    return items;
-  }, [recipes, getReviewsForRecipe]);
+
+    const posts: ActivityFeedItem[] = [];
+    for (const recipe of recipes) {
+      const postedAtMs = postedAtMsFromUserRecipeId(recipe.id);
+      if (postedAtMs == null) continue;
+      posts.push({
+        kind: 'recipe_post',
+        id: `post_${recipe.id}`,
+        recipe,
+        user: userForRecipePost(recipe, authUser, getMockUserById),
+        postedAtMs,
+        ratingScore: recipe.averageRating ?? 0,
+      });
+    }
+
+    return sortActivityFeedItems([...reviews, ...posts]);
+  }, [recipes, getReviewsForRecipe, authUser]);
 
   const renderHeader = () => (
     <View>
       <View style={styles.topBar}>
-        <Text style={styles.logo}>Activity</Text>
+        <Text style={styles.logo}>{"Chef 'd"}</Text>
         <View style={styles.topBarRight}>
           <TouchableOpacity
             style={styles.iconButton}
@@ -87,7 +104,6 @@ export default function FeedScreen() {
         </View>
       </TouchableOpacity>
 
-      {/* Category chips */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -108,28 +124,6 @@ export default function FeedScreen() {
         ))}
       </ScrollView>
 
-      <FilterTabs
-        tabs={FILTER_TABS}
-        activeTab={activeFilter}
-        onTabPress={setActiveFilter}
-      />
-
-      <SectionHeader title="Featured Lists" onAction={() => router.push('/saved')} />
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.featuredContainer}
-      >
-        {featuredLists.map((list) => (
-          <FeaturedListCard
-            key={list.id}
-            list={list}
-            onPress={() => router.push(`/list/${list.id}`)}
-          />
-        ))}
-      </ScrollView>
-
       <SectionHeader title="Recent activity" />
     </View>
   );
@@ -137,18 +131,30 @@ export default function FeedScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <FlatList
-        data={feedRatings}
-        keyExtractor={(item) => item.id}
+        data={feedItems}
+        keyExtractor={(item) => (item.kind === 'review' ? item.rating.id : item.id)}
         ListHeaderComponent={renderHeader}
-        renderItem={({ item }) => (
-          <FeedCard
-            rating={item}
-            onPress={() => router.push(`/recipe/${item.recipe.id}`)}
-            onUserPress={() => router.push(`/user/${item.user.id}`)}
-            onBookmarkPress={() => toggleBookmark(item.recipe.id)}
-            isBookmarked={isBookmarked(item.recipe.id)}
-          />
-        )}
+        renderItem={({ item }) =>
+          item.kind === 'review' ? (
+            <FeedCard
+              rating={item.rating}
+              onPress={() => router.push(`/recipe/${item.rating.recipe.id}`)}
+              onUserPress={() => router.push(`/user/${item.rating.user.id}`)}
+              onBookmarkPress={() => toggleBookmark(item.rating.recipe.id)}
+              isBookmarked={isBookmarked(item.rating.recipe.id)}
+            />
+          ) : (
+            <RecipePostCard
+              recipe={item.recipe}
+              user={item.user}
+              timestampLabel={formatShortTimeAgo(item.postedAtMs)}
+              onPress={() => router.push(`/recipe/${item.recipe.id}`)}
+              onUserPress={() => router.push(`/user/${item.user.id}`)}
+              onBookmarkPress={() => toggleBookmark(item.recipe.id)}
+              isBookmarked={isBookmarked(item.recipe.id)}
+            />
+          )
+        }
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
@@ -207,9 +213,5 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
     textAlign: 'center',
-  },
-  featuredContainer: {
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.sm,
   },
 });
