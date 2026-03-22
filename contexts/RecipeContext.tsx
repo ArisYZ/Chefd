@@ -5,6 +5,7 @@ import { Recipe, Review } from '@/types';
 import seedRecipesFile from '@/data/recipes.json';
 import {
   buildMergedRecipesRepoFile,
+  mergeBundledRecipesWithOverride,
   parseRecipesFile,
   type RepoRecipesFile,
 } from '@/data/recipeRepo';
@@ -90,7 +91,11 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const seedBundle = useMemo(
-    () => recipesSeedOverride ?? (seedRecipesFile as unknown as RepoRecipesFile),
+    () =>
+      mergeBundledRecipesWithOverride(
+        seedRecipesFile as unknown as RepoRecipesFile,
+        recipesSeedOverride,
+      ),
     [recipesSeedOverride],
   );
 

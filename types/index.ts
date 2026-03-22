@@ -73,9 +73,8 @@ export interface Recipe {
 }
 
 /**
- * Derive a 1-5 Encore Score from reviews.
- * yes = 5, maybe = 3, no = 1 → averaged.
- * Returns null when there are no reviews.
+ * Encore Score (1–5): average of each review’s **“Would you make it again?”** answer.
+ * yes = 5, maybe = 3, no = 1. Returns null when there are no reviews.
  */
 export function computeScore(reviews: Review[]): number | null {
   if (reviews.length === 0) return null;
@@ -88,8 +87,8 @@ export function computeScore(reviews: Review[]): number | null {
 }
 
 /**
- * Average taste rating from reviews that have one.
- * Returns null when no taste ratings exist.
+ * Average taste rating (1–5.0) from reviews that include a taste score.
+ * Returns null when no taste ratings exist (aggregate shows "— / 5.0" in UI).
  */
 export function computeTasteScore(reviews: Review[]): number | null {
   const rated = reviews.filter((r) => r.tasteRating != null && r.tasteRating > 0);

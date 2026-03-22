@@ -42,6 +42,30 @@ export interface RepoRecipeEntry {
 export type RepoRecipesFile = Record<string, { recipes: RepoRecipeEntry[] }>;
 
 /**
+ * Merge repo `data/recipes.json` with a persisted AsyncStorage override.
+ * The override alone can be an outdated snapshot (missing authors/recipes after an app update);
+ * this keeps every recipe from the bundled catalog and overlays session edits by recipe id.
+ */
+export function mergeBundledRecipesWithOverride(
+  base: RepoRecipesFile,
+  override: RepoRecipesFile | null,
+): RepoRecipesFile {
+  if (!override) return base;
+  const merged = JSON.parse(JSON.stringify(base)) as RepoRecipesFile;
+  for (const uid of Object.keys(override)) {
+    const bucket = override[uid];
+    if (!bucket?.recipes?.length) continue;
+    if (!merged[uid]) merged[uid] = { recipes: [] };
+    const byId = new Map(merged[uid].recipes.map((r) => [r.id, r]));
+    for (const r of bucket.recipes) {
+      byId.set(r.id, r);
+    }
+    merged[uid].recipes = Array.from(byId.values());
+  }
+  return merged;
+}
+
+/**
  * Flatten the per-user recipe file into a single recipe array and a review map.
  * Pass `accountsOverride` after a remote pull so creator names match DB without a Metro restart.
  */
@@ -66,10 +90,24 @@ export function parseRecipesFile(
       const measured = normalizeRecipeIngredientsMeasured(rf.ingredientsMeasured ?? []);
       const ingredientsLines =
         measured.length > 0 ? measured.map(formatIngredientLine) : rf.ingredients ?? [];
+
+      const totalRatings = reviews?.length ?? 0;
+      let averageRating = 0;
+      if (totalRatings > 0) {
+        const encoreSum = reviews.reduce((sum: number, rev: Review) => {
+          if (rev.makeAgain === 'yes') return sum + 5;
+          if (rev.makeAgain === 'maybe') return sum + 3;
+          return sum + 1;
+        }, 0);
+        averageRating = parseFloat((encoreSum / totalRatings).toFixed(1));
+      }
+
       recipes.push({
         ...rf,
         ingredientsMeasured: measured,
         ingredients: ingredientsLines,
+        averageRating,
+        totalRatings,
         createdByUserId: userId,
         createdByName: creatorNameById.get(userId) ?? userId,
       });

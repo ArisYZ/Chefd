@@ -6,6 +6,8 @@ interface RatingBadgeProps {
   rating: number | null;
   size?: 'sm' | 'md' | 'lg';
   label?: string;
+  /** When set (e.g. "/ 5.0"), shown under the score for a consistent out-of scale. */
+  scale?: string;
 }
 
 function getRatingColor(rating: number): string {
@@ -14,8 +16,8 @@ function getRatingColor(rating: number): string {
   return Colors.ratingRed;
 }
 
-export function RatingBadge({ rating, size = 'md', label }: RatingBadgeProps) {
-  const dimensions = size === 'sm' ? 36 : size === 'md' ? 44 : 52;
+export function RatingBadge({ rating, size = 'md', label, scale }: RatingBadgeProps) {
+  const dimensions = size === 'sm' ? 36 : size === 'md' ? 44 : scale ? 64 : 52;
   const fontSize = size === 'sm' ? FontSize.sm : size === 'md' ? FontSize.md : FontSize.lg;
 
   if (rating === null || rating === 0) {
@@ -33,6 +35,7 @@ export function RatingBadge({ rating, size = 'md', label }: RatingBadgeProps) {
   return (
     <View style={[styles.badge, { width: dimensions, height: dimensions, borderColor: color }]}>
       <Text style={[styles.text, { fontSize, color }]}>{rating.toFixed(1)}</Text>
+      {scale ? <Text style={[styles.scale, { color }]}>{scale}</Text> : null}
       {label && size !== 'sm' && (
         <Text style={[styles.sublabel, { color }]}>{label}</Text>
       )}
@@ -51,10 +54,16 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: '700',
   },
+  scale: {
+    fontSize: 9,
+    fontWeight: '600',
+    marginTop: -2,
+    opacity: 0.95,
+  },
   sublabel: {
     fontSize: 7,
     fontWeight: '600',
-    marginTop: -1,
+    marginTop: 0,
     textTransform: 'uppercase',
     letterSpacing: 0.3,
   },

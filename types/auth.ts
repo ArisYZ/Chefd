@@ -14,7 +14,10 @@ export interface StoredUser {
   followingCount: number;
   recipeCount: number;
   reviewCount: number;
-  /** Rolling average 0–10 of “make again” scores from reviews this user wrote. */
+  /**
+   * Rolling average 0–10 of “make again” scores from reviews this user wrote
+   * (yes=10, maybe=5, no=0). Synced from data/recipes.json via `npm run sync-data`.
+   */
   averageRating: number;
   googleSub: string | null;
   createdAt: number;

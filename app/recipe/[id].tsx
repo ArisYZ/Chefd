@@ -28,6 +28,7 @@ import { useBookmarks } from '@/contexts/BookmarkContext';
 import { useSocial } from '@/contexts/SocialContext';
 import { computeScore, computeTasteScore, Review, User } from '@/types';
 import { formatIngredientLine } from '@/lib/ingredients';
+import { formatOutOf5 } from '@/lib/formatScore';
 
 const { width } = Dimensions.get('window');
 
@@ -63,8 +64,6 @@ export default function RecipeDetailScreen() {
 
   const score = computeScore(localReviews);
   const tasteScore = computeTasteScore(localReviews);
-  const yesCount = localReviews.filter((r) => r.makeAgain === 'yes').length;
-  const yesPercent = localReviews.length > 0 ? Math.round((yesCount / localReviews.length) * 100) : 0;
   const avgDifficulty =
     localReviews.length > 0
       ? (localReviews.reduce((s, r) => s + r.difficulty, 0) / localReviews.length).toFixed(1)
@@ -99,7 +98,12 @@ export default function RecipeDetailScreen() {
               <Text style={styles.cuisine}>
                 {recipe.cuisine} · {recipe.category}
               </Text>
-              <Text style={styles.creator}>By {creatorLabel}</Text>
+              <TouchableOpacity
+                onPress={() => recipe.createdByUserId && router.push(`/user/${recipe.createdByUserId}`)}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.creator, { color: Colors.primary }]}>By {creatorLabel}</Text>
+              </TouchableOpacity>
               {recipe.description ? (
                 <Text style={styles.description}>{recipe.description}</Text>
               ) : null}
@@ -114,37 +118,29 @@ export default function RecipeDetailScreen() {
                 </View>
               )}
             </View>
-            <RatingBadge rating={score} size="lg" label="Encore" />
+            <RatingBadge rating={score} size="lg" label="Encore" scale="/ 5.0" />
           </View>
 
           {/* Score summary */}
           {localReviews.length > 0 && (
             <View style={styles.scoreSummary}>
               <View style={styles.scoreItem}>
-                <Text style={styles.scoreValue}>{score?.toFixed(1) ?? '—'}/5</Text>
-                <Text style={styles.scoreLabel}>Encore Score</Text>
+                <Text style={styles.scoreValue}>{formatOutOf5(score)}</Text>
+                <Text style={styles.scoreLabel}>Encore</Text>
               </View>
               <View style={styles.scoreDivider} />
               <View style={styles.scoreItem}>
-                <Text style={styles.scoreValue}>{yesPercent}%</Text>
-                <Text style={styles.scoreLabel}>would make again</Text>
-              </View>
-              <View style={styles.scoreDivider} />
-              <View style={styles.scoreItem}>
-                <Text style={styles.scoreValue}>{avgDifficulty}/5</Text>
-                <Text style={styles.scoreLabel}>
-                  avg difficulty{'\n'}({localReviews.length})
+                <Text style={styles.scoreValue}>
+                  {avgDifficulty != null ? formatOutOf5(Number(avgDifficulty)) : '— / 5.0'}
                 </Text>
+                <Text style={styles.scoreLabel}>Difficulty</Text>
+                <Text style={styles.scoreHint}>{localReviews.length} reviews</Text>
               </View>
-              {tasteScore !== null && (
-                <>
-                  <View style={styles.scoreDivider} />
-                  <View style={styles.scoreItem}>
-                    <Text style={styles.scoreValue}>{tasteScore.toFixed(1)}/5</Text>
-                    <Text style={styles.scoreLabel}>taste</Text>
-                  </View>
-                </>
-              )}
+              <View style={styles.scoreDivider} />
+              <View style={styles.scoreItem}>
+                <Text style={styles.scoreValue}>{formatOutOf5(tasteScore)}</Text>
+                <Text style={styles.scoreLabel}>Taste</Text>
+              </View>
             </View>
           )}
 
@@ -349,9 +345,19 @@ export default function RecipeDetailScreen() {
                   return (
                     <View key={review.id} style={styles.reviewCard}>
                       <View style={styles.reviewHeader}>
-                        <Avatar uri={review.user.avatar} size={36} />
+                        <TouchableOpacity
+                          onPress={() => router.push(`/user/${review.user.id}`)}
+                          activeOpacity={0.7}
+                        >
+                          <Avatar uri={review.user.avatar} size={36} />
+                        </TouchableOpacity>
                         <View style={styles.reviewHeaderText}>
-                          <Text style={styles.reviewUser}>{review.user.name}</Text>
+                          <TouchableOpacity
+                            onPress={() => router.push(`/user/${review.user.id}`)}
+                            activeOpacity={0.7}
+                          >
+                            <Text style={styles.reviewUser}>{review.user.name}</Text>
+                          </TouchableOpacity>
                           <Text style={styles.reviewTime}>{review.timestamp}</Text>
                         </View>
                       </View>
@@ -359,12 +365,19 @@ export default function RecipeDetailScreen() {
                         <MakeAgainBadge value={review.makeAgain} />
                         <DifficultyPips value={review.difficulty} />
                       </View>
-                      {review.tasteRating != null && review.tasteRating > 0 && (
-                        <View style={styles.tasteRow}>
-                          <Ionicons name="star" size={14} color="#FFD700" />
-                          <Text style={styles.tasteText}>{review.tasteRating.toFixed(1)}/5 taste</Text>
-                        </View>
-                      )}
+                      <View style={styles.tasteRow}>
+                        <Ionicons name="star" size={14} color="#FFD700" />
+                        <Text
+                          style={[
+                            styles.tasteText,
+                            !(review.tasteRating != null && review.tasteRating > 0) && styles.tasteTextMuted,
+                          ]}
+                        >
+                          {review.tasteRating != null && review.tasteRating > 0
+                            ? formatOutOf5(review.tasteRating)
+                            : '— / 5.0'}
+                        </Text>
+                      </View>
                       {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
                       {review.flavorNotes && (
                         <Text style={styles.flavorNotes}>Flavor notes: {review.flavorNotes}</Text>
@@ -481,6 +494,7 @@ const styles = StyleSheet.create({
   scoreItem: { flex: 1, alignItems: 'center' },
   scoreValue: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
   scoreLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2, textAlign: 'center' },
+  scoreHint: { fontSize: 10, color: Colors.textTertiary, marginTop: 4, textAlign: 'center' },
   scoreDivider: { width: 1, backgroundColor: Colors.primary + '20' },
   metaRow: {
     flexDirection: 'row',
@@ -629,6 +643,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   tasteText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.ratingYellow },
+  tasteTextMuted: { color: Colors.textTertiary, fontWeight: '500' },
   reviewComment: { fontSize: FontSize.md, color: Colors.text, lineHeight: 21, marginTop: Spacing.sm },
   flavorNotes: {
     fontSize: FontSize.sm,

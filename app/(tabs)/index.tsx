@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,9 +9,11 @@ import { FilterTabs } from '@/components/FilterTabs';
 import { SectionHeader } from '@/components/SectionHeader';
 import { FeaturedListCard } from '@/components/FeaturedListCard';
 import { FeedCard } from '@/components/FeedCard';
-import { feedRatings, featuredLists } from '@/constants/MockData';
+import { featuredLists } from '@/constants/MockData';
 import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
 import { useBookmarks } from '@/contexts/BookmarkContext';
+import { useRecipes } from '@/contexts/RecipeContext';
+import type { RecipeRating } from '@/types';
 
 const FILTER_TABS = [
   { label: 'Trending', icon: 'trending-up' },
@@ -24,6 +26,28 @@ export default function FeedScreen() {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState('Trending');
   const { isBookmarked, toggleBookmark, bookmarkedIds } = useBookmarks();
+  const { recipes, getReviewsForRecipe } = useRecipes();
+
+  const feedRatings = useMemo(() => {
+    const items: RecipeRating[] = [];
+    for (const recipe of recipes) {
+      const reviews = getReviewsForRecipe(recipe.id);
+      for (const review of reviews) {
+        items.push({
+          id: `fr_${review.id}`,
+          user: review.user,
+          recipe,
+          review,
+          likes: review.likes,
+          comments: 0,
+          liked: false,
+          timestamp: review.timestamp,
+        });
+      }
+    }
+    items.sort((a, b) => b.likes - a.likes);
+    return items;
+  }, [recipes, getReviewsForRecipe]);
 
   const renderHeader = () => (
     <View>
@@ -120,6 +144,7 @@ export default function FeedScreen() {
           <FeedCard
             rating={item}
             onPress={() => router.push(`/recipe/${item.recipe.id}`)}
+            onUserPress={() => router.push(`/user/${item.user.id}`)}
             onBookmarkPress={() => toggleBookmark(item.recipe.id)}
             isBookmarked={isBookmarked(item.recipe.id)}
           />

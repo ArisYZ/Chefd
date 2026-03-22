@@ -6,25 +6,41 @@
         "name": "Cacio e Pepe",
         "cuisine": "Italian",
         "category": "Pasta",
-        "tags": ["Vegetarian", "Quick"],
+        "tags": [
+          "Vegetarian",
+          "Quick"
+        ],
         "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600",
         "prepTime": 5,
         "cookTime": 15,
         "servings": 2,
         "difficulty": "Medium",
-        "ingredients": [
-          "200 g Spaghetti",
-          "60 g Pecorino Romano",
-          "2 tsp Black pepper",
-          "1 tbsp Salt",
-          "1 cup Pasta water (reserved)"
-        ],
         "ingredientsMeasured": [
-          { "name": "Spaghetti", "amount": "200", "unit": "g" },
-          { "name": "Pecorino Romano", "amount": "60", "unit": "g" },
-          { "name": "Black pepper", "amount": "2", "unit": "tsp" },
-          { "name": "Salt", "amount": "1", "unit": "tbsp" },
-          { "name": "Pasta water (reserved)", "amount": "1", "unit": "cup" }
+          {
+            "name": "Spaghetti",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Pecorino Romano",
+            "amount": "60",
+            "unit": "g"
+          },
+          {
+            "name": "Black pepper",
+            "amount": "2",
+            "unit": "tsp"
+          },
+          {
+            "name": "Salt",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Pasta water (reserved)",
+            "amount": "1",
+            "unit": "cup"
+          }
         ],
         "instructions": [
           "Bring a large pot of salted water to a boil",
@@ -33,11 +49,18 @@
           "Combine cheese and pepper with pasta water",
           "Toss pasta in the sauce until creamy"
         ],
-        "averageRating": 9.2,
-        "totalRatings": 342,
+        "ingredients": [
+          "200 g Spaghetti",
+          "60 g Pecorino Romano",
+          "2 tsp Black pepper",
+          "1 tbsp Salt",
+          "1 cup Pasta water (reserved)"
+        ],
+        "averageRating": 5,
+        "totalRatings": 5,
         "reviews": [
           {
-            "id": "rev1",
+            "id": "rev_r1_sarah",
             "user": {
               "id": "u_fake_sarah_k",
               "name": "Sarah Kim",
@@ -46,18 +69,19 @@
               "bio": "Baker & pastry lover",
               "followersCount": 512,
               "followingCount": 302,
-              "recipesRated": 94
+              "recipesRated": 12
             },
             "recipeId": "r1",
             "makeAgain": "yes",
             "difficulty": 3,
+            "tasteRating": 4.5,
             "comment": "The simplicity of this dish is what makes it incredible. Key is the pasta water!",
-            "likes": 12,
-            "liked": true,
-            "timestamp": "5 minutes ago"
+            "likes": 18,
+            "liked": false,
+            "timestamp": "2d ago"
           },
           {
-            "id": "rev7",
+            "id": "rev_r1_alex",
             "user": {
               "id": "u_fake_alex_c",
               "name": "Alex Chen",
@@ -66,14 +90,79 @@
               "bio": "Home cook exploring global flavors. Pasta enthusiast.",
               "followersCount": 234,
               "followingCount": 189,
-              "recipesRated": 67
+              "recipesRated": 13
             },
             "recipeId": "r1",
             "makeAgain": "yes",
             "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Quick and delicious. My go-to weeknight pasta now.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r1_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r1",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 5,
+            "comment": "Had to nail the emulsion technique but once I did — perfection.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "So few ingredients, so much flavor. Love this.",
             "likes": 5,
             "liked": false,
-            "timestamp": "1 day ago"
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r1_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Nonna would approve. Authentic and delicious.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "1d ago"
           }
         ]
       },
@@ -82,12 +171,69 @@
         "name": "Butter Chicken",
         "cuisine": "Indian",
         "category": "Curry",
-        "tags": ["High-protein", "Meal prep"],
+        "tags": [
+          "High-protein",
+          "Meal prep"
+        ],
         "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600",
         "prepTime": 20,
         "cookTime": 40,
         "servings": 4,
         "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Chicken thighs",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Yogurt",
+            "amount": "1/2",
+            "unit": "cup"
+          },
+          {
+            "name": "Tomato sauce",
+            "amount": "1",
+            "unit": "cup"
+          },
+          {
+            "name": "Butter",
+            "amount": "50",
+            "unit": "g"
+          },
+          {
+            "name": "Cream",
+            "amount": "1/2",
+            "unit": "cup"
+          },
+          {
+            "name": "Garam masala",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Turmeric",
+            "amount": "1",
+            "unit": "tsp"
+          },
+          {
+            "name": "Ginger (grated)",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Garlic (minced)",
+            "amount": "3",
+            "unit": "clove"
+          }
+        ],
+        "instructions": [
+          "Marinate chicken in yogurt and spices for 1 hour",
+          "Cook chicken in a hot pan until charred",
+          "Simmer tomato sauce with butter and spices",
+          "Add chicken and cream, cook 20 minutes",
+          "Finish with butter and serve with naan"
+        ],
         "ingredients": [
           "500 g Chicken thighs",
           "1/2 cup Yogurt",
@@ -99,29 +245,11 @@
           "1 tbsp Ginger (grated)",
           "3 clove Garlic (minced)"
         ],
-        "ingredientsMeasured": [
-          { "name": "Chicken thighs", "amount": "500", "unit": "g" },
-          { "name": "Yogurt", "amount": "1/2", "unit": "cup" },
-          { "name": "Tomato sauce", "amount": "1", "unit": "cup" },
-          { "name": "Butter", "amount": "50", "unit": "g" },
-          { "name": "Cream", "amount": "1/2", "unit": "cup" },
-          { "name": "Garam masala", "amount": "1", "unit": "tbsp" },
-          { "name": "Turmeric", "amount": "1", "unit": "tsp" },
-          { "name": "Ginger (grated)", "amount": "1", "unit": "tbsp" },
-          { "name": "Garlic (minced)", "amount": "3", "unit": "clove" }
-        ],
-        "instructions": [
-          "Marinate chicken in yogurt and spices for 1 hour",
-          "Cook chicken in a hot pan until charred",
-          "Simmer tomato sauce with butter and spices",
-          "Add chicken and cream, cook 20 minutes",
-          "Finish with butter and serve with naan"
-        ],
-        "averageRating": 9.0,
-        "totalRatings": 567,
+        "averageRating": 4.5,
+        "totalRatings": 4,
         "reviews": [
           {
-            "id": "rev3",
+            "id": "rev_r2_priya",
             "user": {
               "id": "u_fake_priya_p",
               "name": "Priya Patel",
@@ -130,15 +258,79 @@
               "bio": "Indian home cooking & spice explorer",
               "followersCount": 876,
               "followingCount": 234,
-              "recipesRated": 112
+              "recipesRated": 12
             },
             "recipeId": "r2",
             "makeAgain": "yes",
             "difficulty": 4,
+            "tasteRating": 4.5,
             "comment": "My go-to butter chicken recipe. Restaurant quality at home!",
-            "likes": 18,
+            "likes": 22,
             "liked": false,
-            "timestamp": "1 hour ago"
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r2",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Tasty but a bit heavy for my usual meals. Would lighten the cream next time.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Great balance of spices. Added extra ginger and it was perfect.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r2_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "My family asks for this every week now. Incredible flavors.",
+            "likes": 13,
+            "liked": false,
+            "timestamp": "4d ago"
           }
         ]
       },
@@ -147,23 +339,35 @@
         "name": "Sourdough Bread",
         "cuisine": "French",
         "category": "Bread",
-        "tags": ["Vegan", "Low-carb"],
+        "tags": [
+          "Vegan"
+        ],
         "image": "https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=600",
         "prepTime": 30,
         "cookTime": 45,
         "servings": 1,
         "difficulty": "Hard",
-        "ingredients": [
-          "500 g Bread flour",
-          "100 g Sourdough starter",
-          "350 mL Water (warm)",
-          "10 g Salt"
-        ],
         "ingredientsMeasured": [
-          { "name": "Bread flour", "amount": "500", "unit": "g" },
-          { "name": "Sourdough starter", "amount": "100", "unit": "g" },
-          { "name": "Water (warm)", "amount": "350", "unit": "mL" },
-          { "name": "Salt", "amount": "10", "unit": "g" }
+          {
+            "name": "Bread flour",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Sourdough starter",
+            "amount": "100",
+            "unit": "g"
+          },
+          {
+            "name": "Water (warm)",
+            "amount": "350",
+            "unit": "mL"
+          },
+          {
+            "name": "Salt",
+            "amount": "10",
+            "unit": "g"
+          }
         ],
         "instructions": [
           "Mix flour, water, and starter. Autolyse 30 min",
@@ -172,11 +376,17 @@
           "Shape and cold proof overnight",
           "Bake in Dutch oven at 500°F then 450°F"
         ],
-        "averageRating": 8.8,
-        "totalRatings": 234,
+        "ingredients": [
+          "500 g Bread flour",
+          "100 g Sourdough starter",
+          "350 mL Water (warm)",
+          "10 g Salt"
+        ],
+        "averageRating": 3,
+        "totalRatings": 4,
         "reviews": [
           {
-            "id": "rev6",
+            "id": "rev_r3_sarah",
             "user": {
               "id": "u_fake_sarah_k",
               "name": "Sarah Kim",
@@ -185,15 +395,79 @@
               "bio": "Baker & pastry lover",
               "followersCount": 512,
               "followingCount": 302,
-              "recipesRated": 94
+              "recipesRated": 12
             },
             "recipeId": "r3",
             "makeAgain": "maybe",
             "difficulty": 5,
+            "tasteRating": 3.5,
             "comment": "Took me 3 attempts to get right but so worth the effort.",
-            "likes": 31,
-            "liked": true,
-            "timestamp": "5 hours ago"
+            "likes": 15,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r3_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r3",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 4,
+            "comment": "Beautiful crumb after the third try. Patience pays off.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r3_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r3",
+            "makeAgain": "maybe",
+            "difficulty": 4,
+            "tasteRating": 3,
+            "comment": "Decent recipe but my starter was not strong enough. Will retry.",
+            "likes": 4,
+            "liked": false,
+            "timestamp": "6d ago"
+          },
+          {
+            "id": "rev_r3_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r3",
+            "makeAgain": "no",
+            "difficulty": 5,
+            "tasteRating": 2,
+            "comment": "Way too time consuming for me. I'll stick to buying bread.",
+            "likes": 3,
+            "liked": false,
+            "timestamp": "4d ago"
           }
         ]
       },
@@ -202,12 +476,64 @@
         "name": "Spicy Miso Ramen",
         "cuisine": "Japanese",
         "category": "Soup",
-        "tags": ["Dairy-free", "Quick"],
+        "tags": [
+          "Dairy-free",
+          "Quick"
+        ],
         "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600",
         "prepTime": 15,
         "cookTime": 30,
         "servings": 2,
         "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Ramen noodles",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Miso paste",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Chili oil",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Pork belly (sliced)",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Soft-boiled eggs",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Green onions",
+            "amount": "2",
+            "unit": "stalk"
+          },
+          {
+            "name": "Nori",
+            "amount": "2",
+            "unit": "sheet"
+          },
+          {
+            "name": "Chicken broth",
+            "amount": "1",
+            "unit": "L"
+          }
+        ],
+        "instructions": [
+          "Prepare broth with miso paste and chili",
+          "Cook pork belly until caramelized",
+          "Boil eggs for 6.5 minutes for jammy center",
+          "Cook noodles according to package",
+          "Assemble bowl with toppings"
+        ],
         "ingredients": [
           "200 g Ramen noodles",
           "3 tbsp Miso paste",
@@ -218,28 +544,11 @@
           "2 sheet Nori",
           "1 L Chicken broth"
         ],
-        "ingredientsMeasured": [
-          { "name": "Ramen noodles", "amount": "200", "unit": "g" },
-          { "name": "Miso paste", "amount": "3", "unit": "tbsp" },
-          { "name": "Chili oil", "amount": "1", "unit": "tbsp" },
-          { "name": "Pork belly (sliced)", "amount": "200", "unit": "g" },
-          { "name": "Soft-boiled eggs", "amount": "2", "unit": "whole" },
-          { "name": "Green onions", "amount": "2", "unit": "stalk" },
-          { "name": "Nori", "amount": "2", "unit": "slice" },
-          { "name": "Chicken broth", "amount": "1", "unit": "L" }
-        ],
-        "instructions": [
-          "Prepare broth with miso paste and chili",
-          "Cook pork belly until caramelized",
-          "Boil eggs for 6.5 minutes for jammy center",
-          "Cook noodles according to package",
-          "Assemble bowl with toppings"
-        ],
-        "averageRating": 9.1,
-        "totalRatings": 445,
+        "averageRating": 4.5,
+        "totalRatings": 4,
         "reviews": [
           {
-            "id": "rev4",
+            "id": "rev_r4_emma",
             "user": {
               "id": "u_fake_emma_w",
               "name": "Emma Wilson",
@@ -248,15 +557,79 @@
               "bio": "Healthy meals & meal prep queen",
               "followersCount": 345,
               "followingCount": 198,
-              "recipesRated": 45
+              "recipesRated": 12
             },
             "recipeId": "r4",
             "makeAgain": "maybe",
             "difficulty": 2,
+            "tasteRating": 3.5,
             "comment": "Perfect for a cold night. The spicy miso broth is addictive.",
             "likes": 8,
-            "liked": true,
-            "timestamp": "2 hours ago"
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r4_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r4",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Better than takeout. The jammy eggs were the star.",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r4_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r4",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Added extra chili oil — so good!",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r4_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r4",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The pork belly was incredible. Restaurant-level ramen at home.",
+            "likes": 16,
+            "liked": false,
+            "timestamp": "5d ago"
           }
         ]
       },
@@ -265,12 +638,59 @@
         "name": "Classic Tiramisu",
         "cuisine": "Italian",
         "category": "Dessert",
-        "tags": ["Vegetarian", "Meal prep"],
+        "tags": [
+          "Vegetarian",
+          "Meal prep"
+        ],
         "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600",
         "prepTime": 30,
         "cookTime": 0,
         "servings": 8,
         "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Mascarpone",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Eggs",
+            "amount": "4",
+            "unit": "whole"
+          },
+          {
+            "name": "Sugar",
+            "amount": "100",
+            "unit": "g"
+          },
+          {
+            "name": "Espresso (cooled)",
+            "amount": "250",
+            "unit": "mL"
+          },
+          {
+            "name": "Ladyfingers",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Cocoa powder",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Marsala wine",
+            "amount": "30",
+            "unit": "mL"
+          }
+        ],
+        "instructions": [
+          "Whip egg yolks and sugar until pale",
+          "Fold in mascarpone until smooth",
+          "Whip egg whites to stiff peaks and fold in",
+          "Dip ladyfingers in espresso mixture",
+          "Layer cream and ladyfingers, dust with cocoa"
+        ],
         "ingredients": [
           "500 g Mascarpone",
           "4 whole Eggs",
@@ -280,27 +700,11 @@
           "2 tbsp Cocoa powder",
           "30 mL Marsala wine"
         ],
-        "ingredientsMeasured": [
-          { "name": "Mascarpone", "amount": "500", "unit": "g" },
-          { "name": "Eggs", "amount": "4", "unit": "whole" },
-          { "name": "Sugar", "amount": "100", "unit": "g" },
-          { "name": "Espresso (cooled)", "amount": "250", "unit": "mL" },
-          { "name": "Ladyfingers", "amount": "200", "unit": "g" },
-          { "name": "Cocoa powder", "amount": "2", "unit": "tbsp" },
-          { "name": "Marsala wine", "amount": "30", "unit": "mL" }
-        ],
-        "instructions": [
-          "Whip egg yolks and sugar until pale",
-          "Fold in mascarpone until smooth",
-          "Whip egg whites to stiff peaks and fold in",
-          "Dip ladyfingers in espresso mixture",
-          "Layer cream and ladyfingers, dust with cocoa"
-        ],
-        "averageRating": 8.7,
-        "totalRatings": 289,
+        "averageRating": 5,
+        "totalRatings": 4,
         "reviews": [
           {
-            "id": "rev5",
+            "id": "rev_r5_sarah",
             "user": {
               "id": "u_fake_sarah_k",
               "name": "Sarah Kim",
@@ -309,15 +713,79 @@
               "bio": "Baker & pastry lover",
               "followersCount": 512,
               "followingCount": 302,
-              "recipesRated": 94
+              "recipesRated": 12
             },
             "recipeId": "r5",
             "makeAgain": "yes",
             "difficulty": 3,
+            "tasteRating": 5,
             "comment": "Made this for a dinner party and everyone loved it. Make it a day ahead!",
-            "likes": 15,
+            "likes": 20,
             "liked": false,
-            "timestamp": "3 hours ago"
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r5_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r5",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Classic done right. The Marsala makes all the difference.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r5_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r5",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Absolutely divine. Best tiramisu recipe I've tried.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r5_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r5",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 5,
+            "comment": "Worth every minute of prep. The mascarpone cream is heavenly.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "6d ago"
           }
         ]
       },
@@ -326,12 +794,65 @@
         "name": "Thai Green Curry",
         "cuisine": "Thai",
         "category": "Curry",
-        "tags": ["Gluten-free", "Quick", "High-protein"],
+        "tags": [
+          "Gluten-free",
+          "Quick",
+          "High-protein"
+        ],
         "image": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600",
         "prepTime": 15,
         "cookTime": 25,
         "servings": 4,
         "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Green curry paste",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Coconut milk",
+            "amount": "400",
+            "unit": "mL"
+          },
+          {
+            "name": "Chicken (cubed)",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Thai basil",
+            "amount": "1",
+            "unit": "handful"
+          },
+          {
+            "name": "Bamboo shoots",
+            "amount": "100",
+            "unit": "g"
+          },
+          {
+            "name": "Fish sauce",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Palm sugar",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Thai eggplant",
+            "amount": "150",
+            "unit": "g"
+          }
+        ],
+        "instructions": [
+          "Fry curry paste in coconut cream until fragrant",
+          "Add chicken and cook through",
+          "Pour in remaining coconut milk",
+          "Add vegetables and simmer 10 min",
+          "Season with fish sauce and sugar, top with basil"
+        ],
         "ingredients": [
           "3 tbsp Green curry paste",
           "400 mL Coconut milk",
@@ -342,66 +863,11 @@
           "1 tbsp Palm sugar",
           "150 g Thai eggplant"
         ],
-        "ingredientsMeasured": [
-          { "name": "Green curry paste", "amount": "3", "unit": "tbsp" },
-          { "name": "Coconut milk", "amount": "400", "unit": "mL" },
-          { "name": "Chicken (cubed)", "amount": "400", "unit": "g" },
-          { "name": "Thai basil", "amount": "1", "unit": "handful" },
-          { "name": "Bamboo shoots", "amount": "100", "unit": "g" },
-          { "name": "Fish sauce", "amount": "2", "unit": "tbsp" },
-          { "name": "Palm sugar", "amount": "1", "unit": "tbsp" },
-          { "name": "Thai eggplant", "amount": "150", "unit": "g" }
-        ],
-        "instructions": [
-          "Fry curry paste in coconut cream until fragrant",
-          "Add chicken and cook through",
-          "Pour in remaining coconut milk",
-          "Add vegetables and simmer 10 min",
-          "Season with fish sauce and sugar, top with basil"
-        ],
-        "averageRating": 8.9,
-        "totalRatings": 398,
-        "reviews": []
-      },
-      {
-        "id": "r7",
-        "name": "NY-Style Pizza Dough",
-        "cuisine": "American",
-        "category": "Bread",
-        "tags": ["Vegan", "Meal prep"],
-        "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600",
-        "prepTime": 20,
-        "cookTime": 12,
-        "servings": 4,
-        "difficulty": "Medium",
-        "ingredients": [
-          "500 g Bread flour",
-          "325 mL Water",
-          "5 g Yeast (dry)",
-          "10 g Salt",
-          "5 g Sugar",
-          "15 mL Olive oil"
-        ],
-        "ingredientsMeasured": [
-          { "name": "Bread flour", "amount": "500", "unit": "g" },
-          { "name": "Water", "amount": "325", "unit": "mL" },
-          { "name": "Yeast (dry)", "amount": "5", "unit": "g" },
-          { "name": "Salt", "amount": "10", "unit": "g" },
-          { "name": "Sugar", "amount": "5", "unit": "g" },
-          { "name": "Olive oil", "amount": "15", "unit": "mL" }
-        ],
-        "instructions": [
-          "Combine water, yeast, and sugar",
-          "Mix in flour, salt, and olive oil",
-          "Knead 10 minutes until smooth",
-          "Cold ferment 24-72 hours",
-          "Stretch and bake at highest oven temp"
-        ],
-        "averageRating": 9.3,
-        "totalRatings": 512,
+        "averageRating": 5,
+        "totalRatings": 4,
         "reviews": [
           {
-            "id": "rev9",
+            "id": "rev_r6_priya",
             "user": {
               "id": "u_fake_priya_p",
               "name": "Priya Patel",
@@ -410,15 +876,229 @@
               "bio": "Indian home cooking & spice explorer",
               "followersCount": 876,
               "followingCount": 234,
-              "recipesRated": 112
+              "recipesRated": 12
+            },
+            "recipeId": "r6",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Reminds me of street food in Bangkok. Authentic flavors.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r6_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r6",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Great weeknight dinner. Ready in under 30 minutes.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r6_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r6",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "My kids love this. I reduce the spice for them.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r6_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r6",
+            "makeAgain": "yes",
+            "difficulty": 1,
+            "tasteRating": 4.5,
+            "comment": "Quick, healthy, and flavorful. What more could you want?",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "1d ago"
+          }
+        ]
+      },
+      {
+        "id": "r7",
+        "name": "NY-Style Pizza Dough",
+        "cuisine": "American",
+        "category": "Bread",
+        "tags": [
+          "Vegan",
+          "Meal prep"
+        ],
+        "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600",
+        "prepTime": 20,
+        "cookTime": 12,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Bread flour",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Water",
+            "amount": "325",
+            "unit": "mL"
+          },
+          {
+            "name": "Yeast (dry)",
+            "amount": "5",
+            "unit": "g"
+          },
+          {
+            "name": "Salt",
+            "amount": "10",
+            "unit": "g"
+          },
+          {
+            "name": "Sugar",
+            "amount": "5",
+            "unit": "g"
+          },
+          {
+            "name": "Olive oil",
+            "amount": "15",
+            "unit": "mL"
+          }
+        ],
+        "instructions": [
+          "Combine water, yeast, and sugar",
+          "Mix in flour, salt, and olive oil",
+          "Knead 10 minutes until smooth",
+          "Cold ferment 24-72 hours",
+          "Stretch and bake at highest oven temp"
+        ],
+        "ingredients": [
+          "500 g Bread flour",
+          "325 mL Water",
+          "5 g Yeast (dry)",
+          "10 g Salt",
+          "5 g Sugar",
+          "15 mL Olive oil"
+        ],
+        "averageRating": 3,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r7_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
             },
             "recipeId": "r7",
             "makeAgain": "no",
             "difficulty": 4,
+            "tasteRating": 2,
             "comment": "Too much effort for the result. I'll just order pizza.",
             "likes": 3,
             "liked": false,
-            "timestamp": "2 days ago"
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r7_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r7",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Good dough but the cold ferment time is a commitment.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r7_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r7",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Best homemade pizza dough I've found. Worth the wait!",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r7_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r7",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Decent but I prefer a thinner Neapolitan style.",
+            "likes": 4,
+            "liked": false,
+            "timestamp": "6d ago"
           }
         ]
       },
@@ -427,12 +1107,59 @@
         "name": "Crispy Tacos al Pastor",
         "cuisine": "Mexican",
         "category": "Tacos",
-        "tags": ["High-protein", "Gluten-free"],
+        "tags": [
+          "High-protein",
+          "Gluten-free"
+        ],
         "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600",
         "prepTime": 30,
         "cookTime": 20,
         "servings": 4,
         "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Pork shoulder",
+            "amount": "800",
+            "unit": "g"
+          },
+          {
+            "name": "Pineapple",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Achiote paste",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Corn tortillas",
+            "amount": "12",
+            "unit": "whole"
+          },
+          {
+            "name": "Onion (diced)",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Cilantro",
+            "amount": "1",
+            "unit": "handful"
+          },
+          {
+            "name": "Limes",
+            "amount": "2",
+            "unit": "whole"
+          }
+        ],
+        "instructions": [
+          "Marinate pork in achiote and pineapple juice",
+          "Grill or broil pork until charred",
+          "Grill pineapple slices",
+          "Warm tortillas on a comal",
+          "Assemble with onion, cilantro, and lime"
+        ],
         "ingredients": [
           "800 g Pork shoulder",
           "200 g Pineapple",
@@ -442,27 +1169,11 @@
           "1 handful Cilantro",
           "2 whole Limes"
         ],
-        "ingredientsMeasured": [
-          { "name": "Pork shoulder", "amount": "800", "unit": "g" },
-          { "name": "Pineapple", "amount": "200", "unit": "g" },
-          { "name": "Achiote paste", "amount": "3", "unit": "tbsp" },
-          { "name": "Corn tortillas", "amount": "12", "unit": "whole" },
-          { "name": "Onion (diced)", "amount": "1", "unit": "whole" },
-          { "name": "Cilantro", "amount": "1", "unit": "handful" },
-          { "name": "Limes", "amount": "2", "unit": "whole" }
-        ],
-        "instructions": [
-          "Marinate pork in achiote and pineapple juice",
-          "Grill or broil pork until charred",
-          "Grill pineapple slices",
-          "Warm tortillas on a comal",
-          "Assemble with onion, cilantro, and lime"
-        ],
-        "averageRating": 9.4,
-        "totalRatings": 623,
+        "averageRating": 5,
+        "totalRatings": 5,
         "reviews": [
           {
-            "id": "rev2",
+            "id": "rev_r8_marcus",
             "user": {
               "id": "u_fake_marcus_j",
               "name": "Marcus Johnson",
@@ -471,18 +1182,19 @@
               "bio": "BBQ master, southern comfort food",
               "followersCount": 1243,
               "followingCount": 456,
-              "recipesRated": 156
+              "recipesRated": 12
             },
             "recipeId": "r8",
             "makeAgain": "yes",
             "difficulty": 3,
+            "tasteRating": 5,
             "comment": "Best tacos I've ever made at home. The achiote marinade is a game changer.",
             "likes": 24,
             "liked": false,
-            "timestamp": "15 minutes ago"
+            "timestamp": "1d ago"
           },
           {
-            "id": "rev8",
+            "id": "rev_r8_emma",
             "user": {
               "id": "u_fake_emma_w",
               "name": "Emma Wilson",
@@ -491,15 +1203,3448 @@
               "bio": "Healthy meals & meal prep queen",
               "followersCount": 345,
               "followingCount": 198,
-              "recipesRated": 45
+              "recipesRated": 12
             },
             "recipeId": "r8",
             "makeAgain": "yes",
             "difficulty": 4,
+            "tasteRating": 4.5,
             "comment": "The charred pineapple is the star. Will definitely make again.",
             "likes": 9,
             "liked": false,
-            "timestamp": "1 day ago"
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r8_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r8",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Easy to adapt with chicken too. Great recipe.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r8_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r8",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Authentic al pastor flavors. My family devoured these.",
+            "likes": 15,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r8_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r8",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 5,
+            "comment": "Reminds me of taquerias back home. Absolutely nailed it.",
+            "likes": 19,
+            "liked": false,
+            "timestamp": "4d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_alex_c": {
+    "recipes": [
+      {
+        "id": "r_alex_1",
+        "name": "Homemade Pesto Pasta",
+        "cuisine": "Italian",
+        "category": "Pasta",
+        "tags": [
+          "Vegetarian",
+          "Quick"
+        ],
+        "image": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600",
+        "prepTime": 10,
+        "cookTime": 12,
+        "servings": 4,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Penne",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Fresh basil",
+            "amount": "2",
+            "unit": "cup"
+          },
+          {
+            "name": "Pine nuts",
+            "amount": "50",
+            "unit": "g"
+          },
+          {
+            "name": "Parmesan",
+            "amount": "60",
+            "unit": "g"
+          },
+          {
+            "name": "Garlic",
+            "amount": "2",
+            "unit": "clove"
+          },
+          {
+            "name": "Olive oil",
+            "amount": "80",
+            "unit": "mL"
+          }
+        ],
+        "instructions": [
+          "Blend basil, pine nuts, garlic, and Parmesan in a food processor",
+          "Stream in olive oil until smooth",
+          "Cook penne to al dente, reserve 1 cup pasta water",
+          "Toss pasta with pesto, adding pasta water to loosen",
+          "Serve with extra Parmesan and cracked pepper"
+        ],
+        "ingredients": [
+          "400 g Penne",
+          "2 cup Fresh basil",
+          "50 g Pine nuts",
+          "60 g Parmesan",
+          "2 clove Garlic",
+          "80 mL Olive oil"
+        ],
+        "averageRating": 4.5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_alex_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_alex_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Fresh pesto makes all the difference. So vibrant!",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_alex_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_alex_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Added sun-dried tomatoes — incredible combination.",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_alex_1_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_alex_1",
+            "makeAgain": "maybe",
+            "difficulty": 2,
+            "tasteRating": 3.5,
+            "comment": "Good but pine nuts are expensive. Tried with walnuts and it worked.",
+            "likes": 4,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_alex_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_alex_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "My kids' favorite pasta. Takes 20 minutes start to finish.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_alex_2",
+        "name": "Korean Bibimbap",
+        "cuisine": "Korean",
+        "category": "Rice Bowl",
+        "tags": [
+          "High-protein",
+          "Gluten-free"
+        ],
+        "image": "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600",
+        "prepTime": 20,
+        "cookTime": 15,
+        "servings": 2,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Short-grain rice",
+            "amount": "300",
+            "unit": "g"
+          },
+          {
+            "name": "Ground beef",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Spinach",
+            "amount": "100",
+            "unit": "g"
+          },
+          {
+            "name": "Carrots (julienned)",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Gochujang",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Sesame oil",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Eggs",
+            "amount": "2",
+            "unit": "whole"
+          }
+        ],
+        "instructions": [
+          "Cook rice and keep warm",
+          "Sauté each vegetable separately with sesame oil and salt",
+          "Cook beef with soy sauce and garlic",
+          "Fry eggs sunny-side up",
+          "Assemble bowls: rice, vegetables, beef, egg, and gochujang"
+        ],
+        "ingredients": [
+          "300 g Short-grain rice",
+          "200 g Ground beef",
+          "100 g Spinach",
+          "1 whole Carrots (julienned)",
+          "2 tbsp Gochujang",
+          "1 tbsp Sesame oil",
+          "2 whole Eggs"
+        ],
+        "averageRating": 4.5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_alex_2_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_alex_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The crispy rice at the bottom is everything. Great recipe.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_alex_2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_alex_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Healthy, colorful, and delicious. New meal prep staple.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_alex_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_alex_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Love the gochujang sauce. Would add kimchi next time.",
+            "likes": 13,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_alex_2_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_alex_2",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Lots of components but tasty. Took longer than expected.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "6d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_sarah_k": {
+    "recipes": [
+      {
+        "id": "r_sarah_1",
+        "name": "Chocolate Lava Cake",
+        "cuisine": "French",
+        "category": "Dessert",
+        "tags": [
+          "Vegetarian"
+        ],
+        "image": "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600",
+        "prepTime": 15,
+        "cookTime": 12,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Dark chocolate",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Butter",
+            "amount": "100",
+            "unit": "g"
+          },
+          {
+            "name": "Eggs",
+            "amount": "3",
+            "unit": "whole"
+          },
+          {
+            "name": "Sugar",
+            "amount": "80",
+            "unit": "g"
+          },
+          {
+            "name": "Flour",
+            "amount": "30",
+            "unit": "g"
+          },
+          {
+            "name": "Vanilla extract",
+            "amount": "1",
+            "unit": "tsp"
+          }
+        ],
+        "instructions": [
+          "Melt chocolate and butter together, let cool slightly",
+          "Whisk eggs and sugar until thick and pale",
+          "Fold chocolate mixture into eggs, then fold in flour",
+          "Pour into buttered ramekins",
+          "Bake at 425°F for exactly 12 minutes — centers should be jiggly"
+        ],
+        "ingredients": [
+          "200 g Dark chocolate",
+          "100 g Butter",
+          "3 whole Eggs",
+          "80 g Sugar",
+          "30 g Flour",
+          "1 tsp Vanilla extract"
+        ],
+        "averageRating": 5,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_sarah_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_sarah_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 5,
+            "comment": "Absolutely show-stopping dessert. Timing is everything!",
+            "likes": 17,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_sarah_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_sarah_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Easier than expected. The lava center was perfect at 12 min.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_sarah_1_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sarah_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 5,
+            "comment": "Made this for date night. Earned serious points.",
+            "likes": 21,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_sarah_1_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_sarah_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "The warm center is magical. Great for special occasions.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_sarah_1_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r_sarah_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Decadent and impressive. Everyone thinks you're a pro chef.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "5d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_sarah_2",
+        "name": "French Croissants",
+        "cuisine": "French",
+        "category": "Bread",
+        "tags": [
+          "Vegetarian"
+        ],
+        "image": "https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=600",
+        "prepTime": 45,
+        "cookTime": 18,
+        "servings": 8,
+        "difficulty": "Hard",
+        "ingredientsMeasured": [
+          {
+            "name": "All-purpose flour",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Butter (cold)",
+            "amount": "280",
+            "unit": "g"
+          },
+          {
+            "name": "Milk (warm)",
+            "amount": "250",
+            "unit": "mL"
+          },
+          {
+            "name": "Sugar",
+            "amount": "50",
+            "unit": "g"
+          },
+          {
+            "name": "Yeast (dry)",
+            "amount": "7",
+            "unit": "g"
+          },
+          {
+            "name": "Salt",
+            "amount": "10",
+            "unit": "g"
+          }
+        ],
+        "instructions": [
+          "Mix dough with flour, milk, yeast, sugar, and salt; rest 1 hour",
+          "Encase cold butter block in dough",
+          "Perform 3 sets of letter folds with 30 min chills between",
+          "Shape croissants and proof until doubled",
+          "Egg wash and bake at 400°F until deeply golden"
+        ],
+        "ingredients": [
+          "500 g All-purpose flour",
+          "280 g Butter (cold)",
+          "250 mL Milk (warm)",
+          "50 g Sugar",
+          "7 g Yeast (dry)",
+          "10 g Salt"
+        ],
+        "averageRating": 4,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_sarah_2_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_sarah_2",
+            "makeAgain": "maybe",
+            "difficulty": 5,
+            "tasteRating": 3.5,
+            "comment": "They turned out OK but I need more practice with lamination.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_sarah_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_sarah_2",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 4.5,
+            "comment": "Flaky, buttery, and worth every hour of work.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_sarah_2_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sarah_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Surprisingly achievable with good instructions. So proud!",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_sarah_2_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_sarah_2",
+            "makeAgain": "maybe",
+            "difficulty": 4,
+            "tasteRating": 3.5,
+            "comment": "Beautiful but took an entire day. Not sure I'd do it again.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_marcus_j": {
+    "recipes": [
+      {
+        "id": "r_marcus_1",
+        "name": "Smoked Pulled Pork",
+        "cuisine": "American",
+        "category": "BBQ",
+        "tags": [
+          "Gluten-free",
+          "High-protein"
+        ],
+        "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecf0?w=600",
+        "prepTime": 20,
+        "cookTime": 480,
+        "servings": 12,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Pork shoulder",
+            "amount": "3",
+            "unit": "kg"
+          },
+          {
+            "name": "Brown sugar",
+            "amount": "60",
+            "unit": "g"
+          },
+          {
+            "name": "Paprika",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Garlic powder",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Apple cider vinegar",
+            "amount": "120",
+            "unit": "mL"
+          },
+          {
+            "name": "Yellow mustard",
+            "amount": "2",
+            "unit": "tbsp"
+          }
+        ],
+        "instructions": [
+          "Mix dry rub: brown sugar, paprika, garlic powder, salt, pepper",
+          "Coat pork shoulder generously and refrigerate overnight",
+          "Smoke at 225°F for 8 hours, spritzing with vinegar every hour",
+          "Pull when internal temp reaches 203°F",
+          "Rest 30 minutes, then shred with forks and toss with juices"
+        ],
+        "ingredients": [
+          "3 kg Pork shoulder",
+          "60 g Brown sugar",
+          "2 tbsp Paprika",
+          "1 tbsp Garlic powder",
+          "120 mL Apple cider vinegar",
+          "2 tbsp Yellow mustard"
+        ],
+        "averageRating": 5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_marcus_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_marcus_1",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 5,
+            "comment": "This is barbecue perfection. Low and slow is the way.",
+            "likes": 19,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_marcus_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_marcus_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Used my oven (no smoker) and it still came out amazing.",
+            "likes": 13,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_marcus_1_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_marcus_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Made sliders with this. Crowd pleaser at the cookout!",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_marcus_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_marcus_1",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 4.5,
+            "comment": "The overnight dry rub is what makes this special.",
+            "likes": 16,
+            "liked": false,
+            "timestamp": "6d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_marcus_2",
+        "name": "Nashville Hot Chicken",
+        "cuisine": "American",
+        "category": "Fried",
+        "tags": [
+          "High-protein"
+        ],
+        "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600",
+        "prepTime": 30,
+        "cookTime": 15,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Chicken thighs",
+            "amount": "1",
+            "unit": "kg"
+          },
+          {
+            "name": "Buttermilk",
+            "amount": "500",
+            "unit": "mL"
+          },
+          {
+            "name": "All-purpose flour",
+            "amount": "250",
+            "unit": "g"
+          },
+          {
+            "name": "Cayenne pepper",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Paprika",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Brown sugar",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Pickles",
+            "amount": "8",
+            "unit": "slice"
+          }
+        ],
+        "instructions": [
+          "Brine chicken in seasoned buttermilk for 4+ hours",
+          "Dredge in seasoned flour, shaking off excess",
+          "Deep fry at 350°F until golden and cooked through",
+          "Mix cayenne, paprika, brown sugar, and frying oil into a paste",
+          "Brush hot paste on fried chicken, serve on white bread with pickles"
+        ],
+        "ingredients": [
+          "1 kg Chicken thighs",
+          "500 mL Buttermilk",
+          "250 g All-purpose flour",
+          "3 tbsp Cayenne pepper",
+          "1 tbsp Paprika",
+          "1 tbsp Brown sugar",
+          "8 slice Pickles"
+        ],
+        "averageRating": 4.6,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_marcus_2_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_marcus_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Perfectly crispy with just the right amount of heat.",
+            "likes": 15,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_marcus_2_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_marcus_2",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 4,
+            "comment": "The heat builds beautifully. Great with cooling slaw.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_marcus_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_marcus_2",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Good but too spicy for me — I'd use half the cayenne.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_marcus_2_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r_marcus_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Southern comfort at its finest. Love the pickle addition.",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_marcus_2_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_marcus_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Crispy, spicy, addictive. Made this three times already.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "5d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_priya_p": {
+    "recipes": [
+      {
+        "id": "r_priya_1",
+        "name": "Chicken Tikka Masala",
+        "cuisine": "Indian",
+        "category": "Curry",
+        "tags": [
+          "High-protein",
+          "Gluten-free"
+        ],
+        "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600",
+        "prepTime": 25,
+        "cookTime": 30,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Chicken breast",
+            "amount": "600",
+            "unit": "g"
+          },
+          {
+            "name": "Yogurt",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Tomato puree",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Onion",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Ginger-garlic paste",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Garam masala",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Cream",
+            "amount": "100",
+            "unit": "mL"
+          },
+          {
+            "name": "Kashmiri chili powder",
+            "amount": "1",
+            "unit": "tbsp"
+          }
+        ],
+        "instructions": [
+          "Marinate chicken in yogurt, chili, and garam masala for 2 hours",
+          "Grill or broil chicken until charred",
+          "Sauté onions until golden, add ginger-garlic paste",
+          "Add tomato puree and spices, simmer 15 minutes",
+          "Add grilled chicken and cream, simmer 10 minutes more"
+        ],
+        "ingredients": [
+          "600 g Chicken breast",
+          "200 g Yogurt",
+          "400 g Tomato puree",
+          "2 whole Onion",
+          "2 tbsp Ginger-garlic paste",
+          "1 tbsp Garam masala",
+          "100 mL Cream",
+          "1 tbsp Kashmiri chili powder"
+        ],
+        "averageRating": 5,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_priya_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_priya_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Best tikka masala I've made at home. So creamy and rich.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_priya_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_priya_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Paired with homemade naan — heavenly combination.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_priya_1_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_priya_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The charred chicken makes all the difference. Incredible depth.",
+            "likes": 18,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_priya_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_priya_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Family favorite. We make double batches now.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_priya_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_priya_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Rich and warming. A perfect comfort food recipe.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "4d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_priya_2",
+        "name": "Palak Paneer",
+        "cuisine": "Indian",
+        "category": "Curry",
+        "tags": [
+          "Vegetarian",
+          "Gluten-free"
+        ],
+        "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600",
+        "prepTime": 15,
+        "cookTime": 25,
+        "servings": 4,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Paneer",
+            "amount": "300",
+            "unit": "g"
+          },
+          {
+            "name": "Spinach",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Onion",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Tomato",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Ginger-garlic paste",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Cumin seeds",
+            "amount": "1",
+            "unit": "tsp"
+          },
+          {
+            "name": "Cream",
+            "amount": "50",
+            "unit": "mL"
+          }
+        ],
+        "instructions": [
+          "Blanch spinach and blend into a smooth puree",
+          "Sauté cumin seeds, onion, and ginger-garlic paste",
+          "Add tomatoes and cook until soft",
+          "Stir in spinach puree, season with salt and spices",
+          "Add cubed paneer and cream, simmer 5 minutes"
+        ],
+        "ingredients": [
+          "300 g Paneer",
+          "500 g Spinach",
+          "1 whole Onion",
+          "2 whole Tomato",
+          "1 tbsp Ginger-garlic paste",
+          "1 tsp Cumin seeds",
+          "50 mL Cream"
+        ],
+        "averageRating": 4.5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_priya_2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_priya_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Gorgeous green color and amazing flavor. Great veggie option.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_priya_2_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_priya_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Creamy, healthy-feeling, and satisfying. Love it.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_priya_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_priya_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "The paneer absorbs the spinach gravy beautifully.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_priya_2_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r_priya_2",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Good but I prefer my paneer a bit more crispy.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "6d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_emma_w": {
+    "recipes": [
+      {
+        "id": "r_emma_1",
+        "name": "Quinoa Buddha Bowl",
+        "cuisine": "American",
+        "category": "Salad",
+        "tags": [
+          "Vegan",
+          "Gluten-free",
+          "Meal prep"
+        ],
+        "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
+        "prepTime": 15,
+        "cookTime": 20,
+        "servings": 2,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Quinoa",
+            "amount": "150",
+            "unit": "g"
+          },
+          {
+            "name": "Sweet potato",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Chickpeas (canned)",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Avocado",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Tahini",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Lemon juice",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Kale",
+            "amount": "100",
+            "unit": "g"
+          }
+        ],
+        "instructions": [
+          "Cook quinoa according to package directions",
+          "Roast diced sweet potato and chickpeas at 425°F for 20 min",
+          "Massage kale with olive oil and a pinch of salt",
+          "Make dressing: whisk tahini, lemon juice, garlic, and water",
+          "Assemble bowls and drizzle with tahini dressing"
+        ],
+        "ingredients": [
+          "150 g Quinoa",
+          "1 whole Sweet potato",
+          "400 g Chickpeas (canned)",
+          "1 whole Avocado",
+          "2 tbsp Tahini",
+          "2 tbsp Lemon juice",
+          "100 g Kale"
+        ],
+        "averageRating": 4,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_emma_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_emma_1",
+            "makeAgain": "maybe",
+            "difficulty": 1,
+            "tasteRating": 3.5,
+            "comment": "Healthy and filling but not super exciting flavor-wise.",
+            "likes": 4,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_emma_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_emma_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "The tahini dressing ties everything together. Great lunch!",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_emma_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_emma_1",
+            "makeAgain": "maybe",
+            "difficulty": 2,
+            "tasteRating": 3.5,
+            "comment": "Pretty and nutritious. I add feta cheese for extra flavor.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_emma_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_emma_1",
+            "makeAgain": "yes",
+            "difficulty": 1,
+            "tasteRating": 4,
+            "comment": "Perfect meal prep bowl. Makes my work lunches amazing.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_emma_2",
+        "name": "Grilled Salmon with Avocado Salsa",
+        "cuisine": "American",
+        "category": "Seafood",
+        "tags": [
+          "Gluten-free",
+          "High-protein",
+          "Quick"
+        ],
+        "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600",
+        "prepTime": 10,
+        "cookTime": 12,
+        "servings": 4,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Salmon fillets",
+            "amount": "4",
+            "unit": "whole"
+          },
+          {
+            "name": "Avocado",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Cherry tomatoes",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Red onion",
+            "amount": "1/2",
+            "unit": "whole"
+          },
+          {
+            "name": "Lime juice",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Cilantro",
+            "amount": "1",
+            "unit": "handful"
+          },
+          {
+            "name": "Olive oil",
+            "amount": "2",
+            "unit": "tbsp"
+          }
+        ],
+        "instructions": [
+          "Season salmon with salt, pepper, and olive oil",
+          "Grill skin-side down for 4 minutes, flip and cook 3 more",
+          "Dice avocado, tomatoes, and red onion for salsa",
+          "Toss salsa with lime juice, cilantro, salt, and pepper",
+          "Serve salmon topped with fresh avocado salsa"
+        ],
+        "ingredients": [
+          "4 whole Salmon fillets",
+          "2 whole Avocado",
+          "200 g Cherry tomatoes",
+          "1/2 whole Red onion",
+          "3 tbsp Lime juice",
+          "1 handful Cilantro",
+          "2 tbsp Olive oil"
+        ],
+        "averageRating": 5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_emma_2_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_emma_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The avocado salsa is brilliant. Fresh and elegant.",
+            "likes": 16,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_emma_2_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_emma_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Simple, healthy, and absolutely delicious. Great weeknight dinner.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_emma_2_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_emma_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Restaurant quality in 20 minutes. Can't beat that.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_emma_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_emma_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "The lime and cilantro salsa is addictive. Made extra!",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_maya_l": {
+    "recipes": [
+      {
+        "id": "r_maya_1",
+        "name": "One-Pan Lemon Herb Chicken",
+        "cuisine": "American",
+        "category": "Main",
+        "tags": [
+          "Gluten-free",
+          "Quick",
+          "Meal prep"
+        ],
+        "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600",
+        "prepTime": 10,
+        "cookTime": 25,
+        "servings": 4,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Chicken thighs",
+            "amount": "800",
+            "unit": "g"
+          },
+          {
+            "name": "Lemon",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Garlic",
+            "amount": "4",
+            "unit": "clove"
+          },
+          {
+            "name": "Fresh thyme",
+            "amount": "4",
+            "unit": "sprig"
+          },
+          {
+            "name": "Olive oil",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Baby potatoes",
+            "amount": "400",
+            "unit": "g"
+          }
+        ],
+        "instructions": [
+          "Halve potatoes and toss with olive oil, salt, and pepper",
+          "Arrange in a single layer in a cast iron skillet",
+          "Season chicken thighs and nestle among potatoes",
+          "Add lemon halves, garlic, and thyme",
+          "Roast at 425°F for 25 minutes until chicken is golden"
+        ],
+        "ingredients": [
+          "800 g Chicken thighs",
+          "2 whole Lemon",
+          "4 clove Garlic",
+          "4 sprig Fresh thyme",
+          "3 tbsp Olive oil",
+          "400 g Baby potatoes"
+        ],
+        "averageRating": 5,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_maya_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_maya_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "One pan and done. This is weeknight cooking perfection.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_maya_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_maya_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "The lemon makes the potatoes so good.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_maya_1_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_maya_1",
+            "makeAgain": "yes",
+            "difficulty": 1,
+            "tasteRating": 4,
+            "comment": "Minimal cleanup and maximum flavor. On repeat!",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_maya_1_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_maya_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Crispy skin, tender inside. Added rosemary too.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_maya_1_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_maya_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Reminds me of Sunday dinners growing up. Comforting.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "6d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_maya_2",
+        "name": "Shrimp Stir-Fry",
+        "cuisine": "Chinese",
+        "category": "Stir-Fry",
+        "tags": [
+          "Quick",
+          "High-protein",
+          "Dairy-free"
+        ],
+        "image": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600",
+        "prepTime": 10,
+        "cookTime": 8,
+        "servings": 2,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Shrimp (peeled)",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Broccoli florets",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Bell pepper",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Soy sauce",
+            "amount": "3",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Garlic",
+            "amount": "3",
+            "unit": "clove"
+          },
+          {
+            "name": "Ginger",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Cornstarch",
+            "amount": "1",
+            "unit": "tsp"
+          }
+        ],
+        "instructions": [
+          "Mix sauce: soy sauce, ginger, garlic, cornstarch, and a splash of water",
+          "Stir-fry shrimp in a hot wok for 2 minutes, set aside",
+          "Stir-fry broccoli and peppers for 3 minutes",
+          "Return shrimp, pour in sauce, toss until glossy",
+          "Serve over steamed rice"
+        ],
+        "ingredients": [
+          "400 g Shrimp (peeled)",
+          "200 g Broccoli florets",
+          "1 whole Bell pepper",
+          "3 tbsp Soy sauce",
+          "3 clove Garlic",
+          "1 tbsp Ginger",
+          "1 tsp Cornstarch"
+        ],
+        "averageRating": 4.5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_maya_2_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_maya_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Lightning fast and tasty. Great after a long day.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_maya_2_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_maya_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "The sauce is the secret. Added snap peas and loved it.",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_maya_2_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_maya_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Simple and satisfying. The shrimp were perfectly cooked.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_maya_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_maya_2",
+            "makeAgain": "maybe",
+            "difficulty": 2,
+            "tasteRating": 3.5,
+            "comment": "Good but needed more punch. I'd double the garlic.",
+            "likes": 4,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_jordan_r": {
+    "recipes": [
+      {
+        "id": "r_jordan_1",
+        "name": "Brown Butter Chocolate Chip Cookies",
+        "cuisine": "American",
+        "category": "Dessert",
+        "tags": [
+          "Vegetarian"
+        ],
+        "image": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600",
+        "prepTime": 15,
+        "cookTime": 12,
+        "servings": 24,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "Butter",
+            "amount": "230",
+            "unit": "g"
+          },
+          {
+            "name": "Brown sugar",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "White sugar",
+            "amount": "100",
+            "unit": "g"
+          },
+          {
+            "name": "Eggs",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "All-purpose flour",
+            "amount": "350",
+            "unit": "g"
+          },
+          {
+            "name": "Chocolate chips",
+            "amount": "300",
+            "unit": "g"
+          },
+          {
+            "name": "Vanilla extract",
+            "amount": "2",
+            "unit": "tsp"
+          },
+          {
+            "name": "Flaky salt",
+            "amount": "1",
+            "unit": "tsp"
+          }
+        ],
+        "instructions": [
+          "Brown butter in a saucepan until nutty and amber, let cool",
+          "Cream browned butter with both sugars",
+          "Beat in eggs and vanilla",
+          "Fold in flour, baking soda, and salt",
+          "Fold in chocolate chips, chill dough 30 min, bake at 375°F for 10-12 min"
+        ],
+        "ingredients": [
+          "230 g Butter",
+          "200 g Brown sugar",
+          "100 g White sugar",
+          "2 whole Eggs",
+          "350 g All-purpose flour",
+          "300 g Chocolate chips",
+          "2 tsp Vanilla extract",
+          "1 tsp Flaky salt"
+        ],
+        "averageRating": 5,
+        "totalRatings": 6,
+        "reviews": [
+          {
+            "id": "rev_r_jordan_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_jordan_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 5,
+            "comment": "These are the BEST cookies I've ever made. The brown butter is genius.",
+            "likes": 25,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_jordan_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_jordan_1",
+            "makeAgain": "yes",
+            "difficulty": 1,
+            "tasteRating": 5,
+            "comment": "Chewy, gooey, and deeply caramelly. I'm obsessed.",
+            "likes": 19,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_jordan_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_jordan_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "The flaky salt on top is a game changer. Addictive!",
+            "likes": 13,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_jordan_1_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_jordan_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "My wife said these are better than bakery cookies. High praise!",
+            "likes": 16,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_jordan_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_jordan_1",
+            "makeAgain": "yes",
+            "difficulty": 1,
+            "tasteRating": 5,
+            "comment": "Made a double batch and they were gone in two days.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_jordan_1_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_jordan_1",
+            "makeAgain": "yes",
+            "difficulty": 1,
+            "tasteRating": 4.5,
+            "comment": "Brown butter cookies for the win. Perfectly crispy edges.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "6d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_jordan_2",
+        "name": "Cinnamon Roll Bread",
+        "cuisine": "American",
+        "category": "Bread",
+        "tags": [
+          "Vegetarian"
+        ],
+        "image": "https://images.unsplash.com/photo-1609126979532-3a7b1e21f1b8?w=600",
+        "prepTime": 30,
+        "cookTime": 35,
+        "servings": 8,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "All-purpose flour",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Milk (warm)",
+            "amount": "180",
+            "unit": "mL"
+          },
+          {
+            "name": "Butter",
+            "amount": "80",
+            "unit": "g"
+          },
+          {
+            "name": "Sugar",
+            "amount": "60",
+            "unit": "g"
+          },
+          {
+            "name": "Yeast",
+            "amount": "7",
+            "unit": "g"
+          },
+          {
+            "name": "Cinnamon",
+            "amount": "2",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Cream cheese",
+            "amount": "100",
+            "unit": "g"
+          }
+        ],
+        "instructions": [
+          "Mix dough: flour, warm milk, yeast, sugar, butter, salt; knead until smooth",
+          "Let rise 1 hour until doubled",
+          "Roll out, spread soft butter, and sprinkle cinnamon-sugar generously",
+          "Roll up tightly and place in a loaf pan",
+          "Proof 30 min, bake at 350°F for 35 min, glaze with cream cheese icing"
+        ],
+        "ingredients": [
+          "400 g All-purpose flour",
+          "180 mL Milk (warm)",
+          "80 g Butter",
+          "60 g Sugar",
+          "7 g Yeast",
+          "2 tbsp Cinnamon",
+          "100 g Cream cheese"
+        ],
+        "averageRating": 4.5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_jordan_2_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_jordan_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "The whole house smelled amazing. Great weekend project.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_jordan_2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_jordan_2",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Tasty but a bit rich for me. Would cut the icing.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_jordan_2_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_jordan_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Like a cinnamon roll and bread had a baby. Brilliant!",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_jordan_2_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r_jordan_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Perfect for brunch. The cream cheese glaze is everything.",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "6d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_nina_k": {
+    "recipes": [
+      {
+        "id": "r_nina_1",
+        "name": "Lamb Biryani",
+        "cuisine": "Indian",
+        "category": "Rice",
+        "tags": [
+          "High-protein",
+          "Gluten-free"
+        ],
+        "image": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f4?w=600",
+        "prepTime": 30,
+        "cookTime": 60,
+        "servings": 6,
+        "difficulty": "Hard",
+        "ingredientsMeasured": [
+          {
+            "name": "Lamb",
+            "amount": "750",
+            "unit": "g"
+          },
+          {
+            "name": "Basmati rice",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Yogurt",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Onions (fried)",
+            "amount": "3",
+            "unit": "whole"
+          },
+          {
+            "name": "Saffron",
+            "amount": "1",
+            "unit": "pinch"
+          },
+          {
+            "name": "Whole spices",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Ghee",
+            "amount": "3",
+            "unit": "tbsp"
+          }
+        ],
+        "instructions": [
+          "Marinate lamb in yogurt, spices, and fried onions for 2 hours",
+          "Parboil rice with whole spices until 70% cooked, drain",
+          "Layer marinated lamb and rice in a heavy pot",
+          "Drizzle saffron milk and ghee over the top",
+          "Seal with foil and lid, cook on low heat for 45 minutes"
+        ],
+        "ingredients": [
+          "750 g Lamb",
+          "500 g Basmati rice",
+          "200 g Yogurt",
+          "3 whole Onions (fried)",
+          "1 pinch Saffron",
+          "1 tbsp Whole spices",
+          "3 tbsp Ghee"
+        ],
+        "averageRating": 5,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_nina_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_nina_1",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 5,
+            "comment": "This biryani is absolutely legendary. Flavor bomb!",
+            "likes": 23,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_nina_1_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_nina_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The layers of flavor are incredible. Best rice dish I've made.",
+            "likes": 17,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_nina_1_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_nina_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 5,
+            "comment": "Authentic dum biryani done right. Saffron rice is beautiful.",
+            "likes": 20,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_nina_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_nina_1",
+            "makeAgain": "yes",
+            "difficulty": 4,
+            "tasteRating": 4.5,
+            "comment": "Complex but the result is spectacular. Special occasion dish.",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_nina_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_nina_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Worth every minute of effort. The aromatics are heavenly.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "5d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_nina_2",
+        "name": "Masala Chai Spiced Cake",
+        "cuisine": "Indian",
+        "category": "Dessert",
+        "tags": [
+          "Vegetarian"
+        ],
+        "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+        "prepTime": 20,
+        "cookTime": 35,
+        "servings": 10,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "All-purpose flour",
+            "amount": "250",
+            "unit": "g"
+          },
+          {
+            "name": "Strong brewed chai",
+            "amount": "120",
+            "unit": "mL"
+          },
+          {
+            "name": "Butter",
+            "amount": "115",
+            "unit": "g"
+          },
+          {
+            "name": "Brown sugar",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Eggs",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Cinnamon",
+            "amount": "2",
+            "unit": "tsp"
+          },
+          {
+            "name": "Cardamom",
+            "amount": "1",
+            "unit": "tsp"
+          },
+          {
+            "name": "Ginger (ground)",
+            "amount": "1",
+            "unit": "tsp"
+          }
+        ],
+        "instructions": [
+          "Brew strong chai tea with extra spices, let cool",
+          "Cream butter and brown sugar, then beat in eggs",
+          "Sift flour with cinnamon, cardamom, ginger, and baking powder",
+          "Alternate adding dry ingredients and chai to the batter",
+          "Bake at 350°F for 35 minutes; glaze with chai-infused icing"
+        ],
+        "ingredients": [
+          "250 g All-purpose flour",
+          "120 mL Strong brewed chai",
+          "115 g Butter",
+          "200 g Brown sugar",
+          "2 whole Eggs",
+          "2 tsp Cinnamon",
+          "1 tsp Cardamom",
+          "1 tsp Ginger (ground)"
+        ],
+        "averageRating": 4.5,
+        "totalRatings": 4,
+        "reviews": [
+          {
+            "id": "rev_r_nina_2_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_nina_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The chai flavor permeates every bite. Unique and wonderful.",
+            "likes": 13,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_nina_2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_nina_2",
+            "makeAgain": "maybe",
+            "difficulty": 2,
+            "tasteRating": 3.5,
+            "comment": "Interesting concept but a bit heavy on the spices for me.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_nina_2_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r_nina_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Served with whipped cream — perfect fall dessert.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_nina_2_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_nina_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "The cardamom really shines. My new favorite cake.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_luca_g": {
+    "recipes": [
+      {
+        "id": "r_luca_1",
+        "name": "Eggplant Parmesan",
+        "cuisine": "Italian",
+        "category": "Main",
+        "tags": [
+          "Vegetarian"
+        ],
+        "image": "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=600",
+        "prepTime": 25,
+        "cookTime": 40,
+        "servings": 6,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Eggplant",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Marinara sauce",
+            "amount": "700",
+            "unit": "mL"
+          },
+          {
+            "name": "Mozzarella",
+            "amount": "300",
+            "unit": "g"
+          },
+          {
+            "name": "Parmesan",
+            "amount": "80",
+            "unit": "g"
+          },
+          {
+            "name": "Breadcrumbs",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Eggs",
+            "amount": "3",
+            "unit": "whole"
+          },
+          {
+            "name": "Fresh basil",
+            "amount": "1",
+            "unit": "handful"
+          }
+        ],
+        "instructions": [
+          "Slice eggplant, salt, and let drain for 30 minutes",
+          "Dip slices in egg then breadcrumbs, pan-fry until golden",
+          "Layer fried eggplant, marinara, mozzarella, and Parmesan in a baking dish",
+          "Repeat layers, finishing with cheese on top",
+          "Bake at 375°F for 30 minutes until bubbly, garnish with basil"
+        ],
+        "ingredients": [
+          "2 whole Eggplant",
+          "700 mL Marinara sauce",
+          "300 g Mozzarella",
+          "80 g Parmesan",
+          "200 g Breadcrumbs",
+          "3 whole Eggs",
+          "1 handful Fresh basil"
+        ],
+        "averageRating": 4.6,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_luca_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_luca_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Comfort food at its finest. Crispy, cheesy, saucy perfection.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_luca_1_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_luca_1",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "Good but I found it a bit oily. Would bake the eggplant instead.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_luca_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_luca_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Classic Italian-American done right. Generous cheese layers!",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_luca_1_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_luca_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "The fresh basil on top is essential. Rich and satisfying.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_luca_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_luca_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Makes great leftovers too. Even better the next day!",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "4d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_luca_2",
+        "name": "Fresh Pasta Carbonara",
+        "cuisine": "Italian",
+        "category": "Pasta",
+        "tags": [
+          "High-protein"
+        ],
+        "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600",
+        "prepTime": 15,
+        "cookTime": 15,
+        "servings": 4,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "Spaghetti",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Guanciale",
+            "amount": "200",
+            "unit": "g"
+          },
+          {
+            "name": "Egg yolks",
+            "amount": "4",
+            "unit": "whole"
+          },
+          {
+            "name": "Pecorino Romano",
+            "amount": "80",
+            "unit": "g"
+          },
+          {
+            "name": "Black pepper",
+            "amount": "2",
+            "unit": "tsp"
+          }
+        ],
+        "instructions": [
+          "Crisp guanciale in a cold pan over medium heat until rendered",
+          "Mix egg yolks, Pecorino, and generous black pepper in a bowl",
+          "Cook spaghetti to just under al dente, reserve pasta water",
+          "Remove pan from heat, add drained pasta to guanciale",
+          "Quickly toss in egg mixture, adding pasta water until silky"
+        ],
+        "ingredients": [
+          "400 g Spaghetti",
+          "200 g Guanciale",
+          "4 whole Egg yolks",
+          "80 g Pecorino Romano",
+          "2 tsp Black pepper"
+        ],
+        "averageRating": 4.6,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_luca_2_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_luca_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 5,
+            "comment": "Silky, rich, and absolute perfection. True Roman style.",
+            "likes": 18,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_luca_2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_luca_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "So creamy without any cream. The technique is everything.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_luca_2_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_luca_2",
+            "makeAgain": "maybe",
+            "difficulty": 3,
+            "tasteRating": 3.5,
+            "comment": "I scrambled the eggs the first time. Got it right on attempt two.",
+            "likes": 5,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_luca_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_luca_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Guanciale makes all the difference over bacon.",
+            "likes": 12,
+            "liked": false,
+            "timestamp": "6d ago"
+          },
+          {
+            "id": "rev_r_luca_2_sofia",
+            "user": {
+              "id": "u_fake_sofia_t",
+              "name": "Sofia Toro",
+              "username": "sofiataste",
+              "avatar": "https://i.pravatar.cc/150?img=47",
+              "bio": "Tasting menus at home — Latin & Mediterranean",
+              "followersCount": 156,
+              "followingCount": 203,
+              "recipesRated": 10
+            },
+            "recipeId": "r_luca_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Every Italian nonna would be proud. Magnificent.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "3d ago"
+          }
+        ]
+      }
+    ]
+  },
+  "u_fake_sofia_t": {
+    "recipes": [
+      {
+        "id": "r_sofia_1",
+        "name": "Peruvian Ceviche",
+        "cuisine": "Peruvian",
+        "category": "Seafood",
+        "tags": [
+          "Gluten-free",
+          "Dairy-free",
+          "Quick"
+        ],
+        "image": "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=600",
+        "prepTime": 20,
+        "cookTime": 0,
+        "servings": 4,
+        "difficulty": "Easy",
+        "ingredientsMeasured": [
+          {
+            "name": "White fish (sea bass)",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Lime juice",
+            "amount": "180",
+            "unit": "mL"
+          },
+          {
+            "name": "Red onion",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Aji amarillo paste",
+            "amount": "1",
+            "unit": "tbsp"
+          },
+          {
+            "name": "Cilantro",
+            "amount": "1",
+            "unit": "handful"
+          },
+          {
+            "name": "Sweet potato (boiled)",
+            "amount": "1",
+            "unit": "whole"
+          },
+          {
+            "name": "Corn (cooked)",
+            "amount": "1",
+            "unit": "whole"
+          }
+        ],
+        "instructions": [
+          "Dice fish into 2cm cubes, season with salt",
+          "Thinly slice red onion and soak in ice water",
+          "Mix lime juice with aji amarillo paste for the leche de tigre",
+          "Toss fish in the citrus marinade — it cooks in 5 minutes",
+          "Serve with drained onions, cilantro, sweet potato, and corn"
+        ],
+        "ingredients": [
+          "500 g White fish (sea bass)",
+          "180 mL Lime juice",
+          "1 whole Red onion",
+          "1 tbsp Aji amarillo paste",
+          "1 handful Cilantro",
+          "1 whole Sweet potato (boiled)",
+          "1 whole Corn (cooked)"
+        ],
+        "averageRating": 4.6,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_sofia_1_test",
+            "user": {
+              "id": "u_test_account_1",
+              "name": "test",
+              "username": "test",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Test account — seed recipes author",
+              "followersCount": 12,
+              "followingCount": 8,
+              "recipesRated": 10
+            },
+            "recipeId": "r_sofia_1",
+            "makeAgain": "maybe",
+            "difficulty": 2,
+            "tasteRating": 3.5,
+            "comment": "Refreshing and light. The aji amarillo adds great depth.",
+            "likes": 6,
+            "liked": false,
+            "timestamp": "4d ago"
+          },
+          {
+            "id": "rev_r_sofia_1_alex",
+            "user": {
+              "id": "u_fake_alex_c",
+              "name": "Alex Chen",
+              "username": "alexcooks",
+              "avatar": "https://i.pravatar.cc/150?img=11",
+              "bio": "Home cook exploring global flavors. Pasta enthusiast.",
+              "followersCount": 234,
+              "followingCount": 189,
+              "recipesRated": 13
+            },
+            "recipeId": "r_sofia_1",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Fresh, zingy, and perfect for summer. Outstanding!",
+            "likes": 13,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_sofia_1_priya",
+            "user": {
+              "id": "u_fake_priya_p",
+              "name": "Priya Patel",
+              "username": "priyacooks",
+              "avatar": "https://i.pravatar.cc/150?img=9",
+              "bio": "Indian home cooking & spice explorer",
+              "followersCount": 876,
+              "followingCount": 234,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sofia_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "Never made ceviche before but this was foolproof.",
+            "likes": 9,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_sofia_1_maya",
+            "user": {
+              "id": "u_fake_maya_l",
+              "name": "Maya Lee",
+              "username": "mayakitchen",
+              "avatar": "https://i.pravatar.cc/150?img=16",
+              "bio": "Weeknight dinners & meal prep",
+              "followersCount": 120,
+              "followingCount": 88,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sofia_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4,
+            "comment": "The sweet potato pairing is genius. So good!",
+            "likes": 7,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_sofia_1_jordan",
+            "user": {
+              "id": "u_fake_jordan_r",
+              "name": "Jordan Reed",
+              "username": "jordanbakes",
+              "avatar": "https://i.pravatar.cc/150?img=33",
+              "bio": "Sourdough, cookies, and cake experiments",
+              "followersCount": 89,
+              "followingCount": 140,
+              "recipesRated": 10
+            },
+            "recipeId": "r_sofia_1",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Bright, fresh, and incredibly flavorful. A summer must.",
+            "likes": 10,
+            "liked": false,
+            "timestamp": "2d ago"
+          }
+        ]
+      },
+      {
+        "id": "r_sofia_2",
+        "name": "Beef Empanadas",
+        "cuisine": "Argentine",
+        "category": "Pastry",
+        "tags": [
+          "High-protein"
+        ],
+        "image": "https://images.unsplash.com/photo-1604467707321-70d009801bf4?w=600",
+        "prepTime": 30,
+        "cookTime": 25,
+        "servings": 12,
+        "difficulty": "Medium",
+        "ingredientsMeasured": [
+          {
+            "name": "All-purpose flour",
+            "amount": "500",
+            "unit": "g"
+          },
+          {
+            "name": "Butter (cold)",
+            "amount": "150",
+            "unit": "g"
+          },
+          {
+            "name": "Ground beef",
+            "amount": "400",
+            "unit": "g"
+          },
+          {
+            "name": "Onion",
+            "amount": "2",
+            "unit": "whole"
+          },
+          {
+            "name": "Hard-boiled eggs",
+            "amount": "3",
+            "unit": "whole"
+          },
+          {
+            "name": "Green olives",
+            "amount": "12",
+            "unit": "whole"
+          },
+          {
+            "name": "Cumin",
+            "amount": "1",
+            "unit": "tsp"
+          },
+          {
+            "name": "Paprika",
+            "amount": "1",
+            "unit": "tsp"
+          }
+        ],
+        "instructions": [
+          "Make dough: mix flour, salt, cold butter, and water; chill 1 hour",
+          "Sauté onions, then brown beef with cumin, paprika, salt, and pepper",
+          "Let filling cool, then mix in chopped eggs and olives",
+          "Roll dough, cut circles, fill, and fold into half-moons, crimping edges",
+          "Brush with egg wash and bake at 400°F for 20-25 minutes until golden"
+        ],
+        "ingredients": [
+          "500 g All-purpose flour",
+          "150 g Butter (cold)",
+          "400 g Ground beef",
+          "2 whole Onion",
+          "3 whole Hard-boiled eggs",
+          "12 whole Green olives",
+          "1 tsp Cumin",
+          "1 tsp Paprika"
+        ],
+        "averageRating": 5,
+        "totalRatings": 5,
+        "reviews": [
+          {
+            "id": "rev_r_sofia_2_sarah",
+            "user": {
+              "id": "u_fake_sarah_k",
+              "name": "Sarah Kim",
+              "username": "sarahbakes",
+              "avatar": "https://i.pravatar.cc/150?img=5",
+              "bio": "Baker & pastry lover",
+              "followersCount": 512,
+              "followingCount": 302,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sofia_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4.5,
+            "comment": "Golden, flaky, and perfectly seasoned filling.",
+            "likes": 16,
+            "liked": false,
+            "timestamp": "1d ago"
+          },
+          {
+            "id": "rev_r_sofia_2_marcus",
+            "user": {
+              "id": "u_fake_marcus_j",
+              "name": "Marcus Johnson",
+              "username": "chefmarcus",
+              "avatar": "https://i.pravatar.cc/150?img=12",
+              "bio": "BBQ master, southern comfort food",
+              "followersCount": 1243,
+              "followingCount": 456,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sofia_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 5,
+            "comment": "The olive and egg filling combo is brilliant. Party hit!",
+            "likes": 22,
+            "liked": false,
+            "timestamp": "3d ago"
+          },
+          {
+            "id": "rev_r_sofia_2_emma",
+            "user": {
+              "id": "u_fake_emma_w",
+              "name": "Emma Wilson",
+              "username": "emmaeats",
+              "avatar": "https://i.pravatar.cc/150?img=20",
+              "bio": "Healthy meals & meal prep queen",
+              "followersCount": 345,
+              "followingCount": 198,
+              "recipesRated": 12
+            },
+            "recipeId": "r_sofia_2",
+            "makeAgain": "yes",
+            "difficulty": 3,
+            "tasteRating": 4,
+            "comment": "Great for make-ahead freezer meals. Crisp up beautifully.",
+            "likes": 8,
+            "liked": false,
+            "timestamp": "5d ago"
+          },
+          {
+            "id": "rev_r_sofia_2_nina",
+            "user": {
+              "id": "u_fake_nina_k",
+              "name": "Nina Khan",
+              "username": "ninaspices",
+              "avatar": "https://i.pravatar.cc/150?img=45",
+              "bio": "Spice blends & South Asian comfort food",
+              "followersCount": 210,
+              "followingCount": 175,
+              "recipesRated": 11
+            },
+            "recipeId": "r_sofia_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "Authentic Argentine flavors. The cumin is spot-on.",
+            "likes": 11,
+            "liked": false,
+            "timestamp": "2d ago"
+          },
+          {
+            "id": "rev_r_sofia_2_luca",
+            "user": {
+              "id": "u_fake_luca_g",
+              "name": "Luca Green",
+              "username": "lucapasta",
+              "avatar": "https://i.pravatar.cc/150?img=52",
+              "bio": "Italian-American classics from Nonna's notes",
+              "followersCount": 402,
+              "followingCount": 210,
+              "recipesRated": 11
+            },
+            "recipeId": "r_sofia_2",
+            "makeAgain": "yes",
+            "difficulty": 2,
+            "tasteRating": 4.5,
+            "comment": "My kids love these. We make a huge batch every month.",
+            "likes": 14,
+            "liked": false,
+            "timestamp": "4d ago"
           }
         ]
       }

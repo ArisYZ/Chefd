@@ -132,6 +132,17 @@ export default function RootLayout() {
             presentation: 'card',
           }}
         />
+        <Stack.Screen
+          name="user/[id]"
+          options={{
+            headerShown: true,
+            headerTitle: '',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
       </Stack>
     </SocialProvider>
     </BookmarkProvider>
