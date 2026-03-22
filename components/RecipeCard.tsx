@@ -28,6 +28,13 @@ export function RecipeCard({
     recipe.createdByName ??
     (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
 
+  const cuisine = recipe.cuisine?.trim() ?? '';
+  const category = recipe.category?.trim() ?? '';
+  const metaParts = [cuisine, category, recipe.difficulty, `${recipe.prepTime + recipe.cookTime} min`].filter(
+    (p) => p.length > 0,
+  );
+  const metaLine = metaParts.join(' · ');
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <RemoteImage uri={recipe.image} style={styles.image} />
@@ -38,8 +45,8 @@ export function RecipeCard({
             <Text style={styles.name} numberOfLines={1}>
               {recipe.name}
             </Text>
-            <Text style={styles.meta}>
-              {recipe.cuisine} · {recipe.difficulty} · {recipe.prepTime + recipe.cookTime} min
+            <Text style={styles.meta} numberOfLines={2} ellipsizeMode="tail">
+              {metaLine}
             </Text>
             <Text style={styles.creator} numberOfLines={1}>
               By {creatorLabel}
@@ -98,8 +105,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 90,
-    height: 'auto',
-    minHeight: 90,
+    height: 90,
     backgroundColor: '#E0E0E0',
   },
   content: {
@@ -109,7 +115,7 @@ const styles = StyleSheet.create({
   },
   topRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: Spacing.sm,
   },
   rank: {
@@ -130,6 +136,7 @@ const styles = StyleSheet.create({
   },
   meta: {
     fontSize: FontSize.xs,
+    lineHeight: Math.round(FontSize.xs * 1.35),
     color: Colors.textTertiary,
     marginTop: 2,
   },

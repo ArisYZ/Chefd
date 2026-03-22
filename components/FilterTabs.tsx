@@ -14,14 +14,19 @@ export function FilterTabs({ tabs, activeTab, onTabPress }: FilterTabsProps) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={styles.scroll}
       contentContainerStyle={styles.container}
     >
-      {tabs.map((tab) => {
+      {tabs.map((tab, index) => {
         const isActive = activeTab === tab.label;
         return (
           <TouchableOpacity
             key={tab.label}
-            style={[styles.tab, isActive && styles.activeTab]}
+            style={[
+              styles.tab,
+              index < tabs.length - 1 && styles.tabSpacing,
+              isActive && styles.activeTab,
+            ]}
             onPress={() => onTabPress(tab.label)}
             activeOpacity={0.7}
           >
@@ -33,7 +38,9 @@ export function FilterTabs({ tabs, activeTab, onTabPress }: FilterTabsProps) {
                 style={styles.icon}
               />
             )}
-            <Text style={[styles.label, isActive && styles.activeLabel]}>{tab.label}</Text>
+            <Text style={[styles.label, isActive && styles.activeLabel]} numberOfLines={1}>
+              {tab.label}
+            </Text>
           </TouchableOpacity>
         );
       })}
@@ -41,17 +48,32 @@ export function FilterTabs({ tabs, activeTab, onTabPress }: FilterTabsProps) {
   );
 }
 
+const CHIP_MIN_HEIGHT = 36;
+
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    gap: Spacing.sm,
+  /** Horizontal ScrollView must not expand vertically in a flex column (RN Web). */
+  scroll: {
+    flexGrow: 0,
+    flexShrink: 0,
   },
-  tab: {
+  /** Avoid `gap` on horizontal ScrollView — unreliable on RN Web and can clip or hide children. */
+  container: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
+  },
+  tabSpacing: {
+    marginRight: Spacing.sm,
+  },
+  tab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    minHeight: CHIP_MIN_HEIGHT,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 0,
     borderRadius: BorderRadius.full,
     backgroundColor: Colors.surfaceElevated,
     borderWidth: 1,
@@ -66,6 +88,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: FontSize.sm,
+    lineHeight: Math.round(FontSize.sm * 1.25),
     fontWeight: '500',
     color: Colors.text,
   },

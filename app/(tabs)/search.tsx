@@ -8,7 +8,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RecipeCard } from '@/components/RecipeCard';
 import { cuisineFilters } from '@/constants/MockData';
-import { RECIPE_TAG_OPTIONS, getTagConfig } from '@/constants/recipeTags';
+import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
 
@@ -76,64 +76,73 @@ export default function SearchScreen() {
         </TouchableOpacity>
       </View>
 
-      <SearchBar
-        value={searchText}
-        onChangeText={setSearchText}
-        placeholder="Search by recipe, cuisine, ingredient..."
-      />
+      <View style={styles.filtersSection}>
+        <SearchBar
+          value={searchText}
+          onChangeText={setSearchText}
+          placeholder="Search by recipe, cuisine, ingredient..."
+        />
 
-      {/* Category filter chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoryRow}
-      >
-        {RECIPE_TAG_OPTIONS.map((tag) => {
-          const active = activeCategories.includes(tag.label);
-          return (
-            <TouchableOpacity
-              key={tag.label}
-              style={[
-                styles.categoryChip,
-                active && { backgroundColor: tag.color + '18', borderColor: tag.color },
-              ]}
-              onPress={() => toggleCategory(tag.label)}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={tag.icon as any}
-                size={14}
-                color={active ? tag.color : Colors.textTertiary}
-              />
-              <Text style={[styles.categoryChipText, active && { color: tag.color }]}>
-                {tag.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-
-      {activeCategories.length > 0 && (
-        <TouchableOpacity
-          style={styles.clearFilters}
-          onPress={() => setActiveCategories([])}
+        {/* Category filter chips */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterRowScroll}
+          contentContainerStyle={styles.categoryRow}
         >
-          <Ionicons name="close-circle" size={14} color={Colors.primary} />
-          <Text style={styles.clearFiltersText}>Clear filters</Text>
-        </TouchableOpacity>
-      )}
+          {RECIPE_TAG_OPTIONS.map((tag, index) => {
+            const active = activeCategories.includes(tag.label);
+            return (
+              <TouchableOpacity
+                key={tag.label}
+                style={[
+                  styles.categoryChip,
+                  index < RECIPE_TAG_OPTIONS.length - 1 && styles.categoryChipSpacing,
+                  active && { backgroundColor: tag.color + '18', borderColor: tag.color },
+                ]}
+                onPress={() => toggleCategory(tag.label)}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={tag.icon as any}
+                  size={14}
+                  color={active ? tag.color : Colors.textTertiary}
+                  style={styles.categoryChipIcon}
+                />
+                <Text
+                  style={[styles.categoryChipText, active && { color: tag.color }]}
+                  numberOfLines={1}
+                >
+                  {tag.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
-      <FilterTabs
-        tabs={cuisineFilters.map((c) => ({ label: c }))}
-        activeTab={activeCuisine}
-        onTabPress={setActiveCuisine}
-      />
+        {activeCategories.length > 0 && (
+          <TouchableOpacity
+            style={styles.clearFilters}
+            onPress={() => setActiveCategories([])}
+          >
+            <Ionicons name="close-circle" size={14} color={Colors.primary} />
+            <Text style={styles.clearFiltersText}>Clear filters</Text>
+          </TouchableOpacity>
+        )}
+
+        <FilterTabs
+          tabs={cuisineFilters.map((c) => ({ label: c }))}
+          activeTab={activeCuisine}
+          onTabPress={setActiveCuisine}
+        />
+      </View>
 
       <Text style={styles.resultsCount}>{filteredRecipes.length} recipes</Text>
 
       <FlatList
         data={filteredRecipes}
         keyExtractor={(item) => item.id}
+        style={styles.recipeList}
         renderItem={({ item }) => (
           <RecipeCard
             recipe={item}
@@ -151,6 +160,20 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  /** Keeps filter rows from growing when the screen reflows (RN Web flex + horizontal ScrollView). */
+  filtersSection: {
+    flexGrow: 0,
+    flexShrink: 0,
+    alignSelf: 'stretch',
+  },
+  filterRowScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  recipeList: {
+    flex: 1,
+    minHeight: 0,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -170,23 +193,33 @@ const styles = StyleSheet.create({
   },
   sortText: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.primary },
   categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
+  },
+  categoryChipSpacing: {
+    marginRight: Spacing.sm,
   },
   categoryChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    justifyContent: 'center',
+    flexShrink: 0,
+    minHeight: 36,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: 0,
     borderRadius: BorderRadius.full,
     backgroundColor: Colors.white,
     borderWidth: 1,
     borderColor: Colors.border,
   },
+  categoryChipIcon: {
+    marginRight: 4,
+  },
   categoryChipText: {
     fontSize: FontSize.xs,
+    lineHeight: Math.round(FontSize.xs * 1.35),
     fontWeight: '600',
     color: Colors.textSecondary,
   },
