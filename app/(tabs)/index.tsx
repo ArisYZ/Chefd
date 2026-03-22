@@ -54,10 +54,14 @@ export default function FeedScreen() {
         </View>
       </View>
 
-      <SearchBar
-        onFocus={() => router.navigate('/search')}
-        placeholder="Search recipes, cuisine, ingredients"
-      />
+      <TouchableOpacity activeOpacity={1} onPress={() => router.push('/search')}>
+        <View pointerEvents="none">
+          <SearchBar
+            editable={false}
+            placeholder="Search recipes, cuisine, ingredients"
+          />
+        </View>
+      </TouchableOpacity>
 
       {/* Category chips */}
       <ScrollView

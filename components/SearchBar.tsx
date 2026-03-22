@@ -8,9 +8,16 @@ interface SearchBarProps {
   value?: string;
   onChangeText?: (text: string) => void;
   onFocus?: () => void;
+  editable?: boolean;
 }
 
-export function SearchBar({ placeholder = 'Search recipes, cuisine, ingredients', value, onChangeText, onFocus }: SearchBarProps) {
+export function SearchBar({
+  placeholder = 'Search recipes, cuisine, ingredients',
+  value,
+  onChangeText,
+  onFocus,
+  editable = true,
+}: SearchBarProps) {
   return (
     <View style={styles.container}>
       <Ionicons name="search" size={18} color={Colors.textTertiary} style={styles.icon} />
@@ -21,6 +28,7 @@ export function SearchBar({ placeholder = 'Search recipes, cuisine, ingredients'
         value={value}
         onChangeText={onChangeText}
         onFocus={onFocus}
+        editable={editable}
       />
     </View>
   );
