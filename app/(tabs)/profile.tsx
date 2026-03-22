@@ -299,6 +299,19 @@ export default function ProfileScreen() {
           <TouchableOpacity
             style={styles.menuItem}
             activeOpacity={0.7}
+            onPress={() => router.push('/chef-ai')}
+          >
+            <View style={styles.menuLeft}>
+              <Ionicons name="sparkles-outline" size={22} color={Colors.text} />
+              <Text style={styles.menuLabel}>Remy Rat</Text>
+            </View>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
             onPress={() => router.push('/settings')}
           >
             <View style={styles.menuLeft}>

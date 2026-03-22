@@ -3,6 +3,7 @@ import { Tabs, router } from 'expo-router';
 import { TransitionPresets } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, FontSize, Spacing, BorderRadius, Fonts } from '@/constants/Colors';
+import { ChefAiChat } from '@/components/ChefAiChat';
 import {
   Platform,
   View,
@@ -15,6 +16,10 @@ import {
   Pressable,
 } from 'react-native';
 
+/** Matches tab bar height in screenOptions below (FAB sits just above the bar). */
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 88 : 64;
+const CHEF_AI_FAB_SIZE = 56;
+
 /** Create-tab FAB: one size + half radius keeps shadow + clip + image aligned. */
 const CREATE_TAB_FAB_SIZE = 74;
 const CREATE_TAB_FAB_RADIUS = CREATE_TAB_FAB_SIZE / 2;
@@ -24,6 +29,7 @@ const CREATE_TAB_FAB_ANDROID_SHADOW_RADIUS = CREATE_TAB_FAB_ANDROID_SHADOW_SIZE 
 
 export default function TabLayout() {
   const [createWebOpen, setCreateWebOpen] = useState(false);
+  const [chefAiOpen, setChefAiOpen] = useState(false);
 
   const showCreateRecipeChoice = useCallback(() => {
     if (Platform.OS === 'web') {
@@ -38,7 +44,7 @@ export default function TabLayout() {
   }, []);
 
   return (
-    <>
+    <View style={styles.tabRoot}>
     <Tabs
       screenOptions={{
         ...TransitionPresets.FadeTransition,
@@ -130,6 +136,35 @@ export default function TabLayout() {
       />
     </Tabs>
 
+    <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+      <TouchableOpacity
+        style={[styles.chefAiFab, { bottom: TAB_BAR_HEIGHT + 12 }]}
+        onPress={() => setChefAiOpen(true)}
+        activeOpacity={0.88}
+        accessibilityLabel="Open Remy Rat"
+        accessibilityHint="Opens the Remy Rat assistant chat"
+      >
+        {Platform.OS === 'android' && <View style={styles.chefAiFabAndroidShadow} />}
+        <View style={styles.chefAiFabClip}>
+          <Image
+            source={require('../../assets/images/chef-ai-rat.png')}
+            style={styles.chefAiFabImage}
+            resizeMode="cover"
+            accessibilityIgnoresInvertColors
+          />
+        </View>
+      </TouchableOpacity>
+    </View>
+
+    <Modal
+      visible={chefAiOpen}
+      animationType="slide"
+      presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : undefined}
+      onRequestClose={() => setChefAiOpen(false)}
+    >
+      <ChefAiChat embedded onClose={() => setChefAiOpen(false)} />
+    </Modal>
+
     {Platform.OS === 'web' && (
       <Modal
         visible={createWebOpen}
@@ -172,11 +207,63 @@ export default function TabLayout() {
         </Pressable>
       </Modal>
     )}
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  tabRoot: {
+    flex: 1,
+  },
+  chefAiFab: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    right: Spacing.lg,
+    zIndex: 100,
+    ...Platform.select({
+      android: { elevation: 14 },
+      default: {},
+    }),
+  },
+  /** Android: small disk so elevation reads as a round shadow under the circular image. */
+  chefAiFabAndroidShadow: {
+    position: 'absolute',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: Colors.white,
+    bottom: 4,
+    alignSelf: 'center',
+    elevation: 12,
+  },
+  chefAiFabClip: {
+    width: CHEF_AI_FAB_SIZE,
+    height: CHEF_AI_FAB_SIZE,
+    borderRadius: CHEF_AI_FAB_SIZE / 2,
+    overflow: 'hidden',
+    backgroundColor: Colors.white,
+    borderWidth: 2,
+    borderColor: Colors.borderLight,
+    zIndex: 1,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.primaryDark,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+      },
+      default: {
+        shadowColor: Colors.primaryDark,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+      },
+    }),
+  },
+  chefAiFabImage: {
+    width: CHEF_AI_FAB_SIZE,
+    height: CHEF_AI_FAB_SIZE,
+  },
   /** Shadow on rounded outer layer so iOS draws a circular drop shadow (not a square). */
   fabShadow: {
     width: CREATE_TAB_FAB_SIZE,

@@ -137,6 +137,17 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="chef-ai"
+          options={{
+            headerShown: true,
+            title: 'Remy Rat',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
           name="edit-profile"
           options={{
             headerShown: true,
