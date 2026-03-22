@@ -23,6 +23,10 @@ async function load(): Promise<Persisted> {
     if (!raw) return { users: [] };
     const parsed = JSON.parse(raw) as Persisted;
     if (!parsed?.users || !Array.isArray(parsed.users)) return { users: [] };
+    parsed.users = parsed.users.map((u) => ({
+      ...u,
+      favoriteRecipeIds: u.favoriteRecipeIds ?? [],
+    }));
     return parsed;
   } catch {
     return { users: [] };
@@ -94,6 +98,7 @@ export async function createUserLocal(input: {
     googleSub: null,
     createdAt: now,
     passwordHash: input.passwordHash,
+    favoriteRecipeIds: [],
   };
   data.users.push(row);
   await recomputeLeaderboardRanksInternal(data);
@@ -140,6 +145,7 @@ export async function createUserGoogle(input: {
     googleSub: input.googleSub,
     createdAt: now,
     passwordHash: null,
+    favoriteRecipeIds: [],
   };
   data.users.push(row);
   await recomputeLeaderboardRanksInternal(data);
@@ -228,12 +234,25 @@ export async function updateProfile(
   await save(data);
 }
 
+export async function setFavoriteRecipeIds(userId: string, ids: string[]): Promise<void> {
+  const data = await load();
+  const u = data.users.find((x) => x.id === userId);
+  if (!u) return;
+  u.favoriteRecipeIds = [...new Set(ids)];
+  await save(data);
+}
+
 export async function mergeAccountsFromPayload(file: RepoAccountsFile): Promise<void> {
   if (!file?.users?.length) return;
   const data = await load();
   const seedIds = new Set(file.users.map((u) => u.id));
   const localOnly = data.users.filter((u) => !seedIds.has(u.id));
-  data.users = [...localOnly, ...file.users];
+  const seeded = file.users.map((u) => ({
+    ...u,
+    favoriteRecipeIds: u.favoriteRecipeIds ?? [],
+    passwordHash: u.passwordHash ?? null,
+  })) as Persisted['users'];
+  data.users = [...localOnly, ...seeded];
   await recomputeLeaderboardRanksInternal(data);
   await save(data);
 }

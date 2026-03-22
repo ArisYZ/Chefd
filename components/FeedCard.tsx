@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native';
 import { RecipeRating } from '@/types';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
 import { Avatar } from './Avatar';
@@ -11,9 +11,11 @@ interface FeedCardProps {
   rating: RecipeRating;
   onPress?: () => void;
   onUserPress?: () => void;
+  onBookmarkPress?: () => void;
+  isBookmarked?: boolean;
 }
 
-export function FeedCard({ rating, onPress, onUserPress }: FeedCardProps) {
+export function FeedCard({ rating, onPress, onUserPress, onBookmarkPress, isBookmarked }: FeedCardProps) {
   const { review } = rating;
   const creatorLabel =
     rating.recipe.createdByName ??
@@ -51,6 +53,9 @@ export function FeedCard({ rating, onPress, onUserPress }: FeedCardProps) {
         likes={rating.likes}
         comments={rating.comments}
         liked={rating.liked}
+        onShare={() => Share.share({ message: `Check out "${rating.recipe.name}" on Chef'd!` })}
+        onBookmark={onBookmarkPress}
+        isBookmarked={isBookmarked}
       />
 
       <Text style={styles.timestamp}>{rating.timestamp}</Text>

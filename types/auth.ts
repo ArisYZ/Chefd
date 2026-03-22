@@ -18,4 +18,6 @@ export interface StoredUser {
   averageRating: number;
   googleSub: string | null;
   createdAt: number;
+  /** Recipe ids this account has favorited (exported in data/accounts.json). */
+  favoriteRecipeIds: string[];
 }

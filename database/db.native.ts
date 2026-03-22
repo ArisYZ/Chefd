@@ -33,10 +33,30 @@ export async function getDatabase(): Promise<SQLiteDatabase> {
         CREATE INDEX IF NOT EXISTS idx_users_ranking ON users(ranking_score DESC);
         CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
       `);
+      try {
+        await db.execAsync(
+          `ALTER TABLE users ADD COLUMN favorite_recipe_ids TEXT NOT NULL DEFAULT '[]';`,
+        );
+      } catch {
+        /* column already exists */
+      }
       return db;
     })();
   }
   return dbPromise;
+}
+
+function parseFavoriteRecipeIds(raw: unknown): string[] {
+  if (raw == null || raw === '') return [];
+  if (typeof raw === 'string') {
+    try {
+      const p = JSON.parse(raw) as unknown;
+      return Array.isArray(p) ? p.filter((x): x is string => typeof x === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
 }
 
 function rowToUser(row: Record<string, unknown>): import('@/types/auth').StoredUser {
@@ -56,6 +76,7 @@ function rowToUser(row: Record<string, unknown>): import('@/types/auth').StoredU
     averageRating: Number(row.average_rating ?? 0),
     googleSub: row.google_sub != null ? String(row.google_sub) : null,
     createdAt: Number(row.created_at ?? 0),
+    favoriteRecipeIds: parseFavoriteRecipeIds(row.favorite_recipe_ids),
   };
 }
 
@@ -238,17 +259,24 @@ export async function updateProfile(userId: string, patch: { displayName?: strin
   );
 }
 
+export async function setFavoriteRecipeIds(userId: string, ids: string[]): Promise<void> {
+  const db = await getDatabase();
+  const json = JSON.stringify([...new Set(ids)]);
+  await db.runAsync('UPDATE users SET favorite_recipe_ids = ? WHERE id = ?', [json, userId]);
+}
+
 /** Merge account rows into SQLite; repo payload wins for matching ids. */
 export async function mergeAccountsFromPayload(file: RepoAccountsFile): Promise<void> {
   if (!file?.users?.length) return;
   const db = await getDatabase();
   for (const u of file.users) {
+    const favJson = JSON.stringify(u.favoriteRecipeIds ?? []);
     await db.runAsync(
       `INSERT OR REPLACE INTO users (
         id, username, display_name, email, password_hash, google_sub, avatar_uri, bio,
         ranking_score, leaderboard_rank, followers_count, following_count,
-        recipe_count, review_count, average_rating, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        recipe_count, review_count, average_rating, created_at, favorite_recipe_ids
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         u.id,
         u.username,
@@ -266,6 +294,7 @@ export async function mergeAccountsFromPayload(file: RepoAccountsFile): Promise<
         u.reviewCount ?? 0,
         u.averageRating ?? 0,
         u.createdAt,
+        favJson,
       ],
     );
   }

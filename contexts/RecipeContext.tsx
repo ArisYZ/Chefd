@@ -111,13 +111,15 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     };
   }, [user?.displayName, user?.username, userId]);
 
-  // Load user-submitted reviews from AsyncStorage
+  const reviewsKey = userId ? `${REVIEWS_STORAGE_KEY}_${userId}` : `${REVIEWS_STORAGE_KEY}_anonymous`;
+
+  // Load user-submitted reviews from AsyncStorage (per-user)
   useEffect(() => {
     let cancelled = false;
     setUserReviews({});
     (async () => {
       try {
-        const raw = await AsyncStorage.getItem(REVIEWS_STORAGE_KEY);
+        const raw = await AsyncStorage.getItem(reviewsKey);
         if (cancelled) return;
         if (raw) {
           const parsed = JSON.parse(raw) as Record<string, Review[]>;
@@ -130,7 +132,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reviewsKey]);
 
   const persistRecipes = useCallback(
     async (next: Recipe[]) => {
@@ -146,11 +148,11 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
 
   const persistReviews = useCallback(async (next: Record<string, Review[]>) => {
     try {
-      await AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(next));
+      await AsyncStorage.setItem(reviewsKey, JSON.stringify(next));
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [reviewsKey]);
 
   const recipes = useMemo(() => [...seedRecipes, ...userRecipes], [seedRecipes, userRecipes]);
 
@@ -193,7 +195,15 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     (review: Review) => {
       setUserReviews((prev) => {
         const existing = prev[review.recipeId] ?? [];
-        const next = { ...prev, [review.recipeId]: [review, ...existing] };
+        const existingIdx = existing.findIndex((r) => r.user.id === review.user.id);
+        let updated: Review[];
+        if (existingIdx >= 0) {
+          updated = [...existing];
+          updated[existingIdx] = review;
+        } else {
+          updated = [review, ...existing];
+        }
+        const next = { ...prev, [review.recipeId]: updated };
         persistReviews(next);
         return next;
       });

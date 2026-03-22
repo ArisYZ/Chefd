@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, ImageSourcePropType, StyleSheet } from 'react-native';
 import { defaultAvatarSource } from '@/constants/avatarAsset';
+import { normalizeRemoteImageUri } from '@/lib/imageUri';
 
 interface AvatarProps {
   /** Remote/local file URI, or omit / null for default blank avatar */
@@ -9,8 +10,9 @@ interface AvatarProps {
 }
 
 export function Avatar({ uri, size = 44 }: AvatarProps) {
+  const resolved = normalizeRemoteImageUri(uri);
   const source: ImageSourcePropType =
-    uri && uri.length > 0 ? { uri } : defaultAvatarSource;
+    resolved != null ? { uri: resolved } : defaultAvatarSource;
 
   return (
     <Image

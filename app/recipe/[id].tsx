@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
+  Linking,
+  Share,
+} from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
@@ -9,9 +19,11 @@ import { DifficultyPips } from '@/components/DifficultyPips';
 import { ReviewModal } from '@/components/ReviewModal';
 import { RecipeTagChips } from '@/components/RecipeTagChips';
 import { Avatar } from '@/components/Avatar';
+import { RemoteImage } from '@/components/RemoteImage';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { computeScore, Review, User } from '@/types';
+import { useBookmarks } from '@/contexts/BookmarkContext';
+import { computeScore, computeTasteScore, Review, User } from '@/types';
 import { formatIngredientLine } from '@/lib/ingredients';
 
 const { width } = Dimensions.get('window');
@@ -20,10 +32,21 @@ export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { getRecipeById, getReviewsForRecipe, addReview } = useRecipes();
   const { user, onUserSubmittedReview } = useAuth();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
   const recipe = getRecipeById(id ?? '');
   const [activeTab, setActiveTab] = useState<'recipe' | 'reviews'>('recipe');
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
   const localReviews = getReviewsForRecipe(id ?? '');
+
+  const toggleIngredient = useCallback((index: number) => {
+    setCheckedIngredients((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  }, []);
 
   if (!recipe) {
     return (
@@ -34,51 +57,82 @@ export default function RecipeDetailScreen() {
   }
 
   const score = computeScore(localReviews);
+  const tasteScore = computeTasteScore(localReviews);
   const yesCount = localReviews.filter((r) => r.makeAgain === 'yes').length;
   const yesPercent = localReviews.length > 0 ? Math.round((yesCount / localReviews.length) * 100) : 0;
-  const creatorLabel = recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
+  const avgDifficulty =
+    localReviews.length > 0
+      ? (localReviews.reduce((s, r) => s + r.difficulty, 0) / localReviews.length).toFixed(1)
+      : null;
+  const creatorLabel =
+    recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
   const isOwnRecipe = Boolean(user?.id && recipe.createdByUserId && user.id === recipe.createdByUserId);
+  const existingReview = localReviews.find((r) => r.user.id === user?.id);
   const canReview = !isOwnRecipe;
+  const bookmarked = isBookmarked(recipe.id);
+
+  const ingredientItems = recipe.ingredientsMeasured && recipe.ingredientsMeasured.length > 0
+    ? recipe.ingredientsMeasured.map((item) => formatIngredientLine(item))
+    : recipe.ingredients;
 
   return (
     <>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Image source={{ uri: recipe.image }} style={styles.heroImage} />
+        <RemoteImage uri={recipe.image} style={styles.heroImage} />
 
         <View style={styles.content}>
           <View style={styles.titleRow}>
             <View style={styles.titleText}>
               <Text style={styles.name}>{recipe.name}</Text>
-              <Text style={styles.cuisine}>{recipe.cuisine} · {recipe.category}</Text>
+              <Text style={styles.cuisine}>
+                {recipe.cuisine} · {recipe.category}
+              </Text>
               <Text style={styles.creator}>By {creatorLabel}</Text>
+              {recipe.description ? (
+                <Text style={styles.description}>{recipe.description}</Text>
+              ) : null}
               {recipe.tags.length > 0 && (
                 <View style={styles.tagsSection}>
-                  <RecipeTagChips tags={recipe.tags} />
+                  <RecipeTagChips tags={recipe.tags} maxVisible={3} />
+                </View>
+              )}
+              {recipe.flavorTags && recipe.flavorTags.length > 0 && (
+                <View style={styles.tagsSection}>
+                  <RecipeTagChips tags={recipe.flavorTags} size="sm" maxVisible={3} />
                 </View>
               )}
             </View>
-            <RatingBadge rating={score} size="lg" />
+            <RatingBadge rating={score} size="lg" label="Encore" />
           </View>
 
           {/* Score summary */}
           {localReviews.length > 0 && (
             <View style={styles.scoreSummary}>
               <View style={styles.scoreItem}>
+                <Text style={styles.scoreValue}>{score?.toFixed(1) ?? '—'}/5</Text>
+                <Text style={styles.scoreLabel}>Encore Score</Text>
+              </View>
+              <View style={styles.scoreDivider} />
+              <View style={styles.scoreItem}>
                 <Text style={styles.scoreValue}>{yesPercent}%</Text>
                 <Text style={styles.scoreLabel}>would make again</Text>
               </View>
               <View style={styles.scoreDivider} />
               <View style={styles.scoreItem}>
-                <Text style={styles.scoreValue}>{localReviews.length}</Text>
-                <Text style={styles.scoreLabel}>reviews</Text>
-              </View>
-              <View style={styles.scoreDivider} />
-              <View style={styles.scoreItem}>
-                <Text style={styles.scoreValue}>
-                  {(localReviews.reduce((s, r) => s + r.difficulty, 0) / localReviews.length).toFixed(1)}
+                <Text style={styles.scoreValue}>{avgDifficulty}/5</Text>
+                <Text style={styles.scoreLabel}>
+                  avg difficulty{'\n'}({localReviews.length})
                 </Text>
-                <Text style={styles.scoreLabel}>avg difficulty</Text>
               </View>
+              {tasteScore !== null && (
+                <>
+                  <View style={styles.scoreDivider} />
+                  <View style={styles.scoreItem}>
+                    <Text style={styles.scoreValue}>{tasteScore.toFixed(1)}/5</Text>
+                    <Text style={styles.scoreLabel}>taste</Text>
+                  </View>
+                </>
+              )}
             </View>
           )}
 
@@ -116,12 +170,26 @@ export default function RecipeDetailScreen() {
               disabled={!canReview}
             >
               <Ionicons name="create-outline" size={18} color={Colors.white} />
-              <Text style={styles.rateButtonText}>{canReview ? 'Write a Review' : 'Your Recipe'}</Text>
+              <Text style={styles.rateButtonText}>
+                {!canReview ? 'Your Recipe' : existingReview ? 'Edit Review' : 'Write a Review'}
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-              <Ionicons name="bookmark-outline" size={22} color={Colors.primary} />
+            <TouchableOpacity
+              style={[styles.actionButton, bookmarked && styles.actionButtonActive]}
+              activeOpacity={0.7}
+              onPress={() => toggleBookmark(recipe.id)}
+            >
+              <Ionicons
+                name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+                size={22}
+                color={bookmarked ? Colors.white : Colors.primary}
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              activeOpacity={0.7}
+              onPress={() => Share.share({ message: `Check out "${recipe.name}" on Chef'd!` })}
+            >
               <Ionicons name="share-outline" size={22} color={Colors.primary} />
             </TouchableOpacity>
           </View>
@@ -131,7 +199,9 @@ export default function RecipeDetailScreen() {
               style={[styles.tab, activeTab === 'recipe' && styles.activeTab]}
               onPress={() => setActiveTab('recipe')}
             >
-              <Text style={[styles.tabText, activeTab === 'recipe' && styles.activeTabText]}>Recipe</Text>
+              <Text style={[styles.tabText, activeTab === 'recipe' && styles.activeTabText]}>
+                Recipe
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.tab, activeTab === 'reviews' && styles.activeTab]}
@@ -146,22 +216,32 @@ export default function RecipeDetailScreen() {
           {activeTab === 'recipe' ? (
             <>
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Ingredients</Text>
-                {recipe.ingredientsMeasured && recipe.ingredientsMeasured.length > 0 ? (
-                  recipe.ingredientsMeasured.map((item, index) => (
-                    <View key={index} style={styles.ingredientRow}>
-                      <View style={styles.bulletPoint} />
-                      <Text style={styles.ingredientText}>{formatIngredientLine(item)}</Text>
-                    </View>
-                  ))
-                ) : (
-                  recipe.ingredients.map((ingredient, index) => (
-                    <View key={index} style={styles.ingredientRow}>
-                      <View style={styles.bulletPoint} />
-                      <Text style={styles.ingredientText}>{ingredient}</Text>
-                    </View>
-                  ))
-                )}
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Ingredients</Text>
+                  <Text style={styles.checkHint}>Tap to check off</Text>
+                </View>
+                {ingredientItems.map((text, index) => {
+                  const checked = checkedIngredients.has(index);
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.ingredientRow}
+                      onPress={() => toggleIngredient(index)}
+                      activeOpacity={0.7}
+                    >
+                      <Ionicons
+                        name={checked ? 'checkbox' : 'square-outline'}
+                        size={20}
+                        color={checked ? Colors.primary : Colors.textTertiary}
+                      />
+                      <Text
+                        style={[styles.ingredientText, checked && styles.ingredientChecked]}
+                      >
+                        {text}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
 
               <View style={styles.section}>
@@ -175,6 +255,18 @@ export default function RecipeDetailScreen() {
                   </View>
                 ))}
               </View>
+
+              {recipe.sourceUrl && (
+                <TouchableOpacity
+                  style={styles.sourceRow}
+                  onPress={() => Linking.openURL(recipe.sourceUrl!)}
+                >
+                  <Ionicons name="link-outline" size={16} color={Colors.primary} />
+                  <Text style={styles.sourceText}>
+                    Adapted from {recipe.sourceName ?? recipe.sourceUrl}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </>
           ) : (
             <View style={styles.section}>
@@ -198,7 +290,16 @@ export default function RecipeDetailScreen() {
                       <MakeAgainBadge value={review.makeAgain} />
                       <DifficultyPips value={review.difficulty} />
                     </View>
+                    {review.tasteRating != null && review.tasteRating > 0 && (
+                      <View style={styles.tasteRow}>
+                        <Ionicons name="star" size={14} color="#FFD700" />
+                        <Text style={styles.tasteText}>{review.tasteRating.toFixed(1)}/5 taste</Text>
+                      </View>
+                    )}
                     {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
+                    {review.flavorNotes && (
+                      <Text style={styles.flavorNotes}>Flavor notes: {review.flavorNotes}</Text>
+                    )}
                   </View>
                 ))
               )}
@@ -212,6 +313,7 @@ export default function RecipeDetailScreen() {
       <ReviewModal
         visible={showReviewModal}
         recipeName={recipe.name}
+        existingReview={existingReview}
         onClose={() => setShowReviewModal(false)}
         onSubmit={async (data) => {
           if (isOwnRecipe) {
@@ -229,11 +331,13 @@ export default function RecipeDetailScreen() {
             recipesRated: user?.reviewCount ?? 0,
           };
           const newReview: Review = {
-            id: `rev-${Date.now()}`,
+            id: existingReview?.id ?? `rev-${Date.now()}`,
             user: reviewUser,
             recipeId: recipe.id,
             makeAgain: data.makeAgain,
             difficulty: data.difficulty as 1 | 2 | 3 | 4 | 5,
+            tasteRating: data.tasteRating || undefined,
+            flavorNotes: data.flavorNotes || undefined,
             comment: data.comment || undefined,
             likes: 0,
             liked: false,
@@ -250,20 +354,9 @@ export default function RecipeDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroImage: {
-    width,
-    height: width * 0.65,
-    backgroundColor: '#E0E0E0',
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  heroImage: { width, height: width * 0.65, backgroundColor: '#E0E0E0' },
   content: {
     paddingHorizontal: Spacing.lg,
     marginTop: -Spacing.xl,
@@ -278,29 +371,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: Spacing.lg,
   },
-  titleText: {
-    flex: 1,
-    marginRight: Spacing.md,
-  },
-  name: {
-    fontSize: FontSize.xxl,
-    fontWeight: '800',
-    color: Colors.text,
-  },
-  cuisine: {
-    fontSize: FontSize.md,
-    color: Colors.textSecondary,
-    marginTop: 4,
-  },
-  creator: {
+  titleText: { flex: 1, marginRight: Spacing.md },
+  name: { fontSize: FontSize.xxl, fontWeight: '800', color: Colors.text },
+  cuisine: { fontSize: FontSize.md, color: Colors.textSecondary, marginTop: 4 },
+  creator: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 6, fontWeight: '600' },
+  description: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
-    marginTop: 6,
-    fontWeight: '600',
+    marginTop: Spacing.sm,
+    lineHeight: 20,
   },
-  tagsSection: {
-    marginTop: Spacing.md,
-  },
+  tagsSection: { marginTop: Spacing.md },
   scoreSummary: {
     flexDirection: 'row',
     backgroundColor: Colors.primary + '0A',
@@ -310,24 +391,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.primary + '20',
   },
-  scoreItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  scoreValue: {
-    fontSize: FontSize.lg,
-    fontWeight: '800',
-    color: Colors.primary,
-  },
-  scoreLabel: {
-    fontSize: FontSize.xs,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
-  scoreDivider: {
-    width: 1,
-    backgroundColor: Colors.primary + '20',
-  },
+  scoreItem: { flex: 1, alignItems: 'center' },
+  scoreValue: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
+  scoreLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2, textAlign: 'center' },
+  scoreDivider: { width: 1, backgroundColor: Colors.primary + '20' },
   metaRow: {
     flexDirection: 'row',
     backgroundColor: Colors.white,
@@ -337,30 +404,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
-  metaItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  metaValue: {
-    fontSize: FontSize.md,
-    fontWeight: '700',
-    color: Colors.text,
-    marginTop: 4,
-  },
-  metaLabel: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
-    marginTop: 1,
-  },
-  metaDivider: {
-    width: 1,
-    backgroundColor: Colors.border,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-    marginBottom: Spacing.xl,
-  },
+  metaItem: { flex: 1, alignItems: 'center' },
+  metaValue: { fontSize: FontSize.md, fontWeight: '700', color: Colors.text, marginTop: 4 },
+  metaLabel: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 1 },
+  metaDivider: { width: 1, backgroundColor: Colors.border },
+  actionRow: { flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.xl },
   rateButton: {
     flex: 1,
     flexDirection: 'row',
@@ -371,14 +419,8 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     gap: Spacing.sm,
   },
-  rateButtonDisabled: {
-    opacity: 0.55,
-  },
-  rateButtonText: {
-    color: Colors.white,
-    fontSize: FontSize.md,
-    fontWeight: '600',
-  },
+  rateButtonDisabled: { opacity: 0.55 },
+  rateButtonText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '600' },
   actionButton: {
     width: 48,
     height: 48,
@@ -388,61 +430,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  actionButtonActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
   tabBar: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
     marginBottom: Spacing.lg,
   },
-  tab: {
-    flex: 1,
-    paddingVertical: Spacing.md,
+  tab: { flex: 1, paddingVertical: Spacing.md, alignItems: 'center' },
+  activeTab: { borderBottomWidth: 2, borderBottomColor: Colors.primary },
+  tabText: { fontSize: FontSize.md, color: Colors.textTertiary, fontWeight: '500' },
+  activeTabText: { color: Colors.primary, fontWeight: '600' },
+  section: { marginBottom: Spacing.xxl },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.primary,
-  },
-  tabText: {
-    fontSize: FontSize.md,
-    color: Colors.textTertiary,
-    fontWeight: '500',
-  },
-  activeTabText: {
-    color: Colors.primary,
-    fontWeight: '600',
-  },
-  section: {
-    marginBottom: Spacing.xxl,
-  },
-  sectionTitle: {
-    fontSize: FontSize.lg,
-    fontWeight: '700',
-    color: Colors.text,
     marginBottom: Spacing.lg,
   },
+  sectionTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.text, marginBottom: Spacing.lg },
+  checkHint: { fontSize: FontSize.xs, color: Colors.textTertiary, fontStyle: 'italic' },
   ingredientRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: Spacing.sm,
+    gap: Spacing.md,
   },
-  bulletPoint: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.primary,
-    marginRight: Spacing.md,
-  },
-  ingredientText: {
-    fontSize: FontSize.md,
-    color: Colors.text,
-    lineHeight: 22,
-    flex: 1,
-  },
-  stepRow: {
-    flexDirection: 'row',
-    marginBottom: Spacing.lg,
-  },
+  ingredientText: { fontSize: FontSize.md, color: Colors.text, lineHeight: 22, flex: 1 },
+  ingredientChecked: { textDecorationLine: 'line-through', color: Colors.textTertiary },
+  stepRow: { flexDirection: 'row', marginBottom: Spacing.lg },
   stepNumber: {
     width: 28,
     height: 28,
@@ -453,32 +472,22 @@ const styles = StyleSheet.create({
     marginRight: Spacing.md,
     marginTop: 2,
   },
-  stepNumberText: {
-    color: Colors.white,
-    fontSize: FontSize.sm,
-    fontWeight: '700',
-  },
-  stepText: {
-    flex: 1,
-    fontSize: FontSize.md,
-    color: Colors.text,
-    lineHeight: 22,
-  },
-  emptyState: {
+  stepNumberText: { color: Colors.white, fontSize: FontSize.sm, fontWeight: '700' },
+  stepText: { flex: 1, fontSize: FontSize.md, color: Colors.text, lineHeight: 22 },
+  sourceRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: Spacing.xxxl,
+    gap: Spacing.sm,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    backgroundColor: Colors.primary + '08',
+    borderRadius: BorderRadius.md,
+    marginBottom: Spacing.lg,
   },
-  emptyText: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.textSecondary,
-    marginTop: Spacing.md,
-  },
-  emptySubtext: {
-    fontSize: FontSize.sm,
-    color: Colors.textTertiary,
-    marginTop: 4,
-  },
+  sourceText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '500' },
+  emptyState: { alignItems: 'center', paddingVertical: Spacing.xxxl },
+  emptyText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary, marginTop: Spacing.md },
+  emptySubtext: { fontSize: FontSize.sm, color: Colors.textTertiary, marginTop: 4 },
   reviewCard: {
     backgroundColor: Colors.white,
     borderRadius: BorderRadius.md,
@@ -487,34 +496,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
-  reviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: Spacing.md,
-  },
-  reviewHeaderText: {
-    flex: 1,
-    marginLeft: Spacing.md,
-  },
-  reviewUser: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  reviewTime: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
-  },
+  reviewHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md },
+  reviewHeaderText: { flex: 1, marginLeft: Spacing.md },
+  reviewUser: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
+  reviewTime: { fontSize: FontSize.xs, color: Colors.textTertiary },
   reviewMetaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: Spacing.sm,
   },
-  reviewComment: {
-    fontSize: FontSize.md,
-    color: Colors.text,
-    lineHeight: 21,
+  tasteRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: Spacing.sm,
+  },
+  tasteText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.ratingYellow },
+  reviewComment: { fontSize: FontSize.md, color: Colors.text, lineHeight: 21, marginTop: Spacing.sm },
+  flavorNotes: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    fontStyle: 'italic',
     marginTop: Spacing.sm,
   },
 });

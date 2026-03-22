@@ -1,37 +1,62 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Recipe } from '@/types';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
 import { RatingBadge } from './RatingBadge';
+import { RecipeTagChips } from './RecipeTagChips';
+import { RemoteImage } from './RemoteImage';
 
 interface RecipeCardProps {
   recipe: Recipe;
   onPress?: () => void;
   showRating?: boolean;
   rank?: number;
+  onBookmarkPress?: () => void;
+  isBookmarked?: boolean;
 }
 
-export function RecipeCard({ recipe, onPress, showRating = true, rank }: RecipeCardProps) {
-  const creatorLabel = recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
+export function RecipeCard({
+  recipe,
+  onPress,
+  showRating = true,
+  rank,
+  onBookmarkPress,
+  isBookmarked,
+}: RecipeCardProps) {
+  const creatorLabel =
+    recipe.createdByName ??
+    (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      <Image source={{ uri: recipe.image }} style={styles.image} />
+      <RemoteImage uri={recipe.image} style={styles.image} />
       <View style={styles.content}>
         <View style={styles.topRow}>
-          {rank !== undefined && (
-            <Text style={styles.rank}>#{rank}</Text>
-          )}
+          {rank !== undefined && <Text style={styles.rank}>#{rank}</Text>}
           <View style={styles.textContent}>
-            <Text style={styles.name} numberOfLines={1}>{recipe.name}</Text>
+            <Text style={styles.name} numberOfLines={1}>
+              {recipe.name}
+            </Text>
             <Text style={styles.meta}>
               {recipe.cuisine} · {recipe.difficulty} · {recipe.prepTime + recipe.cookTime} min
             </Text>
-            <Text style={styles.creator} numberOfLines={1}>By {creatorLabel}</Text>
+            <Text style={styles.creator} numberOfLines={1}>
+              By {creatorLabel}
+            </Text>
           </View>
-          {showRating && <RatingBadge rating={recipe.totalRatings === 0 ? null : recipe.averageRating} size="sm" />}
+          {showRating && (
+            <RatingBadge
+              rating={recipe.totalRatings === 0 ? null : recipe.averageRating}
+              size="sm"
+            />
+          )}
         </View>
+        {recipe.tags.length > 0 && (
+          <View style={styles.tagsRow}>
+            <RecipeTagChips tags={recipe.tags} size="sm" maxVisible={3} />
+          </View>
+        )}
         <View style={styles.stats}>
           <View style={styles.stat}>
             <Ionicons name="time-outline" size={14} color={Colors.textTertiary} />
@@ -45,6 +70,15 @@ export function RecipeCard({ recipe, onPress, showRating = true, rank }: RecipeC
             <Ionicons name="star-outline" size={14} color={Colors.textTertiary} />
             <Text style={styles.statText}>{recipe.totalRatings} ratings</Text>
           </View>
+          {onBookmarkPress && (
+            <TouchableOpacity onPress={onBookmarkPress} hitSlop={8} style={styles.bookmarkBtn}>
+              <Ionicons
+                name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+                size={16}
+                color={isBookmarked ? Colors.primary : Colors.textTertiary}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -64,7 +98,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 90,
-    height: 90,
+    height: 'auto',
+    minHeight: 90,
     backgroundColor: '#E0E0E0',
   },
   content: {
@@ -104,8 +139,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontWeight: '500',
   },
+  tagsRow: {
+    marginBottom: Spacing.sm,
+  },
   stats: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: Spacing.md,
   },
   stat: {
@@ -116,5 +155,9 @@ const styles = StyleSheet.create({
   statText: {
     fontSize: FontSize.xs,
     color: Colors.textTertiary,
+  },
+  bookmarkBtn: {
+    marginLeft: 'auto',
+    padding: 2,
   },
 });

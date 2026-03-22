@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,14 +11,21 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { MakeAgain } from '@/types';
+import { MakeAgain, Review } from '@/types';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 
 interface ReviewModalProps {
   visible: boolean;
   recipeName: string;
+  existingReview?: Review;
   onClose: () => void;
-  onSubmit: (review: { makeAgain: MakeAgain; difficulty: number; comment: string }) => void;
+  onSubmit: (review: {
+    makeAgain: MakeAgain;
+    difficulty: number;
+    tasteRating: number;
+    flavorNotes: string;
+    comment: string;
+  }) => void;
 }
 
 const MAKE_AGAIN_OPTIONS: { value: MakeAgain; icon: string; label: string; color: string }[] = [
@@ -27,26 +34,55 @@ const MAKE_AGAIN_OPTIONS: { value: MakeAgain; icon: string; label: string; color
   { value: 'no', icon: 'close-circle', label: 'No', color: '#C62828' },
 ];
 
-export function ReviewModal({ visible, recipeName, onClose, onSubmit }: ReviewModalProps) {
+const MAX_COMMENT = 500;
+const MAX_FLAVOR_NOTES = 150;
+
+export function ReviewModal({ visible, recipeName, existingReview, onClose, onSubmit }: ReviewModalProps) {
   const [makeAgain, setMakeAgain] = useState<MakeAgain | null>(null);
   const [difficulty, setDifficulty] = useState<number>(0);
+  const [tasteRating, setTasteRating] = useState<number>(0);
+  const [flavorNotes, setFlavorNotes] = useState('');
   const [comment, setComment] = useState('');
+
+  useEffect(() => {
+    if (visible && existingReview) {
+      setMakeAgain(existingReview.makeAgain);
+      setDifficulty(existingReview.difficulty);
+      setTasteRating(existingReview.tasteRating ?? 0);
+      setFlavorNotes(existingReview.flavorNotes ?? '');
+      setComment(existingReview.comment ?? '');
+    }
+  }, [visible, existingReview]);
 
   const canSubmit = makeAgain !== null && difficulty > 0;
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    onSubmit({ makeAgain: makeAgain!, difficulty, comment });
+    onSubmit({ makeAgain: makeAgain!, difficulty, tasteRating, flavorNotes, comment });
+    resetFields();
+  };
+
+  const resetFields = () => {
     setMakeAgain(null);
     setDifficulty(0);
+    setTasteRating(0);
+    setFlavorNotes('');
     setComment('');
   };
 
   const handleClose = () => {
-    setMakeAgain(null);
-    setDifficulty(0);
-    setComment('');
+    resetFields();
     onClose();
+  };
+
+  const handleStarPress = (star: number) => {
+    if (tasteRating === star) {
+      setTasteRating(star - 0.5);
+    } else if (tasteRating === star - 0.5) {
+      setTasteRating(0);
+    } else {
+      setTasteRating(star);
+    }
   };
 
   return (
@@ -60,7 +96,9 @@ export function ReviewModal({ visible, recipeName, onClose, onSubmit }: ReviewMo
             <View style={styles.handle} />
 
             <View style={styles.headerRow}>
-              <Text style={styles.title}>Review</Text>
+              <Text style={styles.title}>
+                {existingReview ? 'Edit Review' : 'Review'}
+              </Text>
               <TouchableOpacity onPress={handleClose} hitSlop={12}>
                 <Ionicons name="close" size={24} color={Colors.textSecondary} />
               </TouchableOpacity>
@@ -89,10 +127,7 @@ export function ReviewModal({ visible, recipeName, onClose, onSubmit }: ReviewMo
                       color={selected ? opt.color : Colors.textTertiary}
                     />
                     <Text
-                      style={[
-                        styles.toggleLabel,
-                        selected && { color: opt.color, fontWeight: '600' },
-                      ]}
+                      style={[styles.toggleLabel, selected && { color: opt.color, fontWeight: '600' }]}
                     >
                       {opt.label}
                     </Text>
@@ -113,30 +148,82 @@ export function ReviewModal({ visible, recipeName, onClose, onSubmit }: ReviewMo
                     onPress={() => setDifficulty(n)}
                     activeOpacity={0.7}
                   >
-                    <Text style={[styles.diffNumber, selected && styles.diffNumberSelected]}>
-                      {n}
-                    </Text>
+                    <Ionicons
+                      name={selected ? 'star' : 'star-outline'}
+                      size={20}
+                      color={selected ? Colors.accent : Colors.textTertiary}
+                    />
                   </TouchableOpacity>
                 );
               })}
             </View>
             <View style={styles.diffLabels}>
-              <Text style={styles.diffLabelText}>Easy</Text>
-              <Text style={styles.diffLabelText}>Hard</Text>
+              <Text style={styles.diffLabelText}>Very Easy</Text>
+              <Text style={styles.diffLabelText}>Very Difficult</Text>
             </View>
 
-            {/* Comment */}
+            {/* Taste Rating (optional) */}
             <Text style={styles.sectionLabel}>
-              Notes <Text style={styles.optional}>(optional)</Text>
+              Taste Rating <Text style={styles.optional}>(optional, tap twice for half-star)</Text>
             </Text>
+            <View style={styles.starsRow}>
+              {[1, 2, 3, 4, 5].map((star) => {
+                const full = tasteRating >= star;
+                const half = !full && tasteRating >= star - 0.5;
+                return (
+                  <TouchableOpacity
+                    key={star}
+                    onPress={() => handleStarPress(star)}
+                    activeOpacity={0.7}
+                    style={styles.starTouch}
+                  >
+                    <Ionicons
+                      name={full ? 'star' : half ? 'star-half' : 'star-outline'}
+                      size={28}
+                      color={full || half ? '#FFD700' : Colors.textTertiary}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+              {tasteRating > 0 && (
+                <Text style={styles.starLabel}>{tasteRating.toFixed(1)}</Text>
+              )}
+            </View>
+
+            {/* Flavor Notes */}
+            <View style={styles.labelRow}>
+              <Text style={styles.sectionLabel}>
+                Flavor notes <Text style={styles.optional}>(optional)</Text>
+              </Text>
+              <Text style={styles.charCount}>{flavorNotes.length}/{MAX_FLAVOR_NOTES}</Text>
+            </View>
+            <TextInput
+              style={[styles.textInput, { minHeight: 50 }]}
+              placeholder="What did you think of the flavor?"
+              placeholderTextColor={Colors.textTertiary}
+              multiline
+              value={flavorNotes}
+              onChangeText={(t) => setFlavorNotes(t.slice(0, MAX_FLAVOR_NOTES))}
+              textAlignVertical="top"
+              maxLength={MAX_FLAVOR_NOTES}
+            />
+
+            {/* Comment */}
+            <View style={styles.labelRow}>
+              <Text style={styles.sectionLabel}>
+                Notes <Text style={styles.optional}>(optional)</Text>
+              </Text>
+              <Text style={styles.charCount}>{comment.length}/{MAX_COMMENT}</Text>
+            </View>
             <TextInput
               style={styles.textInput}
               placeholder="How was the recipe? Any tips?"
               placeholderTextColor={Colors.textTertiary}
               multiline
               value={comment}
-              onChangeText={setComment}
+              onChangeText={(t) => setComment(t.slice(0, MAX_COMMENT))}
               textAlignVertical="top"
+              maxLength={MAX_COMMENT}
             />
 
             <TouchableOpacity
@@ -145,7 +232,9 @@ export function ReviewModal({ visible, recipeName, onClose, onSubmit }: ReviewMo
               disabled={!canSubmit}
               activeOpacity={0.8}
             >
-              <Text style={styles.submitText}>Submit Review</Text>
+              <Text style={styles.submitText}>
+                {existingReview ? 'Update Review' : 'Submit Review'}
+              </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -155,18 +244,14 @@ export function ReviewModal({ visible, recipeName, onClose, onSubmit }: ReviewMo
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    justifyContent: 'flex-end',
-  },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
   sheet: {
     backgroundColor: Colors.white,
     borderTopLeftRadius: BorderRadius.xl,
     borderTopRightRadius: BorderRadius.xl,
     paddingHorizontal: Spacing.xxl,
     paddingBottom: Platform.OS === 'ios' ? 40 : Spacing.xxl,
-    maxHeight: '85%',
+    maxHeight: '90%',
   },
   handle: {
     width: 40,
@@ -183,31 +268,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xs,
   },
-  title: {
-    fontSize: FontSize.xl,
-    fontWeight: '800',
-    color: Colors.text,
-  },
-  recipeName: {
-    fontSize: FontSize.md,
-    color: Colors.textSecondary,
-    marginBottom: Spacing.xxl,
-  },
-  sectionLabel: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.text,
-    marginBottom: Spacing.md,
-  },
-  optional: {
-    fontWeight: '400',
-    color: Colors.textTertiary,
-  },
-  toggleRow: {
+  title: { fontSize: FontSize.xl, fontWeight: '800', color: Colors.text },
+  recipeName: { fontSize: FontSize.md, color: Colors.textSecondary, marginBottom: Spacing.xxl },
+  sectionLabel: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text, marginBottom: Spacing.md },
+  optional: { fontWeight: '400', color: Colors.textTertiary },
+  labelRow: {
     flexDirection: 'row',
-    gap: Spacing.md,
-    marginBottom: Spacing.xxl,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
+  charCount: { fontSize: FontSize.xs, color: Colors.textTertiary },
+  toggleRow: { flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.xxl },
   toggleButton: {
     flex: 1,
     flexDirection: 'row',
@@ -220,10 +291,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     backgroundColor: Colors.surfaceElevated,
   },
-  toggleLabel: {
-    fontSize: FontSize.md,
-    color: Colors.textSecondary,
-  },
+  toggleLabel: { fontSize: FontSize.md, color: Colors.textSecondary },
   difficultyRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -240,27 +308,21 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: Colors.border,
   },
-  diffDotSelected: {
-    backgroundColor: Colors.accent + '20',
-    borderColor: Colors.accent,
-  },
-  diffNumber: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.textTertiary,
-  },
-  diffNumberSelected: {
-    color: Colors.accent,
-  },
+  diffDotSelected: { backgroundColor: Colors.accent + '20', borderColor: Colors.accent },
   diffLabels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: Spacing.xxl,
   },
-  diffLabelText: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
+  diffLabelText: { fontSize: FontSize.xs, color: Colors.textTertiary },
+  starsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.xxl,
   },
+  starTouch: { padding: 2 },
+  starLabel: { fontSize: FontSize.md, fontWeight: '700', color: '#FFD700', marginLeft: Spacing.sm },
   textInput: {
     backgroundColor: Colors.surfaceElevated,
     borderRadius: BorderRadius.md,
@@ -278,12 +340,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     alignItems: 'center',
   },
-  submitDisabled: {
-    opacity: 0.4,
-  },
-  submitText: {
-    color: Colors.white,
-    fontSize: FontSize.md,
-    fontWeight: '700',
-  },
+  submitDisabled: { opacity: 0.4 },
+  submitText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700' },
 });

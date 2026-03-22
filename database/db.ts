@@ -85,6 +85,10 @@ export async function updateProfile(
   return (await impl()).updateProfile(userId, patch);
 }
 
+export async function setFavoriteRecipeIds(userId: string, ids: string[]): Promise<void> {
+  return (await impl()).setFavoriteRecipeIds(userId, ids);
+}
+
 export async function mergeAccountsFromRepo(): Promise<void> {
   return (await impl()).mergeAccountsFromRepo();
 }

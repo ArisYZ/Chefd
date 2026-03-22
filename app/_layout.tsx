@@ -3,11 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { Colors } from '@/constants/Colors';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RecipeProvider } from '@/contexts/RecipeContext';
+import { BookmarkProvider } from '@/contexts/BookmarkContext';
 
 export default function RootLayout() {
   return (
     <AuthProvider>
     <RecipeProvider>
+    <BookmarkProvider>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -51,7 +53,63 @@ export default function RootLayout() {
             presentation: 'card',
           }}
         />
+        <Stack.Screen
+          name="saved"
+          options={{
+            headerShown: true,
+            title: 'Saved Recipes',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{
+            headerShown: true,
+            title: 'Settings',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="edit-profile"
+          options={{
+            headerShown: true,
+            title: 'Edit Profile',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="category/[slug]"
+          options={{
+            headerShown: true,
+            headerTitle: '',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
+          name="recipe/import"
+          options={{
+            headerShown: true,
+            title: 'Import Recipe',
+            headerBackTitle: 'Back',
+            headerTintColor: Colors.primary,
+            headerStyle: { backgroundColor: Colors.background },
+            presentation: 'card',
+          }}
+        />
       </Stack>
+    </BookmarkProvider>
     </RecipeProvider>
     </AuthProvider>
   );

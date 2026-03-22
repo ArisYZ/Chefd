@@ -10,9 +10,20 @@ interface SocialActionsProps {
   onLike?: () => void;
   onComment?: () => void;
   onShare?: () => void;
+  onBookmark?: () => void;
+  isBookmarked?: boolean;
 }
 
-export function SocialActions({ likes, comments, liked: initialLiked, onLike, onComment, onShare }: SocialActionsProps) {
+export function SocialActions({
+  likes,
+  comments,
+  liked: initialLiked,
+  onLike,
+  onComment,
+  onShare,
+  onBookmark,
+  isBookmarked,
+}: SocialActionsProps) {
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(likes);
 
@@ -39,8 +50,12 @@ export function SocialActions({ likes, comments, liked: initialLiked, onLike, on
           <Ionicons name="paper-plane-outline" size={22} color={Colors.text} />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity activeOpacity={0.7}>
-        <Ionicons name="checkmark-circle-outline" size={24} color={Colors.textTertiary} />
+      <TouchableOpacity activeOpacity={0.7} onPress={onBookmark}>
+        <Ionicons
+          name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+          size={24}
+          color={isBookmarked ? Colors.primary : Colors.textTertiary}
+        />
       </TouchableOpacity>
     </View>
   );

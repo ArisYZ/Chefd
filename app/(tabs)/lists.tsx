@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { userLists } from '@/constants/MockData';
 import { RecipeList } from '@/types';
+import { RemoteImage } from '@/components/RemoteImage';
 
 function ListCard({ list, onPress }: { list: RecipeList; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.listCard} onPress={onPress} activeOpacity={0.8}>
-      <Image source={{ uri: list.image }} style={styles.listImage} />
+      <RemoteImage uri={list.image} style={styles.listImage} />
       <View style={styles.listContent}>
         <Text style={styles.listTitle}>{list.title}</Text>
         <Text style={styles.listDescription} numberOfLines={1}>{list.description}</Text>

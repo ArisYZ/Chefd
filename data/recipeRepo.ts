@@ -14,12 +14,17 @@ import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/
 export interface RepoRecipeEntry {
   id: string;
   name: string;
+  description?: string;
   cuisine: string;
   category: string;
   tags: string[];
+  flavorTags?: string[];
   image: string;
+  stepPhotos?: (string | null)[];
   prepTime: number;
   cookTime: number;
+  prepTimeUnit?: 'minutes' | 'hours';
+  cookTimeUnit?: 'minutes' | 'hours';
   servings: number;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   ingredients: string[];
@@ -28,6 +33,8 @@ export interface RepoRecipeEntry {
   averageRating: number;
   totalRatings: number;
   reviews: Review[];
+  sourceUrl?: string;
+  sourceName?: string;
 }
 
 /** Shape of data/recipes.json: keyed by userId. */
@@ -112,12 +119,17 @@ export function buildMergedRecipesRepoFile(input: {
     const entry: RepoRecipeEntry = {
       id: ur.id,
       name: ur.name,
+      description: ur.description,
       cuisine: ur.cuisine,
       category: ur.category,
       tags: ur.tags,
+      flavorTags: ur.flavorTags,
       image: ur.image,
+      stepPhotos: ur.stepPhotos,
       prepTime: ur.prepTime,
       cookTime: ur.cookTime,
+      prepTimeUnit: ur.prepTimeUnit,
+      cookTimeUnit: ur.cookTimeUnit,
       servings: ur.servings,
       difficulty: ur.difficulty,
       ingredients: ur.ingredients,
@@ -126,6 +138,8 @@ export function buildMergedRecipesRepoFile(input: {
       averageRating: ur.averageRating,
       totalRatings: ur.totalRatings,
       reviews,
+      sourceUrl: ur.sourceUrl,
+      sourceName: ur.sourceName,
     };
     const idx = file[authorId].recipes.findIndex((x) => x.id === ur.id);
     if (idx >= 0) file[authorId].recipes[idx] = entry;

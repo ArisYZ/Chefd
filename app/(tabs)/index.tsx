@@ -3,13 +3,15 @@ import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { SectionHeader } from '@/components/SectionHeader';
 import { FeaturedListCard } from '@/components/FeaturedListCard';
 import { FeedCard } from '@/components/FeedCard';
 import { feedRatings, featuredLists } from '@/constants/MockData';
+import { RECIPE_TAG_OPTIONS } from '@/constants/recipeTags';
+import { useBookmarks } from '@/contexts/BookmarkContext';
 
 const FILTER_TABS = [
   { label: 'Trending', icon: 'trending-up' },
@@ -21,19 +23,28 @@ const FILTER_TABS = [
 export default function FeedScreen() {
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState('Trending');
+  const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const renderHeader = () => (
     <View>
       <View style={styles.topBar}>
         <Text style={styles.logo}>chef'd</Text>
         <View style={styles.topBarRight}>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            activeOpacity={0.7}
+            onPress={() => router.push('/saved')}
+          >
             <Ionicons name="notifications-outline" size={24} color={Colors.text} />
             <View style={styles.notifBadge}>
               <Text style={styles.notifBadgeText}>2</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            activeOpacity={0.7}
+            onPress={() => router.push('/settings')}
+          >
             <Ionicons name="menu-outline" size={26} color={Colors.text} />
           </TouchableOpacity>
         </View>
@@ -44,6 +55,26 @@ export default function FeedScreen() {
         placeholder="Search recipes, cuisine, ingredients"
       />
 
+      {/* Category chips */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoryRow}
+      >
+        {RECIPE_TAG_OPTIONS.map((tag) => (
+          <TouchableOpacity
+            key={tag.label}
+            style={styles.categoryChip}
+            onPress={() => router.push(`/category/${encodeURIComponent(tag.label)}`)}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.categoryIcon, { backgroundColor: tag.color + '18' }]}>
+              <Ionicons name={tag.icon as any} size={16} color={tag.color} />
+            </View>
+            <Text style={styles.categoryLabel}>{tag.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
       <FilterTabs
         tabs={FILTER_TABS}
@@ -51,7 +82,7 @@ export default function FeedScreen() {
         onTabPress={setActiveFilter}
       />
 
-      <SectionHeader title="Featured Lists" onAction={() => {}} />
+      <SectionHeader title="Featured Lists" onAction={() => router.push('/saved')} />
 
       <ScrollView
         horizontal
@@ -81,6 +112,8 @@ export default function FeedScreen() {
           <FeedCard
             rating={item}
             onPress={() => router.push(`/recipe/${item.recipe.id}`)}
+            onBookmarkPress={() => toggleBookmark(item.recipe.id)}
+            isBookmarked={isBookmarked(item.recipe.id)}
           />
         )}
         showsVerticalScrollIndicator={false}
@@ -90,10 +123,7 @@ export default function FeedScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -107,15 +137,8 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontStyle: 'italic',
   },
-  topBarRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  iconButton: {
-    padding: Spacing.xs,
-    position: 'relative',
-  },
+  topBarRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  iconButton: { padding: Spacing.xs, position: 'relative' },
   notifBadge: {
     position: 'absolute',
     top: 0,
@@ -127,10 +150,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  notifBadgeText: {
-    color: Colors.white,
+  notifBadgeText: { color: Colors.white, fontSize: 10, fontWeight: '700' },
+  categoryRow: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  categoryChip: {
+    alignItems: 'center',
+    width: 72,
+  },
+  categoryIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  categoryLabel: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '600',
+    color: Colors.textSecondary,
+    textAlign: 'center',
   },
   featuredContainer: {
     paddingHorizontal: Spacing.lg,

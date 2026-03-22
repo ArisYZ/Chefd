@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -8,37 +8,39 @@ import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RecipeCard } from '@/components/RecipeCard';
 import { cuisineFilters } from '@/constants/MockData';
+import { RECIPE_TAG_OPTIONS, getTagConfig } from '@/constants/recipeTags';
 import { useRecipes } from '@/contexts/RecipeContext';
-
-const QUICK_ACTIONS = [
-  { icon: 'flame-outline', label: 'Hot picks', color: Colors.primary },
-  { icon: 'camera-outline', label: 'Snap a Dish', color: Colors.accent },
-  { icon: 'bookmark-outline', label: 'Save Recipe', color: Colors.primaryLight },
-  { icon: 'share-outline', label: 'Share List', color: Colors.ratingYellow },
-];
+import { useBookmarks } from '@/contexts/BookmarkContext';
 
 export default function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ q?: string }>();
   const { recipes } = useRecipes();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
   const [searchText, setSearchText] = useState('');
   const [activeCuisine, setActiveCuisine] = useState('All');
+  const [activeCategories, setActiveCategories] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<'default' | 'taste'>('default');
 
   useEffect(() => {
-    // Clear search text when navigating away from this tab
     return () => {
       setSearchText('');
       setActiveCuisine('All');
+      setActiveCategories([]);
     };
   }, []);
 
   useEffect(() => {
     const raw = params.q;
     const q = Array.isArray(raw) ? raw[0] : raw;
-    if (typeof q === 'string') {
-      setSearchText(q);
-    }
+    if (typeof q === 'string') setSearchText(q);
   }, [params.q]);
+
+  const toggleCategory = (tag: string) => {
+    setActiveCategories((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+  };
 
   const filteredRecipes = useMemo(() => {
     const q = searchText.trim().toLowerCase();
@@ -54,37 +56,72 @@ export default function SearchScreen() {
         tags.some((t) => t.toLowerCase().includes(q)) ||
         ing.some((i) => i.toLowerCase().includes(q));
       const matchesCuisine = activeCuisine === 'All' || recipe.cuisine === activeCuisine;
-      return matchesSearch && matchesCuisine;
+      const matchesCategories =
+        activeCategories.length === 0 ||
+        activeCategories.every((cat) => tags.includes(cat));
+      return matchesSearch && matchesCuisine && matchesCategories;
     });
-  }, [recipes, searchText, activeCuisine]);
+  }, [recipes, searchText, activeCuisine, activeCategories]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Discover</Text>
+        <TouchableOpacity
+          onPress={() => setSortBy((s) => (s === 'default' ? 'taste' : 'default'))}
+          style={styles.sortBtn}
+        >
+          <Ionicons name="funnel-outline" size={18} color={Colors.primary} />
+          <Text style={styles.sortText}>{sortBy === 'taste' ? 'By Taste' : 'Default'}</Text>
+        </TouchableOpacity>
       </View>
 
       <SearchBar
         value={searchText}
         onChangeText={setSearchText}
-        placeholder="Search by recipe name…"
+        placeholder="Search by recipe, cuisine, ingredient..."
       />
 
-      <View style={styles.quickActions}>
-        {QUICK_ACTIONS.map((action) => (
-          <TouchableOpacity
-            key={action.label}
-            style={styles.quickAction}
-            activeOpacity={0.7}
-            onPress={() => {}}
-          >
-            <View style={[styles.quickActionIcon, { backgroundColor: action.color + '15' }]}>
-              <Ionicons name={action.icon as any} size={24} color={action.color} />
-            </View>
-            <Text style={styles.quickActionLabel}>{action.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {/* Category filter chips */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoryRow}
+      >
+        {RECIPE_TAG_OPTIONS.map((tag) => {
+          const active = activeCategories.includes(tag.label);
+          return (
+            <TouchableOpacity
+              key={tag.label}
+              style={[
+                styles.categoryChip,
+                active && { backgroundColor: tag.color + '18', borderColor: tag.color },
+              ]}
+              onPress={() => toggleCategory(tag.label)}
+              activeOpacity={0.7}
+            >
+              <Ionicons
+                name={tag.icon as any}
+                size={14}
+                color={active ? tag.color : Colors.textTertiary}
+              />
+              <Text style={[styles.categoryChipText, active && { color: tag.color }]}>
+                {tag.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      {activeCategories.length > 0 && (
+        <TouchableOpacity
+          style={styles.clearFilters}
+          onPress={() => setActiveCategories([])}
+        >
+          <Ionicons name="close-circle" size={14} color={Colors.primary} />
+          <Text style={styles.clearFiltersText}>Clear filters</Text>
+        </TouchableOpacity>
+      )}
 
       <FilterTabs
         tabs={cuisineFilters.map((c) => ({ label: c }))}
@@ -101,6 +138,8 @@ export default function SearchScreen() {
           <RecipeCard
             recipe={item}
             onPress={() => router.push(`/recipe/${item.id}`)}
+            onBookmarkPress={() => toggleBookmark(item.id)}
+            isBookmarked={isBookmarked(item.id)}
           />
         )}
         showsVerticalScrollIndicator={false}
@@ -111,42 +150,57 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.lg,
   },
-  title: {
-    fontSize: FontSize.xxl,
-    fontWeight: '800',
-    color: Colors.text,
-  },
-  quickActions: {
+  title: { fontSize: FontSize.xxl, fontWeight: '800', color: Colors.text },
+  sortBtn: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.primary + '12',
+  },
+  sortText: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.primary },
+  categoryRow: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
-    gap: Spacing.md,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
   },
-  quickAction: {
-    flex: 1,
+  categoryChip: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
-  quickActionIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.sm,
-  },
-  quickActionLabel: {
+  categoryChipText: {
     fontSize: FontSize.xs,
+    fontWeight: '600',
     color: Colors.textSecondary,
-    textAlign: 'center',
-    fontWeight: '500',
+  },
+  clearFilters: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.sm,
+  },
+  clearFiltersText: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.primary,
   },
   resultsCount: {
     paddingHorizontal: Spacing.lg,
@@ -154,7 +208,5 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     color: Colors.textTertiary,
   },
-  listContent: {
-    paddingBottom: Spacing.xxl,
-  },
+  listContent: { paddingBottom: Spacing.xxl },
 });

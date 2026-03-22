@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -7,28 +7,35 @@ import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RatingBadge } from '@/components/RatingBadge';
 import { Avatar } from '@/components/Avatar';
+import { RemoteImage } from '@/components/RemoteImage';
 import { defaultAvatarSource } from '@/constants/avatarAsset';
+import { normalizeRemoteImageUri } from '@/lib/imageUri';
 import { buildLeaderboard, cuisineFilters } from '@/constants/MockData';
-import { LeaderboardEntry } from '@/types';
+import { computeScore, LeaderboardEntry } from '@/types';
 import type { StoredUser } from '@/types/auth';
 import { useRecipes } from '@/contexts/RecipeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { listUsersByRank } from '@/database/db';
 
 type LeaderMode = 'recipes' | 'cooks';
+type TimeRange = 'all-time' | 'weekly';
+type SortOption = 'score' | 'most-rated' | 'trending';
+
+const RANK_BADGES = ['', '🥇', '🥈', '🥉'];
 
 function TopThreeCard({ entry, position }: { entry: LeaderboardEntry; position: number }) {
   const heights = [140, 160, 130];
-  const medals = ['🥈', '🥇', '🥉'];
+  const displayPositions = [2, 1, 3];
   const score = entry.totalRatings === 0 ? null : entry.averageRating;
   const creatorLabel =
     entry.recipe.createdByName ?? (entry.recipe.createdByUserId ? `@${entry.recipe.createdByUserId}` : 'Unknown cook');
 
   return (
     <View style={[styles.podiumItem, { height: heights[position] }]}>
-      <Image source={{ uri: entry.recipe.image }} style={styles.podiumImage} />
+      <RemoteImage uri={entry.recipe.image} style={styles.podiumImage} />
       <View style={styles.podiumOverlay} />
       <View style={styles.podiumContent}>
-        <Text style={styles.podiumMedal}>{medals[position]}</Text>
+        <Text style={styles.podiumMedal}>{RANK_BADGES[displayPositions[position]]}</Text>
         <Text style={styles.podiumName} numberOfLines={1}>{entry.recipe.name}</Text>
         <Text style={styles.podiumCreator} numberOfLines={1}>By {creatorLabel}</Text>
         <Text style={styles.podiumRating}>{score == null ? '—' : score.toFixed(1)}</Text>
@@ -44,7 +51,7 @@ function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: 
   return (
     <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
       <Text style={styles.rankText}>{entry.rank}</Text>
-      <Image source={{ uri: entry.recipe.image }} style={styles.rowImage} />
+      <RemoteImage uri={entry.recipe.image} style={styles.rowImage} />
       <View style={styles.rowContent}>
         <Text style={styles.rowName}>{entry.recipe.name}</Text>
         <Text style={styles.rowMeta}>
@@ -58,17 +65,18 @@ function LeaderboardRow({ entry, onPress }: { entry: LeaderboardEntry; onPress: 
 
 function CookTopCard({ user: u, position }: { user: StoredUser; position: number }) {
   const heights = [130, 150, 120];
-  const medals = ['🥈', '🥇', '🥉'];
+  const displayPositions = [2, 1, 3];
+  const cookAvatarUri = normalizeRemoteImageUri(u.avatarUri);
 
   return (
     <View style={[styles.cookPodiumItem, { height: heights[position] }]}>
       <Image
-        source={u.avatarUri ? { uri: u.avatarUri } : defaultAvatarSource}
+        source={cookAvatarUri ? { uri: cookAvatarUri } : defaultAvatarSource}
         style={styles.podiumImage}
       />
       <View style={styles.podiumOverlay} />
       <View style={styles.podiumContent}>
-        <Text style={styles.podiumMedal}>{medals[position]}</Text>
+        <Text style={styles.podiumMedal}>{RANK_BADGES[displayPositions[position]]}</Text>
         <Text style={styles.podiumName} numberOfLines={1}>@{u.username}</Text>
         <Text style={styles.podiumRating}>{u.rankingScore} pts</Text>
       </View>
@@ -96,12 +104,21 @@ function CookRow({ user: u }: { user: StoredUser }) {
 
 export default function LeaderboardScreen() {
   const router = useRouter();
-  const { recipes } = useRecipes();
+  const { user } = useAuth();
+  const { recipes, getReviewsForRecipe } = useRecipes();
   const [mode, setMode] = useState<LeaderMode>('recipes');
+  const [timeRange, setTimeRange] = useState<TimeRange>('all-time');
+  const [sortBy, setSortBy] = useState<SortOption>('score');
   const [activeCuisine, setActiveCuisine] = useState('All');
   const [cooks, setCooks] = useState<StoredUser[]>([]);
 
-  const leaderboardData = useMemo(() => buildLeaderboard(recipes), [recipes]);
+  const leaderboardData = useMemo(() => {
+    const data = buildLeaderboard(recipes);
+    if (sortBy === 'most-rated') {
+      return [...data].sort((a, b) => b.totalRatings - a.totalRatings).map((e, i) => ({ ...e, rank: i + 1 }));
+    }
+    return data;
+  }, [recipes, sortBy]);
 
   const filtered = activeCuisine === 'All'
     ? leaderboardData
@@ -112,6 +129,12 @@ export default function LeaderboardScreen() {
   const podiumOrder = topThree.length >= 3
     ? [topThree[1], topThree[0], topThree[2]]
     : topThree;
+
+  const userRank = useMemo(() => {
+    if (!user) return null;
+    const entry = filtered.find((e) => e.recipe.createdByUserId === user.id);
+    return entry ? entry.rank : null;
+  }, [filtered, user]);
 
   const loadCooks = useCallback(async () => {
     const list = await listUsersByRank(100);
@@ -135,7 +158,16 @@ export default function LeaderboardScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Leaderboard</Text>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() =>
+            Alert.alert('Sort By', 'Choose how to sort the leaderboard', [
+              { text: 'Encore Score', onPress: () => setSortBy('score') },
+              { text: 'Most Rated', onPress: () => setSortBy('most-rated') },
+              { text: 'Cancel', style: 'cancel' },
+            ])
+          }
+        >
           <Ionicons name="options-outline" size={24} color={Colors.text} />
         </TouchableOpacity>
       </View>
@@ -154,6 +186,48 @@ export default function LeaderboardScreen() {
           <Text style={[styles.modeBtnText, mode === 'cooks' && styles.modeBtnTextActive]}>Cooks</Text>
         </TouchableOpacity>
       </View>
+
+      {mode === 'recipes' && (
+        <>
+          {/* Time Range Toggle */}
+          <View style={styles.timeRow}>
+            <TouchableOpacity
+              style={[styles.timeChip, timeRange === 'all-time' && styles.timeChipActive]}
+              onPress={() => setTimeRange('all-time')}
+            >
+              <Text style={[styles.timeChipText, timeRange === 'all-time' && styles.timeChipTextActive]}>All-Time</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.timeChip, timeRange === 'weekly' && styles.timeChipActive]}
+              onPress={() => setTimeRange('weekly')}
+            >
+              <Text style={[styles.timeChipText, timeRange === 'weekly' && styles.timeChipTextActive]}>This Week</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Sort Options */}
+          <View style={styles.sortRow}>
+            {(['score', 'most-rated'] as SortOption[]).map((opt) => (
+              <TouchableOpacity
+                key={opt}
+                style={[styles.sortChip, sortBy === opt && styles.sortChipActive]}
+                onPress={() => setSortBy(opt)}
+              >
+                <Text style={[styles.sortChipText, sortBy === opt && styles.sortChipTextActive]}>
+                  {opt === 'score' ? 'Encore Score' : 'Most Rated'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {userRank && (
+            <View style={styles.personalRank}>
+              <Ionicons name="trophy-outline" size={16} color={Colors.primary} />
+              <Text style={styles.personalRankText}>Your recipe is ranked #{userRank}</Text>
+            </View>
+          )}
+        </>
+      )}
 
       {mode === 'recipes' ? (
         <>
@@ -207,10 +281,7 @@ export default function LeaderboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -218,11 +289,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.lg,
   },
-  title: {
-    fontSize: FontSize.xxl,
-    fontWeight: '800',
-    color: Colors.text,
-  },
+  title: { fontSize: FontSize.xxl, fontWeight: '800', color: Colors.text },
   modeRow: {
     flexDirection: 'row',
     marginHorizontal: Spacing.lg,
@@ -237,17 +304,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: BorderRadius.full,
   },
-  modeBtnActive: {
-    backgroundColor: Colors.white,
+  modeBtnActive: { backgroundColor: Colors.white },
+  modeBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textTertiary },
+  modeBtnTextActive: { color: Colors.primary },
+  timeRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.lg,
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
   },
-  modeBtnText: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.textTertiary,
+  timeChip: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: Colors.surfaceElevated,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
-  modeBtnTextActive: {
-    color: Colors.primary,
+  timeChipActive: {
+    backgroundColor: Colors.primary + '18',
+    borderColor: Colors.primary,
   },
+  timeChipText: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.textSecondary },
+  timeChipTextActive: { color: Colors.primary },
+  sortRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.lg,
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  sortChip: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  sortChipActive: { borderColor: Colors.primary, backgroundColor: Colors.primary + '12' },
+  sortChipText: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.textTertiary },
+  sortChipTextActive: { color: Colors.primary },
+  personalRank: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    backgroundColor: Colors.primary + '0A',
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.primary + '20',
+  },
+  personalRankText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
   podiumRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -256,57 +365,16 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xxl,
     gap: Spacing.sm,
   },
-  podiumItem: {
-    flex: 1,
-    borderRadius: BorderRadius.lg,
-    overflow: 'hidden',
-  },
-  cookPodiumItem: {
-    flex: 1,
-    borderRadius: BorderRadius.lg,
-    overflow: 'hidden',
-  },
-  podiumImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: '100%',
-    height: '100%',
-  },
-  podiumOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  podiumContent: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: Spacing.sm,
-  },
-  podiumMedal: {
-    fontSize: 24,
-    marginBottom: 4,
-  },
-  podiumName: {
-    fontSize: FontSize.sm,
-    fontWeight: '700',
-    color: Colors.white,
-    textAlign: 'center',
-  },
-  podiumRating: {
-    fontSize: FontSize.md,
-    fontWeight: '800',
-    color: Colors.white,
-    marginTop: 2,
-  },
-  podiumCreator: {
-    fontSize: FontSize.xs,
-    fontWeight: '600',
-    color: Colors.white,
-    opacity: 0.95,
-    marginTop: 2,
-  },
-  listContent: {
-    paddingBottom: Spacing.xxl,
-  },
+  podiumItem: { flex: 1, borderRadius: BorderRadius.lg, overflow: 'hidden' },
+  cookPodiumItem: { flex: 1, borderRadius: BorderRadius.lg, overflow: 'hidden' },
+  podiumImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  podiumOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
+  podiumContent: { flex: 1, justifyContent: 'flex-end', alignItems: 'center', padding: Spacing.sm },
+  podiumMedal: { fontSize: 24, marginBottom: 4 },
+  podiumName: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.white, textAlign: 'center' },
+  podiumRating: { fontSize: FontSize.md, fontWeight: '800', color: Colors.white, marginTop: 2 },
+  podiumCreator: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.white, opacity: 0.95, marginTop: 2 },
+  listContent: { paddingBottom: Spacing.xxl },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -316,16 +384,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
   },
-  rankText: {
-    fontSize: FontSize.lg,
-    fontWeight: '800',
-    color: Colors.textTertiary,
-    width: 30,
-    textAlign: 'center',
-  },
-  avatarWrap: {
-    marginHorizontal: Spacing.md,
-  },
+  rankText: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.textTertiary, width: 30, textAlign: 'center' },
+  avatarWrap: { marginHorizontal: Spacing.md },
   rowImage: {
     width: 50,
     height: 50,
@@ -333,26 +393,10 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.md,
     backgroundColor: '#E0E0E0',
   },
-  rowContent: {
-    flex: 1,
-  },
-  rowName: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  rowMeta: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
-    marginTop: 2,
-  },
-  cookScore: {
-    fontSize: FontSize.md,
-    fontWeight: '800',
-    color: Colors.primary,
-    minWidth: 36,
-    textAlign: 'right',
-  },
+  rowContent: { flex: 1 },
+  rowName: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
+  rowMeta: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 2 },
+  cookScore: { fontSize: FontSize.md, fontWeight: '800', color: Colors.primary, minWidth: 36, textAlign: 'right' },
   emptyCooks: {
     flex: 1,
     textAlign: 'center',

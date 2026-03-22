@@ -21,9 +21,11 @@ import {
   incrementRecipeCount,
   mergeAccountsFromRepo,
   recordUserReview,
+  setFavoriteRecipeIds,
   updateProfile as persistProfile,
 } from '@/database/db';
 import { hashPassword, verifyPassword } from '@/lib/password';
+import { normalizeRemoteImageUri } from '@/lib/imageUri';
 
 const SESSION_KEY = '@chefd_session_user_id';
 
@@ -56,6 +58,9 @@ type AuthContextValue = {
     bio?: string;
     avatarUri?: string | null;
   }) => Promise<{ ok: true } | { ok: false; message: string }>;
+  /** Toggle favorite for the signed-in user; persisted on the account row (exported in accounts JSON). */
+  toggleFavoriteRecipe: (recipeId: string) => Promise<void>;
+  isFavoriteRecipe: (recipeId: string) => boolean;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -119,9 +124,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = useCallback(async (username: string, displayName: string, email: string, password: string) => {
     const u = username.trim();
     const em = email.trim().toLowerCase();
-    if (u.length < 2) return { ok: false as const, message: 'Username must be at least 2 characters.' };
+    if (u.length < 3 || u.length > 20) return { ok: false as const, message: 'Username must be 3-20 characters.' };
+    if (!/^[a-zA-Z0-9_-]+$/.test(u)) return { ok: false as const, message: 'Username can only contain letters, numbers, underscore, and hyphen.' };
     if (!em.includes('@')) return { ok: false as const, message: 'Enter a valid email.' };
-    if (password.length < 6) return { ok: false as const, message: 'Password must be at least 6 characters.' };
+    if (password.length < 8) return { ok: false as const, message: 'Password must be at least 8 characters.' };
+    if (!/\d/.test(password)) return { ok: false as const, message: 'Password must include at least one number.' };
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return { ok: false as const, message: 'Password must include at least one special character.' };
     if (await getUserByUsername(u)) return { ok: false as const, message: 'Username already taken.' };
     if (await getUserByEmail(em)) return { ok: false as const, message: 'Email already registered.' };
     const passwordHash = await hashPassword(password);
@@ -175,7 +183,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               googleSub: input.sub,
               email: input.email,
               displayName: input.name || input.email.split('@')[0],
-              avatarUri: input.picture ?? null,
+              avatarUri: normalizeRemoteImageUri(input.picture),
             });
           }
         }
@@ -220,6 +228,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [user?.id, refreshUser],
   );
 
+  const toggleFavoriteRecipe = useCallback(
+    async (recipeId: string) => {
+      const id = user?.id;
+      if (!id) return;
+      const current = user?.favoriteRecipeIds ?? [];
+      const next = current.includes(recipeId)
+        ? current.filter((x) => x !== recipeId)
+        : [...current, recipeId];
+      await setFavoriteRecipeIds(id, next);
+      await refreshUser();
+    },
+    [user, refreshUser],
+  );
+
+  const isFavoriteRecipe = useCallback(
+    (recipeId: string) => (user?.favoriteRecipeIds ?? []).includes(recipeId),
+    [user?.favoriteRecipeIds],
+  );
+
   const value = useMemo(
     () => ({
       ready,
@@ -232,6 +259,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       onUserSubmittedReview,
       onUserCreatedRecipe,
       updateProfile,
+      toggleFavoriteRecipe,
+      isFavoriteRecipe,
     }),
     [
       ready,
@@ -244,6 +273,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       onUserSubmittedReview,
       onUserCreatedRecipe,
       updateProfile,
+      toggleFavoriteRecipe,
+      isFavoriteRecipe,
     ],
   );
 

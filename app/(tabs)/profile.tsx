@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Image,
   Alert,
   ActivityIndicator,
 } from 'react-native';
@@ -19,16 +18,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { Avatar } from '@/components/Avatar';
+import { RemoteImage } from '@/components/RemoteImage';
 import { RecipeCard } from '@/components/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRecipes } from '@/contexts/RecipeContext';
-import { userLists } from '@/constants/MockData';
+import { useBookmarks } from '@/contexts/BookmarkContext';
 import { RecipeList } from '@/types';
 
 function ListCard({ list, onPress }: { list: RecipeList; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.listCard} onPress={onPress} activeOpacity={0.8}>
-      <Image source={{ uri: list.image }} style={styles.listImage} />
+      <RemoteImage uri={list.image} style={styles.listImage} />
       <View style={styles.listContent}>
         <Text style={styles.listTitle}>{list.title}</Text>
         <Text style={styles.listDescription} numberOfLines={1}>{list.description}</Text>
@@ -43,8 +43,10 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { user, signOut, refreshUser, updateProfile } = useAuth();
   const { recipes, exportMergedRecipesJson, applyPulledDataJson } = useRecipes();
+  const { bookmarkedIds, isBookmarked, toggleBookmark } = useBookmarks();
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [dataSyncBusy, setDataSyncBusy] = useState(false);
+  const [activeProfileTab, setActiveProfileTab] = useState<'recipes' | 'activity'>('recipes');
 
   const myRecipes = useMemo(
     () => [...recipes].filter((r) => user?.id && r.createdByUserId === user.id),
@@ -89,23 +91,11 @@ export default function ProfileScreen() {
     }
   };
 
-  const PROFILE_MENU = [
-    { icon: 'bookmark-outline' as const, label: 'Saved Recipes', count: undefined },
-    { icon: 'heart-outline' as const, label: 'Liked Ratings', count: undefined },
-    {
-      icon: 'people-outline' as const,
-      label: 'Following',
-      count: user?.followingCount,
-    },
-    { icon: 'settings-outline' as const, label: 'Settings' },
-    { icon: 'help-circle-outline' as const, label: 'Help & Feedback' },
-  ];
-
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/settings')}>
             <Ionicons name="settings-outline" size={24} color={Colors.text} />
           </TouchableOpacity>
         </View>
@@ -116,8 +106,6 @@ export default function ProfileScreen() {
             onPress={pickProfilePhoto}
             activeOpacity={0.85}
             disabled={avatarBusy}
-            accessibilityRole="button"
-            accessibilityLabel="Change profile photo"
           >
             <Avatar uri={user?.avatarUri} size={80} />
             <View style={styles.avatarCameraBadge}>
@@ -161,6 +149,11 @@ export default function ProfileScreen() {
 
           <View style={[styles.statsRow, styles.statsRowPair, { marginTop: Spacing.md }]}>
             <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{bookmarkedIds.length}</Text>
+              <Text style={styles.statLabel}>Bookmarks</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
               <Text style={styles.statNumber}>{user?.followersCount ?? 0}</Text>
               <Text style={styles.statLabel}>Followers</Text>
             </View>
@@ -171,95 +164,113 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.editButton} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.editButton}
+            activeOpacity={0.7}
+            onPress={() => router.push('/edit-profile')}
+          >
             <Text style={styles.editButtonText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.myRecipesSection}>
-          <View style={styles.myRecipesHeader}>
-            <Text style={styles.myRecipesSectionTitle}>Your recipes</Text>
-            <Text style={styles.myRecipesCount}>{myRecipes.length}</Text>
-          </View>
-          {myRecipes.length === 0 ? (
-            <View style={styles.emptyMyRecipes}>
-              <Ionicons name="restaurant-outline" size={40} color={Colors.textTertiary} />
-              <Text style={styles.emptyMyRecipesText}>
-                You have not published any recipes yet. Tap the + tab to create one.
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.myRecipesList}>
-              {myRecipes.map((recipe) => (
-                <RecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
-                  onPress={() => router.push(`/recipe/${recipe.id}`)}
-                />
-              ))}
-            </View>
-          </View>
-          </View>
-
-          <View style={styles.listsSection}>
-          <View style={styles.listsHeader}>
-            <Text style={styles.sectionTitle}>Your Lists</Text>
-            <TouchableOpacity style={styles.addListButton} activeOpacity={0.7}>
-              <Ionicons name="add" size={20} color={Colors.primary} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.listsContent}>
-            {userLists.map((list) => (
-              <ListCard
-                key={list.id}
-                list={list}
-                onPress={() => router.push(`/list/${list.id}`)}
-              />
-            ))}
-          </View>
-          </View>
-
-          <View style={styles.topRatedSection}>
-          <Text style={styles.sectionTitle}>Trending recipes</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.topRatedScroll}>
-            {recipes.slice(0, 4).map((recipe) => (
-              <TouchableOpacity
-                key={recipe.id}
-                style={styles.topRatedCard}
-                onPress={() => router.push(`/recipe/${recipe.id}`)}
-                activeOpacity={0.8}
-              >
-                <Image source={{ uri: recipe.image }} style={styles.topRatedImage} />
-                <View style={styles.topRatedOverlay} />
-                <View style={styles.topRatedContent}>
-                  <Text style={styles.topRatedName} numberOfLines={1}>{recipe.name}</Text>
-                  <View style={styles.topRatedRating}>
-                    <Ionicons name="star" size={12} color="#FFD700" />
-                    <Text style={styles.topRatedScore}>
-                      {recipe.totalRatings === 0 ? '—' : recipe.averageRating.toFixed(1)}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+        {/* Profile Tabs */}
+        <View style={styles.profileTabBar}>
+          <TouchableOpacity
+            style={[styles.profileTab, activeProfileTab === 'recipes' && styles.profileTabActive]}
+            onPress={() => setActiveProfileTab('recipes')}
+          >
+            <Ionicons name="restaurant-outline" size={18} color={activeProfileTab === 'recipes' ? Colors.primary : Colors.textTertiary} />
+            <Text style={[styles.profileTabText, activeProfileTab === 'recipes' && styles.profileTabTextActive]}>
+              My Recipes
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.profileTab, activeProfileTab === 'activity' && styles.profileTabActive]}
+            onPress={() => setActiveProfileTab('activity')}
+          >
+            <Ionicons name="pulse-outline" size={18} color={activeProfileTab === 'activity' ? Colors.primary : Colors.textTertiary} />
+            <Text style={[styles.profileTabText, activeProfileTab === 'activity' && styles.profileTabTextActive]}>
+              Activity
+            </Text>
+          </TouchableOpacity>
         </View>
 
+        {activeProfileTab === 'recipes' ? (
+          <View style={styles.myRecipesSection}>
+            <View style={styles.myRecipesHeader}>
+              <Text style={styles.myRecipesSectionTitle}>Your recipes</Text>
+              <Text style={styles.myRecipesCount}>{myRecipes.length}</Text>
+            </View>
+            {myRecipes.length === 0 ? (
+              <View style={styles.emptyMyRecipes}>
+                <Ionicons name="restaurant-outline" size={40} color={Colors.textTertiary} />
+                <Text style={styles.emptyMyRecipesText}>
+                  You have not published any recipes yet. Tap the + tab to create one.
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.myRecipesList}>
+                {myRecipes.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    recipe={recipe}
+                    onPress={() => router.push(`/recipe/${recipe.id}`)}
+                    onBookmarkPress={() => toggleBookmark(recipe.id)}
+                    isBookmarked={isBookmarked(recipe.id)}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
+        ) : (
+          <View style={styles.activitySection}>
+            <View style={styles.emptyMyRecipes}>
+              <Ionicons name="pulse-outline" size={40} color={Colors.textTertiary} />
+              <Text style={styles.emptyMyRecipesText}>
+                Your recent ratings, bookmarks, and challenge entries will appear here.
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* Menu */}
         <View style={styles.menuSection}>
-          {PROFILE_MENU.map((item) => (
-            <TouchableOpacity key={item.label} style={styles.menuItem} activeOpacity={0.7}>
-              <View style={styles.menuLeft}>
-                <Ionicons name={item.icon} size={22} color={Colors.text} />
-                <Text style={styles.menuLabel}>{item.label}</Text>
-              </View>
-              <View style={styles.menuRight}>
-                {item.count !== undefined && (
-                  <Text style={styles.menuCount}>{item.count}</Text>
-                )}
-                <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
-              </View>
-            </TouchableOpacity>
-          ))}
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+            onPress={() => router.push('/saved')}
+          >
+            <View style={styles.menuLeft}>
+              <Ionicons name="bookmark-outline" size={22} color={Colors.text} />
+              <Text style={styles.menuLabel}>Saved Recipes</Text>
+            </View>
+            <View style={styles.menuRight}>
+              <Text style={styles.menuCount}>{bookmarkedIds.length}</Text>
+              <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+            onPress={() => router.push('/settings')}
+          >
+            <View style={styles.menuLeft}>
+              <Ionicons name="settings-outline" size={22} color={Colors.text} />
+              <Text style={styles.menuLabel}>Settings</Text>
+            </View>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
+            <View style={styles.menuLeft}>
+              <Ionicons name="help-circle-outline" size={22} color={Colors.text} />
+              <Text style={styles.menuLabel}>Help & Feedback</Text>
+            </View>
+            <View style={styles.menuRight}>
+              <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.logoutButton} activeOpacity={0.7} onPress={() => signOut()}>
@@ -270,10 +281,7 @@ export default function ProfileScreen() {
           <View style={styles.devSyncSection}>
             <Text style={styles.devSyncTitle}>Data — push / pull (JSON)</Text>
             <Text style={styles.devSyncHint}>
-              Push commits current SQLite accounts and merged session recipes (including reviews) to GitHub via the
-              Contents API — not local git. Set EXPO_PUBLIC_GITHUB_TOKEN and EXPO_PUBLIC_GITHUB_REPO (owner/repo) in
-              .env. Pull applies remote data to this device (accounts DB + recipe override). Tokens in EXPO_PUBLIC_ are
-              visible in the bundle — use a fine-scoped PAT for dev only.
+              Push commits current SQLite accounts and merged session recipes to GitHub via the Contents API.
             </Text>
             {getGithubDataSyncConfig() ? (
               <Text style={styles.devSyncOk}>GitHub: configured</Text>
@@ -287,10 +295,7 @@ export default function ProfileScreen() {
                 disabled={dataSyncBusy}
                 onPress={async () => {
                   if (!getGithubDataSyncConfig()) {
-                    Alert.alert(
-                      'GitHub',
-                      'Add EXPO_PUBLIC_GITHUB_TOKEN (repo scope) and EXPO_PUBLIC_GITHUB_REPO=owner/name to .env, then restart Metro.',
-                    );
+                    Alert.alert('GitHub', 'Add EXPO_PUBLIC_GITHUB_TOKEN and EXPO_PUBLIC_GITHUB_REPO to .env.');
                     return;
                   }
                   setDataSyncBusy(true);
@@ -298,7 +303,7 @@ export default function ProfileScreen() {
                     const accountsJson = await exportAccountsJsonForRepo();
                     const recipesJson = exportMergedRecipesJson();
                     await pushDataJsonFilesToGithub({ accountsJson, recipesJson });
-                    Alert.alert('Pushed', 'data/accounts.json and data/recipes.json committed on the remote branch.');
+                    Alert.alert('Pushed', 'Data committed on remote.');
                   } catch (e) {
                     Alert.alert('Push failed', e instanceof Error ? e.message : 'Unknown error');
                   } finally {
@@ -307,9 +312,7 @@ export default function ProfileScreen() {
                 }}
               >
                 <View style={styles.devSyncButtonInner}>
-                  {dataSyncBusy ? (
-                    <ActivityIndicator color={Colors.white} size="small" />
-                  ) : null}
+                  {dataSyncBusy && <ActivityIndicator color={Colors.white} size="small" />}
                   <Text style={styles.devSyncButtonText}>Push data</Text>
                 </View>
               </TouchableOpacity>
@@ -319,10 +322,7 @@ export default function ProfileScreen() {
                 disabled={dataSyncBusy}
                 onPress={async () => {
                   if (!getGithubDataSyncConfig()) {
-                    Alert.alert(
-                      'GitHub',
-                      'Add EXPO_PUBLIC_GITHUB_TOKEN and EXPO_PUBLIC_GITHUB_REPO to .env, then restart Metro.',
-                    );
+                    Alert.alert('GitHub', 'Add tokens to .env.');
                     return;
                   }
                   setDataSyncBusy(true);
@@ -330,7 +330,7 @@ export default function ProfileScreen() {
                     const { accountsJson, recipesJson } = await pullDataJsonFilesFromGithub();
                     await applyPulledDataJson(accountsJson, recipesJson);
                     await refreshUser();
-                    Alert.alert('Pulled', 'Accounts merged and recipes updated on this device.');
+                    Alert.alert('Pulled', 'Data updated on this device.');
                   } catch (e) {
                     Alert.alert('Pull failed', e instanceof Error ? e.message : 'Unknown error');
                   } finally {
@@ -351,7 +351,7 @@ export default function ProfileScreen() {
                   const recipesJson = exportMergedRecipesJson();
                   const blob = `=== data/accounts.json ===\n${accountsJson}\n\n=== data/recipes.json ===\n${recipesJson}\n`;
                   await Clipboard.setStringAsync(blob);
-                  Alert.alert('Copied', 'Paste each block into the matching file in the repo, then commit locally.');
+                  Alert.alert('Copied', 'Paste each block into the matching file in the repo.');
                 } catch (e) {
                   Alert.alert('Copy failed', e instanceof Error ? e.message : 'Unknown error');
                 }
@@ -369,10 +369,7 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -384,9 +381,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.xxl,
   },
-  avatarTouchable: {
-    position: 'relative',
-  },
+  avatarTouchable: { position: 'relative' },
   avatarCameraBadge: {
     position: 'absolute',
     right: 0,
@@ -400,12 +395,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: Colors.background,
   },
-  avatarHint: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.xs,
-  },
+  avatarHint: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: Spacing.sm, marginBottom: Spacing.xs },
   rankPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -416,22 +406,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent + '22',
     borderRadius: BorderRadius.full,
   },
-  rankPillText: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  name: {
-    fontSize: FontSize.xl,
-    fontWeight: '800',
-    color: Colors.text,
-    marginTop: Spacing.sm,
-  },
-  username: {
-    fontSize: FontSize.md,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
+  rankPillText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.text },
+  name: { fontSize: FontSize.xl, fontWeight: '800', color: Colors.text, marginTop: Spacing.sm },
+  username: { fontSize: FontSize.md, color: Colors.textSecondary, marginTop: 2 },
   bio: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
@@ -451,29 +428,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
     alignSelf: 'stretch',
   },
-  statsRowPair: {
-    paddingHorizontal: Spacing.xxl,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: FontSize.lg,
-    fontWeight: '800',
-    color: Colors.primary,
-  },
-  statLabel: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
-    marginTop: 2,
-    textAlign: 'center',
-  },
-  statDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: Colors.border,
-  },
+  statsRowPair: { paddingHorizontal: Spacing.xl },
+  statItem: { flex: 1, alignItems: 'center' },
+  statNumber: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
+  statLabel: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 2, textAlign: 'center' },
+  statDivider: { width: 1, height: 30, backgroundColor: Colors.border },
   editButton: {
     marginTop: Spacing.lg,
     paddingHorizontal: Spacing.xxxl,
@@ -482,14 +441,28 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: Colors.primary,
   },
-  editButtonText: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.primary,
+  editButtonText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  profileTabBar: {
+    flexDirection: 'row',
+    marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+    backgroundColor: Colors.surfaceElevated,
+    borderRadius: BorderRadius.full,
+    padding: 4,
   },
-  myRecipesSection: {
-    paddingBottom: Spacing.xl,
+  profileTab: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
   },
+  profileTabActive: { backgroundColor: Colors.white },
+  profileTabText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textTertiary },
+  profileTabTextActive: { color: Colors.primary },
+  myRecipesSection: { paddingBottom: Spacing.xl },
   myRecipesHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -504,11 +477,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  myRecipesCount: {
-    fontSize: FontSize.sm,
-    fontWeight: '700',
-    color: Colors.primary,
-  },
+  myRecipesCount: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.primary },
   emptyMyRecipes: {
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
@@ -526,118 +495,8 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     lineHeight: 20,
   },
-  myRecipesList: {
-    paddingBottom: Spacing.sm,
-  },
-  listsSection: {
-    paddingBottom: Spacing.xl,
-  },
-  listsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    marginBottom: Spacing.md,
-  },
-  addListButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.surfaceElevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  listsContent: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.md,
-  },
-  listCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-  },
-  listImage: {
-    width: 70,
-    height: 70,
-    backgroundColor: '#E0E0E0',
-  },
-  listContent: {
-    flex: 1,
-    padding: Spacing.md,
-  },
-  listTitle: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.text,
-  },
-  listDescription: {
-    fontSize: FontSize.sm,
-    color: Colors.textSecondary,
-    marginTop: 2,
-  },
-  listCount: {
-    fontSize: FontSize.xs,
-    color: Colors.textTertiary,
-    marginTop: 4,
-  },
-  topRatedSection: {
-    paddingBottom: Spacing.xl,
-  },
-  sectionTitle: {
-    fontSize: FontSize.md,
-    fontWeight: '700',
-    color: Colors.text,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    paddingHorizontal: Spacing.lg,
-    marginBottom: Spacing.md,
-  },
-  topRatedScroll: {
-    paddingHorizontal: Spacing.lg,
-    gap: Spacing.md,
-  },
-  topRatedCard: {
-    width: 120,
-    height: 150,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-  },
-  topRatedImage: {
-    ...StyleSheet.absoluteFillObject,
-    width: '100%',
-    height: '100%',
-  },
-  topRatedOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-  },
-  topRatedContent: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    padding: Spacing.sm,
-  },
-  topRatedName: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.white,
-  },
-  topRatedRating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    marginTop: 2,
-  },
-  topRatedScore: {
-    fontSize: FontSize.xs,
-    fontWeight: '700',
-    color: Colors.white,
-  },
+  myRecipesList: { paddingBottom: Spacing.sm },
+  activitySection: { paddingBottom: Spacing.xl },
   menuSection: {
     backgroundColor: Colors.white,
     marginHorizontal: Spacing.lg,
@@ -655,35 +514,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
   },
-  menuLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-  },
-  menuLabel: {
-    fontSize: FontSize.md,
-    color: Colors.text,
-  },
-  menuRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  menuCount: {
-    fontSize: FontSize.sm,
-    color: Colors.textTertiary,
-  },
+  menuLeft: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  menuLabel: { fontSize: FontSize.md, color: Colors.text },
+  menuRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  menuCount: { fontSize: FontSize.sm, color: Colors.textTertiary },
   logoutButton: {
     marginHorizontal: Spacing.lg,
     marginTop: Spacing.xl,
     paddingVertical: Spacing.lg,
     alignItems: 'center',
   },
-  logoutText: {
-    fontSize: FontSize.md,
-    fontWeight: '600',
-    color: Colors.heart,
+  logoutText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.heart },
+  listCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: BorderRadius.md,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
+  listImage: { width: 70, height: 70, backgroundColor: '#E0E0E0' },
+  listContent: { flex: 1, padding: Spacing.md },
+  listTitle: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
+  listDescription: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
+  listCount: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 4 },
   devSyncSection: {
     marginHorizontal: Spacing.lg,
     marginTop: Spacing.lg,
@@ -693,41 +548,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     backgroundColor: Colors.white,
   },
-  devSyncTitle: {
-    fontSize: FontSize.sm,
-    fontWeight: '700',
-    color: Colors.text,
-    marginBottom: Spacing.sm,
-  },
-  devSyncHint: {
-    fontSize: FontSize.xs,
-    color: Colors.textSecondary,
-    lineHeight: 18,
-    marginBottom: Spacing.sm,
-  },
-  devSyncOk: {
-    fontSize: FontSize.xs,
-    fontWeight: '600',
-    color: Colors.primary,
-    marginBottom: Spacing.sm,
-  },
-  devSyncWarn: {
-    fontSize: FontSize.xs,
-    fontWeight: '600',
-    color: '#B45309',
-    marginBottom: Spacing.sm,
-  },
-  devSyncRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-    marginBottom: Spacing.md,
-  },
-  devSyncButtonInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
+  devSyncTitle: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.text, marginBottom: Spacing.sm },
+  devSyncHint: { fontSize: FontSize.xs, color: Colors.textSecondary, lineHeight: 18, marginBottom: Spacing.sm },
+  devSyncOk: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.primary, marginBottom: Spacing.sm },
+  devSyncWarn: { fontSize: FontSize.xs, fontWeight: '600', color: '#B45309', marginBottom: Spacing.sm },
+  devSyncRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginBottom: Spacing.md },
+  devSyncButtonInner: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   devSyncButton: {
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.lg,
@@ -738,14 +564,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 40,
   },
-  devSyncButtonDisabled: {
-    opacity: 0.55,
-  },
-  devSyncButtonText: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.white,
-  },
+  devSyncButtonDisabled: { opacity: 0.55 },
+  devSyncButtonText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.white },
   devSyncButtonSecondary: {
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.lg,
@@ -757,11 +577,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 40,
   },
-  devSyncButtonSecondaryText: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.primary,
-  },
+  devSyncButtonSecondaryText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
   devSyncButtonOutline: {
     alignSelf: 'flex-start',
     paddingVertical: Spacing.sm,
@@ -770,9 +586,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  devSyncButtonOutlineText: {
-    fontSize: FontSize.sm,
-    fontWeight: '600',
-    color: Colors.textSecondary,
-  },
+  devSyncButtonOutlineText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
 });

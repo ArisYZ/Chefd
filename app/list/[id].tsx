@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
 import { RecipeCard } from '@/components/RecipeCard';
 import { Avatar } from '@/components/Avatar';
+import { RemoteImage } from '@/components/RemoteImage';
 import { featuredLists, userLists } from '@/constants/MockData';
+import { useBookmarks } from '@/contexts/BookmarkContext';
 
 const { width } = Dimensions.get('window');
 const allLists = [...featuredLists, ...userLists];
@@ -13,6 +15,7 @@ const allLists = [...featuredLists, ...userLists];
 export default function ListDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
   const list = allLists.find((l) => l.id === id);
 
   if (!list) {
@@ -25,7 +28,7 @@ export default function ListDetailScreen() {
 
   const renderHeader = () => (
     <View>
-      <Image source={{ uri: list.image }} style={styles.heroImage} />
+      <RemoteImage uri={list.image} style={styles.heroImage} />
       <View style={styles.headerContent}>
         <Text style={styles.title}>{list.title}</Text>
         <Text style={styles.description}>{list.description}</Text>
@@ -76,6 +79,8 @@ export default function ListDetailScreen() {
           recipe={item}
           rank={index + 1}
           onPress={() => router.push(`/recipe/${item.id}`)}
+          onBookmarkPress={() => toggleBookmark(item.id)}
+          isBookmarked={isBookmarked(item.id)}
         />
       )}
       showsVerticalScrollIndicator={false}

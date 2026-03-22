@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { RecipeList } from '@/types';
 import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
+import { RemoteImage } from '@/components/RemoteImage';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.6;
 const CARD_HEIGHT = 180;
@@ -14,7 +15,7 @@ interface FeaturedListCardProps {
 export function FeaturedListCard({ list, onPress }: FeaturedListCardProps) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
-      <Image source={{ uri: list.image }} style={styles.image} />
+      <RemoteImage uri={list.image} style={styles.image} />
       <View style={styles.overlay} />
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={2}>{list.title}</Text>

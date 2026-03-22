@@ -16,7 +16,8 @@
       "averageRating": 0,
       "googleSub": null,
       "createdAt": 1732147200000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_alex_c",
@@ -34,7 +35,8 @@
       "averageRating": 10,
       "googleSub": null,
       "createdAt": 1732147201000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_sarah_k",
@@ -52,7 +54,8 @@
       "averageRating": 8.33,
       "googleSub": null,
       "createdAt": 1732147202000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_marcus_j",
@@ -70,7 +73,8 @@
       "averageRating": 10,
       "googleSub": null,
       "createdAt": 1732147203000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_priya_p",
@@ -88,7 +92,8 @@
       "averageRating": 5,
       "googleSub": null,
       "createdAt": 1732147204000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_emma_w",
@@ -106,7 +111,8 @@
       "averageRating": 7.5,
       "googleSub": null,
       "createdAt": 1732147205000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_maya_l",
@@ -124,7 +130,8 @@
       "averageRating": 0,
       "googleSub": null,
       "createdAt": 1732147206000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_jordan_r",
@@ -142,7 +149,8 @@
       "averageRating": 0,
       "googleSub": null,
       "createdAt": 1732147207000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_nina_k",
@@ -160,7 +168,8 @@
       "averageRating": 0,
       "googleSub": null,
       "createdAt": 1732147208000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_luca_g",
@@ -178,7 +187,8 @@
       "averageRating": 0,
       "googleSub": null,
       "createdAt": 1732147209000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     },
     {
       "id": "u_fake_sofia_t",
@@ -196,7 +206,8 @@
       "averageRating": 0,
       "googleSub": null,
       "createdAt": 1732147210000,
-      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a"
+      "passwordHash": "eea44a4d633add05596767cc3da5420f479d377b8f157b064a10a2f25fcee56a",
+      "favoriteRecipeIds": []
     }
   ]
 }

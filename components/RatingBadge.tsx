@@ -5,15 +5,16 @@ import { Colors, FontSize } from '@/constants/Colors';
 interface RatingBadgeProps {
   rating: number | null;
   size?: 'sm' | 'md' | 'lg';
+  label?: string;
 }
 
 function getRatingColor(rating: number): string {
-  if (rating >= 8.0) return Colors.ratingGreen;
-  if (rating >= 5.0) return Colors.ratingYellow;
+  if (rating >= 4.0) return Colors.ratingGreen;
+  if (rating >= 2.5) return Colors.ratingYellow;
   return Colors.ratingRed;
 }
 
-export function RatingBadge({ rating, size = 'md' }: RatingBadgeProps) {
+export function RatingBadge({ rating, size = 'md', label }: RatingBadgeProps) {
   const dimensions = size === 'sm' ? 36 : size === 'md' ? 44 : 52;
   const fontSize = size === 'sm' ? FontSize.sm : size === 'md' ? FontSize.md : FontSize.lg;
 
@@ -32,6 +33,9 @@ export function RatingBadge({ rating, size = 'md' }: RatingBadgeProps) {
   return (
     <View style={[styles.badge, { width: dimensions, height: dimensions, borderColor: color }]}>
       <Text style={[styles.text, { fontSize, color }]}>{rating.toFixed(1)}</Text>
+      {label && size !== 'sm' && (
+        <Text style={[styles.sublabel, { color }]}>{label}</Text>
+      )}
     </View>
   );
 }
@@ -46,6 +50,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: '700',
+  },
+  sublabel: {
+    fontSize: 7,
+    fontWeight: '600',
+    marginTop: -1,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
   },
   unrated: {
     borderWidth: 2,
