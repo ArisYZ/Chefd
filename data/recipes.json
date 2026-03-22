@@ -8,7 +8,8 @@
         "category": "Pasta",
         "tags": [
           "Vegetarian",
-          "Quick"
+          "Quick & Easy",
+          "5-Ingredient"
         ],
         "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600",
         "prepTime": 5,
@@ -172,8 +173,9 @@
         "cuisine": "Indian",
         "category": "Curry",
         "tags": [
-          "High-protein",
-          "Meal prep"
+          "High-Protein",
+          "Meal Prep",
+          "Comfort Food"
         ],
         "image": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600",
         "prepTime": 20,
@@ -340,7 +342,8 @@
         "cuisine": "French",
         "category": "Bread",
         "tags": [
-          "Vegan"
+          "Vegan",
+          "5-Ingredient"
         ],
         "image": "https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=600",
         "prepTime": 30,
@@ -477,8 +480,8 @@
         "cuisine": "Japanese",
         "category": "Soup",
         "tags": [
-          "Dairy-free",
-          "Quick"
+          "Dairy-Free",
+          "Quick & Easy"
         ],
         "image": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600",
         "prepTime": 15,
@@ -640,7 +643,8 @@
         "category": "Dessert",
         "tags": [
           "Vegetarian",
-          "Meal prep"
+          "Meal Prep",
+          "Quick & Easy"
         ],
         "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600",
         "prepTime": 30,
@@ -795,9 +799,9 @@
         "cuisine": "Thai",
         "category": "Curry",
         "tags": [
-          "Gluten-free",
-          "Quick",
-          "High-protein"
+          "Gluten-Free",
+          "Quick & Easy",
+          "High-Protein"
         ],
         "image": "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=600",
         "prepTime": 15,
@@ -959,7 +963,7 @@
         "category": "Bread",
         "tags": [
           "Vegan",
-          "Meal prep"
+          "Meal Prep"
         ],
         "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600",
         "prepTime": 20,
@@ -1108,8 +1112,8 @@
         "cuisine": "Mexican",
         "category": "Tacos",
         "tags": [
-          "High-protein",
-          "Gluten-free"
+          "High-Protein",
+          "Gluten-Free"
         ],
         "image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=600",
         "prepTime": 30,
@@ -1290,7 +1294,8 @@
         "category": "Pasta",
         "tags": [
           "Vegetarian",
-          "Quick"
+          "Quick & Easy",
+          "Budget-Friendly"
         ],
         "image": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600",
         "prepTime": 10,
@@ -1439,8 +1444,8 @@
         "cuisine": "Korean",
         "category": "Rice Bowl",
         "tags": [
-          "High-protein",
-          "Gluten-free"
+          "High-Protein",
+          "Gluten-Free"
         ],
         "image": "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600",
         "prepTime": 20,
@@ -1599,7 +1604,8 @@
         "cuisine": "French",
         "category": "Dessert",
         "tags": [
-          "Vegetarian"
+          "Vegetarian",
+          "Quick & Easy"
         ],
         "image": "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600",
         "prepTime": 15,
@@ -1922,8 +1928,8 @@
         "cuisine": "American",
         "category": "BBQ",
         "tags": [
-          "Gluten-free",
-          "High-protein"
+          "Gluten-Free",
+          "High-Protein"
         ],
         "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecf0?w=600",
         "prepTime": 20,
@@ -2072,7 +2078,7 @@
         "cuisine": "American",
         "category": "Fried",
         "tags": [
-          "High-protein"
+          "High-Protein"
         ],
         "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600",
         "prepTime": 30,
@@ -2252,8 +2258,8 @@
         "cuisine": "Indian",
         "category": "Curry",
         "tags": [
-          "High-protein",
-          "Gluten-free"
+          "High-Protein",
+          "Gluten-Free"
         ],
         "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600",
         "prepTime": 25,
@@ -2436,7 +2442,7 @@
         "category": "Curry",
         "tags": [
           "Vegetarian",
-          "Gluten-free"
+          "Gluten-Free"
         ],
         "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600",
         "prepTime": 15,
@@ -2596,8 +2602,8 @@
         "category": "Salad",
         "tags": [
           "Vegan",
-          "Gluten-free",
-          "Meal prep"
+          "Gluten-Free",
+          "Meal Prep"
         ],
         "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
         "prepTime": 15,
@@ -2752,9 +2758,9 @@
         "cuisine": "American",
         "category": "Seafood",
         "tags": [
-          "Gluten-free",
-          "High-protein",
-          "Quick"
+          "Gluten-Free",
+          "High-Protein",
+          "Quick & Easy"
         ],
         "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600",
         "prepTime": 10,
@@ -2913,9 +2919,10 @@
         "cuisine": "American",
         "category": "Main",
         "tags": [
-          "Gluten-free",
-          "Quick",
-          "Meal prep"
+          "Gluten-Free",
+          "Quick & Easy",
+          "Meal Prep",
+          "One-Pot"
         ],
         "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600",
         "prepTime": 10,
@@ -3085,9 +3092,9 @@
         "cuisine": "Chinese",
         "category": "Stir-Fry",
         "tags": [
-          "Quick",
-          "High-protein",
-          "Dairy-free"
+          "Quick & Easy",
+          "High-Protein",
+          "Dairy-Free"
         ],
         "image": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600",
         "prepTime": 10,
@@ -3246,7 +3253,9 @@
         "cuisine": "American",
         "category": "Dessert",
         "tags": [
-          "Vegetarian"
+          "Vegetarian",
+          "Quick & Easy",
+          "Comfort Food"
         ],
         "image": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600",
         "prepTime": 15,
@@ -3587,8 +3596,8 @@
         "cuisine": "Indian",
         "category": "Rice",
         "tags": [
-          "High-protein",
-          "Gluten-free"
+          "High-Protein",
+          "Gluten-Free"
         ],
         "image": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f4?w=600",
         "prepTime": 30,
@@ -4105,7 +4114,10 @@
         "cuisine": "Italian",
         "category": "Pasta",
         "tags": [
-          "High-protein"
+          "High-Protein",
+          "Quick & Easy",
+          "5-Ingredient",
+          "Budget-Friendly"
         ],
         "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600",
         "prepTime": 15,
@@ -4273,9 +4285,9 @@
         "cuisine": "Peruvian",
         "category": "Seafood",
         "tags": [
-          "Gluten-free",
-          "Dairy-free",
-          "Quick"
+          "Gluten-Free",
+          "Dairy-Free",
+          "Quick & Easy"
         ],
         "image": "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=600",
         "prepTime": 20,
@@ -4451,7 +4463,7 @@
         "cuisine": "Argentine",
         "category": "Pastry",
         "tags": [
-          "High-protein"
+          "High-Protein"
         ],
         "image": "https://images.unsplash.com/photo-1604467707321-70d009801bf4?w=600",
         "prepTime": 30,

@@ -67,6 +67,85 @@ export function mergeBundledRecipesWithOverride(
 }
 
 /**
+ * Automatically assigns official category tags to a recipe based on its metadata,
+ * ingredients, and keywords. This ensures feed categories stay populated even
+ * if the underlying JSON data is sparse or outdated.
+ */
+function ensureOfficialTags(recipe: Recipe): string[] {
+  const tags = new Set<string>(recipe.tags || []);
+  const name = (recipe.name || '').toLowerCase();
+  const desc = (recipe.description || '').toLowerCase();
+  const instr = (recipe.instructions || []).join(' ').toLowerCase();
+  const ingr = (recipe.ingredients || []).join(' ').toLowerCase();
+
+  // 1. Quick & Easy (Total time <= 30 mins)
+  const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0);
+  if (totalTime > 0 && totalTime <= 30) tags.add('Quick & Easy');
+
+  // 2. 5-Ingredient
+  if (recipe.ingredients && recipe.ingredients.length > 0 && recipe.ingredients.length <= 5) {
+    tags.add('5-Ingredient');
+  }
+
+  // 3. One-Pot
+  const onePotKeywords = ['one-pot', 'one pot', 'one pan', 'sheet pan', 'skillet', 'slow cooker', 'crockpot', 'instant pot'];
+  if (onePotKeywords.some(k => name.includes(k) || instr.includes(k))) {
+    tags.add('One-Pot');
+  }
+
+  // 4. Low-Carb (Heuristic: Meat/Seafood/Salad categories, or keywords)
+  const lowCarbKeywords = ['low carb', 'keto', 'paleo', 'sugar free', 'cauliflower rice', 'zucchini noodles'];
+  const lowCarbCategories = ['Meat', 'Seafood', 'Salad', 'Grill'];
+  if (
+    lowCarbKeywords.some(k => name.includes(k) || desc.includes(k) || ingr.includes(k)) ||
+    (lowCarbCategories.includes(recipe.category) && !ingr.includes('pasta') && !ingr.includes('rice') && !ingr.includes('bread'))
+  ) {
+    tags.add('Low-Carb');
+  }
+
+  // 5. High-Protein
+  const highProteinKeywords = ['high protein', 'protein packed', 'chicken', 'steak', 'beef', 'tofu', 'lentils', 'egg'];
+  if (
+    highProteinKeywords.some(k => name.includes(k) || desc.includes(k)) ||
+    tags.has('High-protein')
+  ) {
+    tags.add('High-Protein');
+  }
+
+  // 6. Budget-Friendly
+  const budgetKeywords = ['budget', 'cheap', 'affordable', 'easy on the wallet', 'rice', 'beans', 'pasta', 'lentils', 'egg'];
+  if (budgetKeywords.some(k => name.includes(k) || desc.includes(k) || ingr.includes(k))) {
+    tags.add('Budget-Friendly');
+  }
+
+  // 7. Comfort Food
+  const comfortKeywords = ['cheese', 'creamy', 'fried', 'butter', 'comfort', 'hearty', 'stew', 'casserole', 'pie', 'pasta'];
+  if (comfortKeywords.some(k => name.includes(k) || desc.includes(k) || ingr.includes(k))) {
+    tags.add('Comfort Food');
+  }
+
+  // 8. Normalization of existing tags
+  if (tags.has('Quick')) {
+    tags.delete('Quick');
+    tags.add('Quick & Easy');
+  }
+  if (tags.has('Meal prep')) {
+    tags.delete('Meal prep');
+    tags.add('Meal Prep');
+  }
+  if (tags.has('Dairy-free')) {
+    tags.delete('Dairy-free');
+    tags.add('Dairy-Free');
+  }
+  if (tags.has('Gluten-free')) {
+    tags.delete('Gluten-free');
+    tags.add('Gluten-Free');
+  }
+
+  return Array.from(tags);
+}
+
+/**
  * Flatten the per-user recipe file into a single recipe array and a review map.
  * Pass `accountsOverride` after a remote pull so creator names match DB without a Metro restart.
  */
@@ -103,7 +182,7 @@ export function parseRecipesFile(
         averageRating = parseFloat((encoreSum / totalRatings).toFixed(1));
       }
 
-      recipes.push({
+      const recipe: Recipe = {
         ...rf,
         ingredientsMeasured: measured,
         ingredients: ingredientsLines,
@@ -111,7 +190,12 @@ export function parseRecipesFile(
         totalRatings,
         createdByUserId: userId,
         createdByName: creatorNameById.get(userId) ?? userId,
-      });
+      };
+
+      // Ensure official tags are applied dynamically
+      recipe.tags = ensureOfficialTags(recipe);
+
+      recipes.push(recipe);
       if (reviews && reviews.length > 0) {
         reviewsByRecipeId[r.id] = reviews.map(ensureReviewTasteRating);
       }
