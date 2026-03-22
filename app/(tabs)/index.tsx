@@ -3,7 +3,7 @@ import { View, Text, ScrollView, FlatList, StyleSheet, TouchableOpacity } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { SectionHeader } from '@/components/SectionHeader';
@@ -52,7 +52,7 @@ export default function FeedScreen() {
   const renderHeader = () => (
     <View>
       <View style={styles.topBar}>
-        <Text style={styles.logo}>chef'd</Text>
+        <Text style={styles.logo}>Activity</Text>
         <View style={styles.topBarRight}>
           <TouchableOpacity
             style={styles.iconButton}
@@ -130,7 +130,7 @@ export default function FeedScreen() {
         ))}
       </ScrollView>
 
-      <SectionHeader title="Your Feed" />
+      <SectionHeader title="Recent activity" />
     </View>
   );
 
@@ -165,10 +165,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
   },
   logo: {
-    fontSize: FontSize.xxl,
-    fontWeight: '800',
+    fontSize: FontSize.xxl + 4,
+    fontFamily: Fonts.display,
     color: Colors.primary,
-    fontStyle: 'italic',
   },
   topBarRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   iconButton: { padding: Spacing.xs, position: 'relative' },
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  savedBadgeText: { color: Colors.white, fontSize: 10, fontWeight: '700' },
+  savedBadgeText: { color: Colors.white, fontSize: 10, fontWeight: '700', fontFamily: Fonts.bodyBold },
   categoryRow: {
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
@@ -205,6 +204,7 @@ const styles = StyleSheet.create({
   categoryLabel: {
     fontSize: 10,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
     textAlign: 'center',
   },

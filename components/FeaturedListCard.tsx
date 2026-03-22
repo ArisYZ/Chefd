@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { RecipeList } from '@/types';
-import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, BorderRadius, FontSize, Fonts } from '@/constants/Colors';
 import { RemoteImage } from '@/components/RemoteImage';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.6;
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FontSize.lg,
+    fontFamily: Fonts.bodyBold,
     fontWeight: '700',
     color: Colors.white,
     marginBottom: 4,
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
   progress: {
     fontSize: FontSize.xs,
     color: 'rgba(255,255,255,0.85)',
+    fontFamily: Fonts.bodyMedium,
     fontWeight: '500',
   },
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native';
 import { RecipeRating } from '@/types';
-import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, BorderRadius, FontSize, Fonts } from '@/constants/Colors';
 import { Avatar } from './Avatar';
 import { MakeAgainBadge } from './MakeAgainBadge';
 import { DifficultyPips } from './DifficultyPips';
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   userName: {
+    fontFamily: Fonts.bodyBold,
     fontWeight: '700',
     color: Colors.text,
   },
@@ -89,6 +90,7 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
   },
   recipeName: {
+    fontFamily: Fonts.bodyBold,
     fontWeight: '700',
     color: Colors.text,
   },
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textSecondary,
     marginTop: 2,
+    fontFamily: Fonts.bodyMedium,
     fontWeight: '500',
   },
   reviewMeta: {
@@ -117,6 +120,7 @@ const styles = StyleSheet.create({
   },
   likesCount: {
     fontSize: FontSize.sm,
+    fontFamily: Fonts.bodyMedium,
     fontWeight: '500',
     color: Colors.textSecondary,
     marginBottom: Spacing.sm,

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { MakeAgain } from '@/types';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 
 const CONFIG: Record<MakeAgain, { icon: string; label: string; bg: string; fg: string }> = {
   yes: { icon: 'checkmark-circle', label: 'Would make again', bg: '#E8F5E9', fg: '#2E7D32' },
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: FontSize.xs,
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
   },
 });

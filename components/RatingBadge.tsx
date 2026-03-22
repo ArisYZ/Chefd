@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors, FontSize } from '@/constants/Colors';
+import { Colors, FontSize, Fonts } from '@/constants/Colors';
 
 interface RatingBadgeProps {
   rating: number | null;
@@ -52,16 +52,19 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   text: {
+    fontFamily: Fonts.bodyBold,
     fontWeight: '700',
   },
   scale: {
     fontSize: 9,
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
     marginTop: -2,
     opacity: 0.95,
   },
   sublabel: {
     fontSize: 7,
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
     marginTop: 0,
     textTransform: 'uppercase',
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   unratedText: {
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
     color: Colors.textTertiary,
     textAlign: 'center',

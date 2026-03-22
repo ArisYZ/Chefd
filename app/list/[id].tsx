@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { RecipeCard } from '@/components/RecipeCard';
 import { Avatar } from '@/components/Avatar';
 import { RemoteImage } from '@/components/RemoteImage';
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSize.xxl,
     fontWeight: '800',
+    fontFamily: Fonts.display,
     color: Colors.text,
   },
   description: {
@@ -143,6 +144,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
     fontWeight: '500',
+    fontFamily: Fonts.bodyMedium,
   },
   progressBar: {
     height: 6,
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
   recipesTitle: {
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     textTransform: 'uppercase',
     letterSpacing: 0.5,

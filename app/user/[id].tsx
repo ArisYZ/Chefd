@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { Avatar } from '@/components/Avatar';
 import { RecipeCard } from '@/components/RecipeCard';
 import { MakeAgainBadge } from '@/components/MakeAgainBadge';
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.xl,
     paddingBottom: Spacing.xxl,
   },
-  name: { fontSize: FontSize.xl, fontWeight: '800', color: Colors.text, marginTop: Spacing.md },
+  name: { fontSize: FontSize.xl, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.text, marginTop: Spacing.md },
   username: { fontSize: FontSize.md, color: Colors.textSecondary, marginTop: 2 },
   bio: {
     fontSize: FontSize.sm,
@@ -210,13 +210,14 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   statItem: { flex: 1, alignItems: 'center' },
-  statNumber: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
+  statNumber: { fontSize: FontSize.lg, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.primary },
   statLabel: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 2, textAlign: 'center' },
   statDivider: { width: 1, height: 30, backgroundColor: Colors.border },
   section: { paddingBottom: Spacing.xl },
   sectionTitle: {
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -235,6 +236,7 @@ const styles = StyleSheet.create({
   reviewRecipeName: {
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.primary,
     marginBottom: Spacing.sm,
   },
@@ -250,7 +252,7 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: Spacing.sm,
   },
-  tasteText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.ratingYellow },
+  tasteText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.ratingYellow },
   reviewComment: {
     fontSize: FontSize.md,
     color: Colors.text,
@@ -262,6 +264,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: Spacing.md,
   },
-  reviewLikes: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.textSecondary },
+  reviewLikes: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textSecondary },
   reviewTime: { fontSize: FontSize.xs, color: Colors.textTertiary },
 });

@@ -1,25 +1,26 @@
 export const Colors = {
-  primary: '#2D5A3D',
-  primaryLight: '#3D7A53',
-  primaryDark: '#1E3D2A',
-  accent: '#D4956A',
-  accentLight: '#E8B08A',
-  background: '#FAFAF8',
+  primary: '#1B3A5C',
+  primaryLight: '#2A5080',
+  primaryDark: '#0F2440',
+  accent: '#D4AF37',
+  accentLight: '#E5CC60',
+  background: '#F8F8F6',
   surface: '#FFFFFF',
-  surfaceElevated: '#F5F5F2',
-  text: '#1A1A1A',
-  textSecondary: '#6B6B6B',
-  textTertiary: '#999999',
-  border: '#E8E8E5',
-  borderLight: '#F0F0ED',
-  heart: '#E85D5D',
-  ratingGreen: '#2D5A3D',
-  ratingYellow: '#D4A03C',
+  surfaceElevated: '#F0F2F4',
+  text: '#16233B',
+  textSecondary: '#5A6B80',
+  textTertiary: '#8E99A8',
+  border: '#DDE2E8',
+  borderLight: '#EDF0F3',
+  heart: '#D94F4F',
+  ratingGreen: '#1B3A5C',
+  ratingYellow: '#D4AF37',
   ratingRed: '#C45B4A',
   white: '#FFFFFF',
   black: '#000000',
   overlay: 'rgba(0, 0, 0, 0.4)',
   shadow: 'rgba(0, 0, 0, 0.08)',
+  placeholder: '#E0E0E0',
 };
 
 export const Spacing = {
@@ -44,9 +45,22 @@ export const FontSize = {
 };
 
 export const BorderRadius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
+  sm: 10,
+  md: 14,
+  lg: 18,
+  xl: 24,
   full: 999,
+};
+
+/** Gilda Display for editorial headings; Hanken Grotesk for all UI/body text. */
+export const Fonts = {
+  display: 'GildaDisplay_400Regular',
+  heading: 'HankenGrotesk_700Bold',
+  headingSemiBold: 'HankenGrotesk_600SemiBold',
+  body: 'HankenGrotesk_400Regular',
+  bodyLight: 'HankenGrotesk_300Light',
+  bodyMedium: 'HankenGrotesk_500Medium',
+  bodySemiBold: 'HankenGrotesk_600SemiBold',
+  bodyBold: 'HankenGrotesk_700Bold',
+  bodyExtraBold: 'HankenGrotesk_800ExtraBold',
 };

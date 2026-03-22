@@ -16,7 +16,7 @@ import { getGithubDataSyncConfig, pullDataJsonFilesFromGithub, pushDataJsonFiles
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { Avatar } from '@/components/Avatar';
 import { RemoteImage } from '@/components/RemoteImage';
 import { RecipeCard } from '@/components/RecipeCard';
@@ -421,8 +421,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accent + '22',
     borderRadius: BorderRadius.full,
   },
-  rankPillText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.text },
-  name: { fontSize: FontSize.xl, fontWeight: '800', color: Colors.text, marginTop: Spacing.sm },
+  rankPillText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.text },
+  name: { fontSize: FontSize.xl, fontWeight: '800', fontFamily: Fonts.display, color: Colors.text, marginTop: Spacing.sm },
   username: { fontSize: FontSize.md, color: Colors.textSecondary, marginTop: 2 },
   bio: {
     fontSize: FontSize.sm,
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   },
   statsRowPair: { paddingHorizontal: Spacing.xl },
   statItem: { flex: 1, alignItems: 'center' },
-  statNumber: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
+  statNumber: { fontSize: FontSize.lg, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.primary },
   statLabel: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 2, textAlign: 'center' },
   statDivider: { width: 1, height: 30, backgroundColor: Colors.border },
   editButton: {
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: Colors.primary,
   },
-  editButtonText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  editButtonText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
   profileTabBar: {
     flexDirection: 'row',
     marginHorizontal: Spacing.lg,
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   profileTabActive: { backgroundColor: Colors.white },
-  profileTabText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textTertiary },
+  profileTabText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textTertiary },
   profileTabTextActive: { color: Colors.primary },
   myRecipesSection: { paddingBottom: Spacing.xl },
   myRecipesHeader: {
@@ -488,12 +488,13 @@ const styles = StyleSheet.create({
   myRecipesSectionTitle: {
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   myRecipesHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  myRecipesCount: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.primary },
+  myRecipesCount: { fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.primary },
   emptyMyRecipes: {
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
@@ -540,7 +541,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.lg,
     alignItems: 'center',
   },
-  logoutText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.heart },
+  logoutText: { fontSize: FontSize.md, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.heart },
   listCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -552,7 +553,7 @@ const styles = StyleSheet.create({
   },
   listImage: { width: 70, height: 70, backgroundColor: '#E0E0E0' },
   listContent: { flex: 1, padding: Spacing.md },
-  listTitle: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
+  listTitle: { fontSize: FontSize.md, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.text },
   listDescription: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 2 },
   listCount: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 4 },
   devSyncSection: {
@@ -564,10 +565,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     backgroundColor: Colors.white,
   },
-  devSyncTitle: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.text, marginBottom: Spacing.sm },
+  devSyncTitle: { fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.text, marginBottom: Spacing.sm },
   devSyncHint: { fontSize: FontSize.xs, color: Colors.textSecondary, lineHeight: 18, marginBottom: Spacing.sm },
-  devSyncOk: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.primary, marginBottom: Spacing.sm },
-  devSyncWarn: { fontSize: FontSize.xs, fontWeight: '600', color: '#B45309', marginBottom: Spacing.sm },
+  devSyncOk: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary, marginBottom: Spacing.sm },
+  devSyncWarn: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: '#B45309', marginBottom: Spacing.sm },
   devSyncRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginBottom: Spacing.md },
   devSyncButtonInner: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   devSyncButton: {
@@ -581,7 +582,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   devSyncButtonDisabled: { opacity: 0.55 },
-  devSyncButtonText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.white },
+  devSyncButtonText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.white },
   devSyncButtonSecondary: {
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.lg,
@@ -593,7 +594,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 40,
   },
-  devSyncButtonSecondaryText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  devSyncButtonSecondaryText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
   devSyncButtonOutline: {
     alignSelf: 'flex-start',
     paddingVertical: Spacing.sm,
@@ -602,5 +603,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  devSyncButtonOutlineText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  devSyncButtonOutlineText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textSecondary },
 });

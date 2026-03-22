@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 import { RecipeCard } from '@/components/RecipeCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRecipes } from '@/contexts/RecipeContext';
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSize.xxl,
     fontWeight: '800',
+    fontFamily: Fonts.display,
     color: Colors.text,
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.md,
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
   },
   emptyHint: {

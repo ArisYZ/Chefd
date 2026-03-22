@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { GoogleAuthSection, googleOAuthConfigured } from '@/components/GoogleAuthSection';
 import { parseJwtPayload } from '@/lib/jwt';
 
@@ -105,8 +105,8 @@ export default function AuthScreen() {
           contentContainerStyle={styles.scroll}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.logo}>chef'd</Text>
-          <Text style={styles.tagline}>Rank recipes. Cook better.</Text>
+          <Text style={styles.logo}>Chef <Text style={styles.logoAccent}>'d</Text></Text>
+          <Text style={styles.tagline}>Cook it. Rate it. Make it again.</Text>
 
           <View style={styles.segment}>
             <TouchableOpacity
@@ -239,11 +239,14 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.xxl,
   },
   logo: {
-    fontSize: FontSize.display,
+    fontSize: FontSize.display + 4,
     fontWeight: '800',
+    fontFamily: Fonts.display,
     color: Colors.primary,
-    fontStyle: 'italic',
     textAlign: 'center',
+  },
+  logoAccent: {
+    color: Colors.accent,
   },
   tagline: {
     fontSize: FontSize.md,
@@ -276,6 +279,7 @@ const styles = StyleSheet.create({
   segmentText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textTertiary,
   },
   segmentTextActive: {
@@ -284,6 +288,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
     marginBottom: Spacing.sm,
   },
@@ -309,6 +314,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
   },
   disabled: { opacity: 0.6 },
   dividerRow: {
@@ -336,6 +342,7 @@ const styles = StyleSheet.create({
   googleInfoTitle: {
     fontSize: FontSize.md,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     textAlign: 'center',
     marginBottom: Spacing.sm,
@@ -350,6 +357,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.primary,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     marginTop: Spacing.sm,
   },
 });

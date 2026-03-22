@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, BorderRadius, FontSize, Fonts } from '@/constants/Colors';
 
 interface FilterTabsProps {
   tabs: { label: string; icon?: string }[];
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: FontSize.sm,
     lineHeight: Math.round(FontSize.sm * 1.25),
+    fontFamily: Fonts.bodyMedium,
     fontWeight: '500',
     color: Colors.text,
   },

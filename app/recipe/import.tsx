@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   parseBtnDisabled: { opacity: 0.5 },
-  parseBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700' },
+  parseBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700', fontFamily: Fonts.bodyBold },
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -453,23 +453,25 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.borderLight,
     marginBottom: Spacing.md,
   },
-  previewTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.text, marginBottom: Spacing.sm },
+  previewTitle: { fontSize: FontSize.lg, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.text, marginBottom: Spacing.sm },
   previewSuccess: {
     fontSize: FontSize.sm,
     color: Colors.primary,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     marginBottom: Spacing.lg,
   },
   previewLabel: {
     fontSize: FontSize.sm,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     marginTop: Spacing.md,
     marginBottom: Spacing.sm,
   },
   previewValue: { fontSize: FontSize.md, color: Colors.text },
   previewItem: { fontSize: FontSize.sm, color: Colors.textSecondary, marginBottom: 4, lineHeight: 20 },
-  previewMore: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600', marginTop: 4 },
+  previewMore: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '600', fontFamily: Fonts.bodySemiBold, marginTop: 4 },
   sourceAttrib: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
@@ -483,7 +485,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     alignItems: 'center',
   },
-  importBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700' },
+  importBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700', fontFamily: Fonts.bodyBold },
   manualLink: { alignItems: 'center', paddingVertical: Spacing.lg },
-  manualLinkText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  manualLinkText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
 });

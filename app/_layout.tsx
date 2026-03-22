@@ -1,13 +1,50 @@
+import { useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts, GildaDisplay_400Regular } from '@expo-google-fonts/gilda-display';
+import {
+  HankenGrotesk_300Light,
+  HankenGrotesk_400Regular,
+  HankenGrotesk_500Medium,
+  HankenGrotesk_600SemiBold,
+  HankenGrotesk_700Bold,
+  HankenGrotesk_800ExtraBold,
+} from '@expo-google-fonts/hanken-grotesk';
 import { Colors } from '@/constants/Colors';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RecipeProvider } from '@/contexts/RecipeContext';
 import { BookmarkProvider } from '@/contexts/BookmarkContext';
 import { SocialProvider } from '@/contexts/SocialContext';
 
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    GildaDisplay_400Regular,
+    HankenGrotesk_300Light,
+    HankenGrotesk_400Regular,
+    HankenGrotesk_500Medium,
+    HankenGrotesk_600SemiBold,
+    HankenGrotesk_700Bold,
+    HankenGrotesk_800ExtraBold,
+  });
+
+  const onLayoutReady = useCallback(() => {
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
   return (
+    <View style={{ flex: 1 }} onLayout={onLayoutReady}>
     <AuthProvider>
     <RecipeProvider>
     <BookmarkProvider>
@@ -148,5 +185,15 @@ export default function RootLayout() {
     </BookmarkProvider>
     </RecipeProvider>
     </AuthProvider>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background,
+  },
+});

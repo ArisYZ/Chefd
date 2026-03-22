@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { Avatar } from '@/components/Avatar';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -130,12 +130,14 @@ const styles = StyleSheet.create({
   changePhoto: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.primary,
     marginTop: Spacing.sm,
   },
   label: {
     fontSize: FontSize.sm,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     marginBottom: Spacing.sm,
   },
@@ -168,5 +170,5 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
   },
   saveBtnDisabled: { opacity: 0.55 },
-  saveBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700' },
+  saveBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700', fontFamily: Fonts.bodyBold },
 });

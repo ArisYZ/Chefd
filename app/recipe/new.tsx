@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { RECIPE_TAG_OPTIONS, MAX_RECIPE_TAGS, getTagConfig } from '@/constants/recipeTags';
 import { FLAVOR_TAG_OPTIONS, MAX_FLAVOR_TAGS } from '@/constants/flavorTags';
 import { MEASUREMENT_UNITS } from '@/constants/measurementUnits';
@@ -736,7 +736,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
   },
-  photoHint: { fontSize: FontSize.sm, color: Colors.textTertiary, fontWeight: '500' },
+  photoHint: { fontSize: FontSize.sm, color: Colors.textTertiary, fontWeight: '500', fontFamily: Fonts.bodyMedium },
   photoReq: { fontSize: FontSize.xs, color: Colors.textTertiary },
   labelRow: {
     flexDirection: 'row',
@@ -744,7 +744,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.sm,
   },
-  label: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.text, marginBottom: Spacing.sm },
+  label: { fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.text, marginBottom: Spacing.sm },
   charCounter: { fontSize: FontSize.xs, color: Colors.textTertiary },
   sublabel: { fontSize: FontSize.xs, color: Colors.textTertiary, marginBottom: 4 },
   input: {
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary + '12',
     marginBottom: Spacing.md,
   },
-  unitToggleText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  unitToggleText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
   stepperRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stepperValue: { fontSize: FontSize.xl, fontWeight: '800', color: Colors.text, minWidth: 30, textAlign: 'center' },
+  stepperValue: { fontSize: FontSize.xl, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.text, minWidth: 30, textAlign: 'center' },
   diffRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.lg },
   diffChip: {
     flex: 1,
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   diffChipActive: { borderColor: Colors.primary, backgroundColor: Colors.primary + '12' },
-  diffText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  diffText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textSecondary },
   diffTextActive: { color: Colors.primary },
   tagsWrap: {
     flexDirection: 'row',
@@ -819,14 +819,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  tagLabel: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textSecondary },
+  tagLabel: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textSecondary },
   sectionHead: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: Spacing.sm,
   },
-  addLine: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  addLine: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
   ingredientHint: { fontSize: FontSize.xs, color: Colors.textTertiary, marginBottom: Spacing.sm },
   ingredientRowForm: {
     flexDirection: 'row',
@@ -845,7 +845,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.sm,
   },
-  unitSelectText: { flex: 1, fontSize: FontSize.sm, fontWeight: '600', color: Colors.text },
+  unitSelectText: { flex: 1, fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.text },
   ingredientNameInput: { flex: 1, marginBottom: 0, paddingVertical: Spacing.sm },
   modalOverlay: {
     flex: 1,
@@ -862,6 +862,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: FontSize.lg,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     padding: Spacing.lg,
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
@@ -885,7 +886,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 10,
   },
-  stepBadgeText: { color: Colors.white, fontSize: FontSize.sm, fontWeight: '700' },
+  stepBadgeText: { color: Colors.white, fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold },
   stepInputWrap: { flex: 1 },
   stepInput: { minHeight: 80, textAlignVertical: 'top' },
   stepCharCount: {
@@ -902,5 +903,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: Spacing.lg,
   },
-  saveBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700' },
+  saveBtnText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700', fontFamily: Fonts.bodyBold },
 });

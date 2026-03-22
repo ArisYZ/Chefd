@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { RecipeCard } from '@/components/RecipeCard';
 import { RemoteImage } from '@/components/RemoteImage';
 import { useBookmarks } from '@/contexts/BookmarkContext';
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
   tabChipText: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
   },
   tabChipTextActive: {
@@ -216,6 +217,7 @@ const styles = StyleSheet.create({
   addChipText: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.primary,
   },
   collectionsGrid: {
@@ -249,6 +251,7 @@ const styles = StyleSheet.create({
   collectionName: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.text,
     paddingHorizontal: Spacing.sm,
     paddingTop: Spacing.sm,
@@ -266,6 +269,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
     marginTop: Spacing.md,
   },
@@ -290,6 +294,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: FontSize.lg,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     marginBottom: Spacing.lg,
   },
@@ -325,6 +330,7 @@ const styles = StyleSheet.create({
   modalCancelText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
   },
   modalCreate: {
@@ -338,6 +344,7 @@ const styles = StyleSheet.create({
   modalCreateText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.white,
   },
 });

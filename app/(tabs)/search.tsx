@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, ScrollView } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RecipeCard } from '@/components/RecipeCard';
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.lg,
   },
-  title: { fontSize: FontSize.xxl, fontWeight: '800', color: Colors.text },
+  title: { fontSize: FontSize.xxl, fontWeight: '800', fontFamily: Fonts.display, color: Colors.text },
   sortBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     backgroundColor: Colors.primary + '12',
   },
-  sortText: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.primary },
+  sortText: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
   categoryRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     lineHeight: Math.round(FontSize.xs * 1.35),
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
   },
   clearFilters: {
@@ -233,6 +234,7 @@ const styles = StyleSheet.create({
   clearFiltersText: {
     fontSize: FontSize.xs,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.primary,
   },
   resultsCount: {

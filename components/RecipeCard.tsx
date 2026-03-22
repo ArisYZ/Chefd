@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Recipe } from '@/types';
-import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, BorderRadius, FontSize, Fonts } from '@/constants/Colors';
 import { RatingBadge } from './RatingBadge';
 import { RecipeTagChips } from './RecipeTagChips';
 import { RemoteImage } from './RemoteImage';
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   },
   rank: {
     fontSize: FontSize.lg,
+    fontFamily: Fonts.bodyExtraBold,
     fontWeight: '800',
     color: Colors.primary,
     marginRight: Spacing.sm,
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: FontSize.md,
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
     color: Colors.text,
   },
@@ -144,6 +146,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textSecondary,
     marginTop: 2,
+    fontFamily: Fonts.bodyMedium,
     fontWeight: '500',
   },
   tagsRow: {

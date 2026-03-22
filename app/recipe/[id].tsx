@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { RatingBadge } from '@/components/RatingBadge';
 import { MakeAgainBadge } from '@/components/MakeAgainBadge';
 import { DifficultyPips } from '@/components/DifficultyPips';
@@ -491,9 +491,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   titleText: { flex: 1, marginRight: Spacing.md },
-  name: { fontSize: FontSize.xxl, fontWeight: '800', color: Colors.text },
+  name: { fontSize: FontSize.xxl, fontWeight: '800', fontFamily: Fonts.display, color: Colors.text },
   cuisine: { fontSize: FontSize.md, color: Colors.textSecondary, marginTop: 4 },
-  creator: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 6, fontWeight: '600' },
+  creator: { fontSize: FontSize.sm, color: Colors.textSecondary, marginTop: 6, fontWeight: '600', fontFamily: Fonts.bodySemiBold },
   description: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary + '20',
   },
   scoreItem: { flex: 1, alignItems: 'center' },
-  scoreValue: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.primary },
+  scoreValue: { fontSize: FontSize.lg, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.primary },
   scoreLabel: { fontSize: FontSize.xs, color: Colors.textSecondary, marginTop: 2, textAlign: 'center' },
   scoreDivider: { width: 1, backgroundColor: Colors.primary + '20' },
   metaRow: {
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   metaItem: { flex: 1, alignItems: 'center' },
-  metaValue: { fontSize: FontSize.md, fontWeight: '700', color: Colors.text, marginTop: 4 },
+  metaValue: { fontSize: FontSize.md, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.text, marginTop: 4 },
   metaLabel: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 1 },
   metaDivider: { width: 1, backgroundColor: Colors.border },
   actionRow: { flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.xl },
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   rateButtonDisabled: { opacity: 0.55 },
-  rateButtonText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '600' },
+  rateButtonText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '600', fontFamily: Fonts.bodySemiBold },
   actionButton: {
     width: 48,
     height: 48,
@@ -567,6 +567,7 @@ const styles = StyleSheet.create({
   editRecipeText: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.primary,
   },
   deleteRecipeBtn: {
@@ -580,6 +581,7 @@ const styles = StyleSheet.create({
   deleteRecipeText: {
     fontSize: FontSize.sm,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.heart,
   },
   tabBar: {
@@ -590,8 +592,8 @@ const styles = StyleSheet.create({
   },
   tab: { flex: 1, paddingVertical: Spacing.md, alignItems: 'center' },
   activeTab: { borderBottomWidth: 2, borderBottomColor: Colors.primary },
-  tabText: { fontSize: FontSize.md, color: Colors.textTertiary, fontWeight: '500' },
-  activeTabText: { color: Colors.primary, fontWeight: '600' },
+  tabText: { fontSize: FontSize.md, color: Colors.textTertiary, fontWeight: '500', fontFamily: Fonts.bodyMedium },
+  activeTabText: { color: Colors.primary, fontWeight: '600', fontFamily: Fonts.bodySemiBold },
   section: { marginBottom: Spacing.xxl },
   sectionHeader: {
     flexDirection: 'row',
@@ -599,7 +601,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.lg,
   },
-  sectionTitle: { fontSize: FontSize.lg, fontWeight: '700', color: Colors.text, marginBottom: Spacing.lg },
+  sectionTitle: { fontSize: FontSize.lg, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.text, marginBottom: Spacing.lg },
   checkHint: { fontSize: FontSize.xs, color: Colors.textTertiary, fontStyle: 'italic' },
   ingredientRow: {
     flexDirection: 'row',
@@ -620,7 +622,7 @@ const styles = StyleSheet.create({
     marginRight: Spacing.md,
     marginTop: 2,
   },
-  stepNumberText: { color: Colors.white, fontSize: FontSize.sm, fontWeight: '700' },
+  stepNumberText: { color: Colors.white, fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold },
   stepText: { flex: 1, fontSize: FontSize.md, color: Colors.text, lineHeight: 22 },
   sourceRow: {
     flexDirection: 'row',
@@ -632,9 +634,9 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     marginBottom: Spacing.lg,
   },
-  sourceText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '500' },
+  sourceText: { fontSize: FontSize.sm, color: Colors.primary, fontWeight: '500', fontFamily: Fonts.bodyMedium },
   emptyState: { alignItems: 'center', paddingVertical: Spacing.xxxl },
-  emptyText: { fontSize: FontSize.md, fontWeight: '600', color: Colors.textSecondary, marginTop: Spacing.md },
+  emptyText: { fontSize: FontSize.md, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textSecondary, marginTop: Spacing.md },
   emptySubtext: { fontSize: FontSize.sm, color: Colors.textTertiary, marginTop: 4 },
   reviewCard: {
     backgroundColor: Colors.white,
@@ -651,7 +653,7 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   reviewHeaderText: { flex: 1, marginLeft: Spacing.md },
-  reviewUser: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
+  reviewUser: { fontSize: FontSize.md, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.text },
   reviewTime: { fontSize: FontSize.xs, color: Colors.textTertiary },
   reviewMetaRow: {
     flexDirection: 'row',
@@ -665,8 +667,8 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: Spacing.sm,
   },
-  tasteText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.ratingYellow },
-  tasteTextMuted: { color: Colors.textTertiary, fontWeight: '500' },
+  tasteText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.ratingYellow },
+  tasteTextMuted: { color: Colors.textTertiary, fontWeight: '500', fontFamily: Fonts.bodyMedium },
   reviewComment: { fontSize: FontSize.md, color: Colors.text, lineHeight: 21, marginTop: Spacing.sm },
   flavorNotes: {
     fontSize: FontSize.sm,
@@ -684,6 +686,7 @@ const styles = StyleSheet.create({
   reviewLikes: {
     fontSize: FontSize.xs,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
     marginBottom: Spacing.sm,
   },

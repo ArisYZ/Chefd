@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { MakeAgain, Review } from '@/types';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 
 interface ReviewModalProps {
   visible: boolean;
@@ -133,7 +133,7 @@ export function ReviewModal({ visible, recipeName, existingReview, onClose, onSu
                       color={selected ? opt.color : Colors.textTertiary}
                     />
                     <Text
-                      style={[styles.toggleLabel, selected && { color: opt.color, fontWeight: '600' }]}
+                      style={[styles.toggleLabel, selected && { color: opt.color, fontFamily: Fonts.bodySemiBold, fontWeight: '600' }]}
                     >
                       {opt.label}
                     </Text>
@@ -275,10 +275,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.xs,
   },
-  title: { fontSize: FontSize.xl, fontWeight: '800', color: Colors.text },
+  title: { fontSize: FontSize.xl, fontFamily: Fonts.bodyExtraBold, fontWeight: '800', color: Colors.text },
   recipeName: { fontSize: FontSize.md, color: Colors.textSecondary, marginBottom: Spacing.xxl },
-  sectionLabel: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text, marginBottom: Spacing.md },
-  optional: { fontWeight: '400', color: Colors.textTertiary },
+  sectionLabel: { fontSize: FontSize.md, fontFamily: Fonts.bodySemiBold, fontWeight: '600', color: Colors.text, marginBottom: Spacing.md },
+  optional: { fontFamily: Fonts.body, fontWeight: '400', color: Colors.textTertiary },
   labelRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xxl,
   },
   starTouch: { padding: 2 },
-  starLabel: { fontSize: FontSize.md, fontWeight: '700', color: '#FFD700', marginLeft: Spacing.sm },
+  starLabel: { fontSize: FontSize.md, fontFamily: Fonts.bodyBold, fontWeight: '700', color: '#FFD700', marginLeft: Spacing.sm },
   textInput: {
     backgroundColor: Colors.surfaceElevated,
     borderRadius: BorderRadius.md,
@@ -348,5 +348,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   submitDisabled: { opacity: 0.4 },
-  submitText: { color: Colors.white, fontSize: FontSize.md, fontWeight: '700' },
+  submitText: { color: Colors.white, fontSize: FontSize.md, fontFamily: Fonts.bodyBold, fontWeight: '700' },
 });

@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { FilterTabs } from '@/components/FilterTabs';
 import { RatingBadge } from '@/components/RatingBadge';
 import { Avatar } from '@/components/Avatar';
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.lg,
   },
-  title: { fontSize: FontSize.xxl, fontWeight: '800', color: Colors.text },
+  title: { fontSize: FontSize.xxl, fontWeight: '800', fontFamily: Fonts.display, color: Colors.text },
   modeRow: {
     flexDirection: 'row',
     marginHorizontal: Spacing.lg,
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
   },
   modeBtnActive: { backgroundColor: Colors.white },
-  modeBtnText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.textTertiary },
+  modeBtnText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.textTertiary },
   modeBtnTextActive: { color: Colors.primary },
   /** Full-width rounded card: time range + sort, aligned with mode row. */
   filterCard: {
@@ -372,6 +372,7 @@ const styles = StyleSheet.create({
   filterSegmentText: {
     fontSize: FontSize.xs,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textTertiary,
     textAlign: 'center',
   },
@@ -391,7 +392,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.primary + '20',
   },
-  personalRankText: { fontSize: FontSize.sm, fontWeight: '600', color: Colors.primary },
+  personalRankText: { fontSize: FontSize.sm, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.primary },
   podiumRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -406,9 +407,9 @@ const styles = StyleSheet.create({
   podiumOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
   podiumContent: { flex: 1, justifyContent: 'flex-end', alignItems: 'center', padding: Spacing.sm },
   podiumMedal: { fontSize: 24, marginBottom: 4 },
-  podiumName: { fontSize: FontSize.sm, fontWeight: '700', color: Colors.white, textAlign: 'center' },
-  podiumRating: { fontSize: FontSize.md, fontWeight: '800', color: Colors.white, marginTop: 2 },
-  podiumCreator: { fontSize: FontSize.xs, fontWeight: '600', color: Colors.white, opacity: 0.95, marginTop: 2 },
+  podiumName: { fontSize: FontSize.sm, fontWeight: '700', fontFamily: Fonts.bodyBold, color: Colors.white, textAlign: 'center' },
+  podiumRating: { fontSize: FontSize.md, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.white, marginTop: 2 },
+  podiumCreator: { fontSize: FontSize.xs, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.white, opacity: 0.95, marginTop: 2 },
   listContent: { paddingBottom: Spacing.xxl },
   row: {
     flexDirection: 'row',
@@ -419,7 +420,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.borderLight,
   },
-  rankText: { fontSize: FontSize.lg, fontWeight: '800', color: Colors.textTertiary, width: 30, textAlign: 'center' },
+  rankText: { fontSize: FontSize.lg, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.textTertiary, width: 30, textAlign: 'center' },
   avatarWrap: { marginHorizontal: Spacing.md },
   rowImage: {
     width: 50,
@@ -429,10 +430,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#E0E0E0',
   },
   rowContent: { flex: 1 },
-  rowName: { fontSize: FontSize.md, fontWeight: '600', color: Colors.text },
+  rowName: { fontSize: FontSize.md, fontWeight: '600', fontFamily: Fonts.bodySemiBold, color: Colors.text },
   rowMeta: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 2 },
   rowMetaSecondary: { fontSize: FontSize.xs, color: Colors.textTertiary, marginTop: 3, opacity: 0.9 },
-  cookScore: { fontSize: FontSize.md, fontWeight: '800', color: Colors.primary, minWidth: 36, textAlign: 'right' },
+  cookScore: { fontSize: FontSize.md, fontWeight: '800', fontFamily: Fonts.bodyExtraBold, color: Colors.primary, minWidth: 36, textAlign: 'right' },
   emptyCooks: {
     flex: 1,
     textAlign: 'center',

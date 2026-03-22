@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { userLists } from '@/constants/MockData';
 import { RecipeList } from '@/types';
 import { RemoteImage } from '@/components/RemoteImage';
@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSize.xxl,
     fontWeight: '800',
+    fontFamily: Fonts.display,
     color: Colors.text,
   },
   addButton: {
@@ -108,6 +109,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: FontSize.xl,
     fontWeight: '800',
+    fontFamily: Fonts.bodyExtraBold,
     color: Colors.primary,
   },
   statLabel: {
@@ -140,6 +142,7 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.text,
   },
   listDescription: {

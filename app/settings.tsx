@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, BorderRadius } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, BorderRadius, Fonts } from '@/constants/Colors';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function SettingsScreen() {
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSize.xs,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.textTertiary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -219,6 +220,7 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.heart,
   },
   version: {

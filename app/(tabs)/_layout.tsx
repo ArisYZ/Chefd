@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontSize, Spacing, BorderRadius } from '@/constants/Colors';
+import { Colors, FontSize, Spacing, BorderRadius, Fonts } from '@/constants/Colors';
 import {
   Platform,
   View,
@@ -46,15 +46,16 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: FontSize.xs,
           fontWeight: '500',
+          fontFamily: Fonts.bodyMedium,
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Feed',
+          title: 'Activity',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="newspaper-outline" size={size} color={color} />
+            <Ionicons name="pulse-outline" size={size} color={color} />
           ),
         }}
       />
@@ -159,13 +160,18 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   fab: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   modalBackdrop: {
     flex: 1,
@@ -184,6 +190,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: FontSize.lg,
     fontWeight: '700',
+    fontFamily: Fonts.bodyBold,
     color: Colors.text,
     marginBottom: Spacing.xs,
   },
@@ -203,6 +210,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
   },
   modalBtnSecondary: {
     backgroundColor: Colors.background,
@@ -217,6 +225,7 @@ const styles = StyleSheet.create({
     color: Colors.text,
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
   },
   modalBtnCancel: {
     paddingVertical: Spacing.md,
@@ -226,5 +235,6 @@ const styles = StyleSheet.create({
     color: Colors.textTertiary,
     fontSize: FontSize.md,
     fontWeight: '500',
+    fontFamily: Fonts.bodyMedium,
   },
 });

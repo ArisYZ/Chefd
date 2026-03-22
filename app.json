@@ -8,7 +8,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "backgroundColor": "#2D5A3D"
+      "backgroundColor": "#1B3A5C"
     },
     "ios": {
       "supportsTablet": true,
@@ -16,7 +16,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#2D5A3D"
+        "backgroundColor": "#1B3A5C"
       },
       "package": "com.chefd.app"
     },

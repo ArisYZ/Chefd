@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors, Spacing, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 
 interface DifficultyPipsProps {
   value: 1 | 2 | 3 | 4 | 5;
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: FontSize.xs,
     color: Colors.textTertiary,
+    fontFamily: Fonts.bodyMedium,
     fontWeight: '500',
   },
   pips: {

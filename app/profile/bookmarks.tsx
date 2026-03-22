@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 import { RecipeCard } from '@/components/RecipeCard';
 import { useBookmarks } from '@/contexts/BookmarkContext';
 import { useRecipes } from '@/contexts/RecipeContext';
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: FontSize.md,
     fontWeight: '600',
+    fontFamily: Fonts.bodySemiBold,
     color: Colors.textSecondary,
     marginTop: Spacing.md,
   },

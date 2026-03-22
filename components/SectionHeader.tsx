@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Colors, Spacing, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 
 interface SectionHeaderProps {
   title: string;
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: FontSize.md,
+    fontFamily: Fonts.bodyBold,
     fontWeight: '700',
     color: Colors.text,
     textTransform: 'uppercase',
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
   },
   action: {
     fontSize: FontSize.sm,
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
     color: Colors.primary,
   },

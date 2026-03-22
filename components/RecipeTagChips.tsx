@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, BorderRadius, FontSize } from '@/constants/Colors';
+import { Colors, Spacing, BorderRadius, FontSize, Fonts } from '@/constants/Colors';
 import { getTagConfig } from '@/constants/recipeTags';
 import { getFlavorConfig } from '@/constants/flavorTags';
 
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: FontSize.sm,
+    fontFamily: Fonts.bodySemiBold,
     fontWeight: '600',
   },
   labelSm: {
