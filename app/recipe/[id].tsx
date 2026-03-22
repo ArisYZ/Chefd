@@ -359,23 +359,26 @@ export default function RecipeDetailScreen() {
                           <TouchableOpacity
                             hitSlop={10}
                             onPress={() => {
-                              const run = () => {
+                              const runDelete = () => {
                                 const removed = removeReview(recipe.id, review.id);
-                                if (removed && user?.id) void onUserDeletedReview(review.makeAgain);
+                                if (removed && user?.id) {
+                                  void onUserDeletedReview(review.makeAgain);
+                                }
                               };
+
                               if (Platform.OS === 'web') {
                                 if (
                                   typeof window !== 'undefined' &&
                                   window.confirm('Delete your review for this recipe?')
                                 ) {
-                                  run();
+                                  runDelete();
                                 }
-                                return;
+                              } else {
+                                Alert.alert('Delete review', 'Remove your review for this recipe?', [
+                                  { text: 'Cancel', style: 'cancel' },
+                                  { text: 'Delete', style: 'destructive', onPress: runDelete },
+                                ]);
                               }
-                              Alert.alert('Delete review', 'Remove your review for this recipe?', [
-                                { text: 'Cancel', style: 'cancel' },
-                                { text: 'Delete', style: 'destructive', onPress: run },
-                              ]);
                             }}
                             accessibilityLabel="Delete your review"
                           >

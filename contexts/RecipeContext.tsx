@@ -392,22 +392,81 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
 
   const removeReview = useCallback(
     (recipeId: string, reviewId: string): boolean => {
-      let removed = false;
-      setUserReviews((prev) => {
-        const list = prev[recipeId];
-        if (!list) return prev;
-        const nextList = list.filter((r) => r.id !== reviewId);
-        if (nextList.length === list.length) return prev;
-        removed = true;
-        const next = { ...prev };
-        if (nextList.length === 0) delete next[recipeId];
-        else next[recipeId] = nextList;
-        void persistReviews(next);
-        return next;
-      });
-      return removed;
+      const inUser = (userReviews[recipeId] ?? []).some(
+        (r) => r.id === reviewId || (userId && r.user.id === userId)
+      );
+
+      let inSeed = false;
+      if (recipesSeedOverride) {
+        for (const uid of Object.keys(recipesSeedOverride)) {
+          const bucket = recipesSeedOverride[uid];
+          if (bucket?.recipes) {
+            for (const r of bucket.recipes) {
+              if (r.id === recipeId && r.reviews) {
+                if (r.reviews.some((rev) => rev.id === reviewId || (userId && rev.user.id === userId))) {
+                  inSeed = true;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (!inUser && !inSeed) return false;
+
+      if (inUser) {
+        setUserReviews((prev) => {
+          const currentList = prev[recipeId] ?? [];
+          const nextList = currentList.filter((r) => {
+            if (r.id === reviewId) return false;
+            if (userId && r.user.id === userId) return false;
+            return true;
+          });
+
+          if (nextList.length === currentList.length) return prev;
+
+          const next = { ...prev };
+          if (nextList.length === 0) {
+            delete next[recipeId];
+          } else {
+            next[recipeId] = nextList;
+          }
+          void persistReviews(next);
+          return next;
+        });
+      }
+
+      if (inSeed) {
+        setRecipesSeedOverride((prevOverride) => {
+          if (!prevOverride) return prevOverride;
+          const next = JSON.parse(JSON.stringify(prevOverride)) as RepoRecipesFile;
+          let changed = false;
+          for (const uid of Object.keys(next)) {
+            const bucket = next[uid];
+            if (!bucket?.recipes) continue;
+            for (const r of bucket.recipes) {
+              if (r.id === recipeId && r.reviews) {
+                const beforeLen = r.reviews.length;
+                r.reviews = r.reviews.filter((rev) => {
+                  if (rev.id === reviewId) return false;
+                  if (userId && rev.user.id === userId) return false;
+                  return true;
+                });
+                if (r.reviews.length !== beforeLen) changed = true;
+              }
+            }
+          }
+          if (changed) {
+            AsyncStorage.setItem(RECIPES_OVERRIDE_KEY, JSON.stringify(next)).catch(() => {});
+            return next;
+          }
+          return prevOverride;
+        });
+      }
+
+      return true;
     },
-    [persistReviews],
+    [userReviews, persistReviews, userId, recipesSeedOverride],
   );
 
   const exportMergedRecipesJson = useCallback(() => {
