@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Share } from 'react-native';
-import { RecipeRating, encoreScoreFromMakeAgain } from '@/types';
+import { type RecipeRating, encoreScoreFromMakeAgain } from '@/types';
 import { Colors, Spacing, FontSize, Fonts } from '@/constants/Colors';
 import { Avatar } from './Avatar';
 import { RatingBadge } from './RatingBadge';
@@ -24,11 +24,11 @@ export function FeedCard({ rating, onPress, onUserPress, onBookmarkPress, isBook
 
   return (
     <View style={styles.card}>
-      <TouchableOpacity style={styles.header} onPress={onPress} activeOpacity={0.8}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={onUserPress} activeOpacity={0.7}>
           <Avatar uri={rating.user.avatar} size={44} />
         </TouchableOpacity>
-        <View style={styles.headerText}>
+        <TouchableOpacity style={styles.headerText} onPress={onPress} activeOpacity={0.8}>
           <Text style={styles.headerLine}>
             <Text style={styles.userName}>{rating.user.name.split(' ')[0]}</Text>
             <Text style={styles.action}> reviewed </Text>
@@ -36,9 +36,11 @@ export function FeedCard({ rating, onPress, onUserPress, onBookmarkPress, isBook
           </Text>
           <Text style={styles.cuisine}>{rating.recipe.cuisine} · {rating.recipe.category}</Text>
           <Text style={styles.creator}>By {creatorLabel}</Text>
-        </View>
-        <RatingBadge rating={encoreScoreFromMakeAgain(review.makeAgain)} size="sm" />
-      </TouchableOpacity>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+          <RatingBadge rating={encoreScoreFromMakeAgain(review.makeAgain)} size="sm" />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.reviewMeta}>
         <MakeAgainBadge value={review.makeAgain} />
