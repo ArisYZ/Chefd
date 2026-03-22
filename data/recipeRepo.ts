@@ -3,6 +3,7 @@ import accountsFile from '@/data/accounts.json';
 import type { RepoAccountsFile } from '@/database/accountRepo';
 import { ensureReviewTasteRating } from '@/lib/ensureReviewTasteRating';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
+import { normalizeStoredRecipeImageUrl } from '@/lib/imageUri';
 
 /**
  * Recipe storage model:
@@ -194,6 +195,7 @@ export function parseRecipesFile(
 
       // Ensure official tags are applied dynamically
       recipe.tags = ensureOfficialTags(recipe);
+      recipe.image = normalizeStoredRecipeImageUrl(recipe.image);
 
       recipes.push(recipe);
       if (reviews && reviews.length > 0) {

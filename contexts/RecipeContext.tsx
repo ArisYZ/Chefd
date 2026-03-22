@@ -20,6 +20,7 @@ import type { RepoAccountsFile } from '@/database/accountRepo';
 import { useAuth } from '@/contexts/AuthContext';
 import { ensureReviewTasteRating } from '@/lib/ensureReviewTasteRating';
 import { formatIngredientLine, normalizeRecipeIngredientsMeasured } from '@/lib/ingredients';
+import { normalizeStoredRecipeImageUrl } from '@/lib/imageUri';
 import { getGithubDataSyncConfig, pushDataJsonFilesToGithub } from '@/lib/githubDataSync';
 
 function isAutoPushGitHubDataEnabled(): boolean {
@@ -124,12 +125,16 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
               const measured = normalizeRecipeIngredientsMeasured(r.ingredientsMeasured ?? []);
               const ingredients =
                 measured.length > 0 ? measured.map(formatIngredientLine) : r.ingredients ?? [];
-              return {
+              const base: Recipe = {
                 ...r,
                 ingredientsMeasured: measured,
                 ingredients,
                 createdByUserId: r.createdByUserId ?? userId,
                 createdByName: r.createdByName ?? user?.displayName ?? user?.username ?? 'You',
+              };
+              return {
+                ...base,
+                image: normalizeStoredRecipeImageUrl(base.image),
               };
             });
           }
@@ -266,6 +271,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
         totalRatings: 0,
         createdByUserId: userId,
         createdByName: user?.displayName ?? user?.username ?? 'You',
+        image: normalizeStoredRecipeImageUrl(data.image),
       };
       setUserRecipes((prev) => {
         const merged = [...prev, next];
@@ -294,7 +300,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       const ingredientsLines =
         measured.length > 0 ? measured.map(formatIngredientLine) : data.ingredients ?? [];
 
-      const next: Recipe = {
+      const merged: Recipe = {
         ...current,
         ...data,
         id: recipeId,
@@ -306,6 +312,10 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
         createdByName: current.createdByName ?? user?.displayName ?? user?.username ?? 'You',
         stepPhotos: data.stepPhotos ?? current.stepPhotos,
         sourceName: data.sourceName ?? current.sourceName,
+      };
+      const next: Recipe = {
+        ...merged,
+        image: normalizeStoredRecipeImageUrl(merged.image),
       };
 
       setUserRecipes((prev) => {

@@ -268,7 +268,7 @@ export default function ImportRecipeScreen() {
       cuisine: 'Other',
       category: 'General',
       tags: [],
-      image: parsed.imageUrl || 'https://via.placeholder.com/400x300',
+      image: parsed.imageUrl?.trim() ?? '',
       prepTime: parsed.prepTime,
       cookTime: parsed.cookTime,
       servings: 4,
@@ -330,9 +330,11 @@ export default function ImportRecipeScreen() {
             We found {parsed.ingredients.length} ingredients and {parsed.instructions.length} steps
           </Text>
 
-          {parsed.imageUrl ? (
-            <RemoteImage uri={parsed.imageUrl} style={styles.previewImage} resizeMode="cover" />
-          ) : null}
+          <RemoteImage
+            uri={parsed.imageUrl?.trim() ? parsed.imageUrl : ''}
+            style={styles.previewImage}
+            resizeMode="cover"
+          />
 
           <Text style={styles.previewLabel}>Title</Text>
           <Text style={styles.previewValue}>{parsed.title}</Text>

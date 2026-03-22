@@ -18,3 +18,33 @@ export function normalizeRemoteImageUri(raw: unknown): string | null {
   }
   return null;
 }
+
+/**
+ * Unsplash CDN URLs from `data/recipes.json` often use `?w=600` only. On some devices the image
+ * never resolves (grey box). Adding `auto`, `fit`, and `q` matches Unsplash’s recommended params
+ * and improves load reliability for React Native `Image`.
+ */
+export function enhanceRemoteImageUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed.startsWith('http')) return trimmed;
+  if (!trimmed.includes('images.unsplash.com')) return trimmed;
+  try {
+    const u = new URL(trimmed);
+    if (!u.searchParams.has('auto')) u.searchParams.set('auto', 'format');
+    if (!u.searchParams.has('fit')) u.searchParams.set('fit', 'crop');
+    if (!u.searchParams.has('q')) u.searchParams.set('q', '85');
+    if (!u.searchParams.has('w') && !u.searchParams.has('h')) {
+      u.searchParams.set('w', '1200');
+    }
+    return u.toString();
+  } catch {
+    return trimmed;
+  }
+}
+
+/** Recipe `image` from JSON or forms: trim and enhance Unsplash; empty string when missing. */
+export function normalizeStoredRecipeImageUrl(image: string | undefined | null): string {
+  const trimmed = typeof image === 'string' ? image.trim() : '';
+  if (trimmed.length === 0) return '';
+  return enhanceRemoteImageUrl(trimmed);
+}
