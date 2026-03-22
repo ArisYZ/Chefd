@@ -17,30 +17,21 @@ interface SocialActionsProps {
 export function SocialActions({
   likes,
   comments,
-  liked: initialLiked,
+  liked,
   onLike,
   onComment,
   onShare,
   onBookmark,
   isBookmarked,
 }: SocialActionsProps) {
-  const [isLiked, setIsLiked] = useState(initialLiked);
-  const [likeCount, setLikeCount] = useState(likes);
-
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
-    onLike?.();
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.leftActions}>
-        <TouchableOpacity onPress={handleLike} style={styles.action} activeOpacity={0.7}>
+        <TouchableOpacity onPress={onLike} style={styles.action} activeOpacity={0.7}>
           <Ionicons
-            name={isLiked ? 'heart' : 'heart-outline'}
+            name={liked ? 'heart' : 'heart-outline'}
             size={24}
-            color={isLiked ? Colors.heart : Colors.text}
+            color={liked ? Colors.heart : Colors.text}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={onComment} style={styles.action} activeOpacity={0.7}>

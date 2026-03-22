@@ -4,12 +4,14 @@ import { Colors } from '@/constants/Colors';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RecipeProvider } from '@/contexts/RecipeContext';
 import { BookmarkProvider } from '@/contexts/BookmarkContext';
+import { SocialProvider } from '@/contexts/SocialContext';
 
 export default function RootLayout() {
   return (
     <AuthProvider>
     <RecipeProvider>
     <BookmarkProvider>
+    <SocialProvider>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -131,6 +133,7 @@ export default function RootLayout() {
           }}
         />
       </Stack>
+    </SocialProvider>
     </BookmarkProvider>
     </RecipeProvider>
     </AuthProvider>

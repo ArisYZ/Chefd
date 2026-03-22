@@ -21,9 +21,11 @@ import { ReviewModal } from '@/components/ReviewModal';
 import { RecipeTagChips } from '@/components/RecipeTagChips';
 import { Avatar } from '@/components/Avatar';
 import { RemoteImage } from '@/components/RemoteImage';
+import { SocialActions } from '@/components/SocialActions';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarks } from '@/contexts/BookmarkContext';
+import { useSocial } from '@/contexts/SocialContext';
 import { computeScore, computeTasteScore, Review, User } from '@/types';
 import { formatIngredientLine } from '@/lib/ingredients';
 
@@ -35,6 +37,7 @@ export default function RecipeDetailScreen() {
   const { getRecipeById, getReviewsForRecipe, addReview, deleteRecipe } = useRecipes();
   const { user, onUserSubmittedReview, removeRecipeFromFavorites } = useAuth();
   const { isBookmarked, toggleBookmark, removeRecipeFromBookmarks } = useBookmarks();
+  const { isLiked, getLikeCount, toggleLike } = useSocial();
   const recipe = getRecipeById(id ?? '');
   const [activeTab, setActiveTab] = useState<'recipe' | 'reviews'>('recipe');
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -326,31 +329,52 @@ export default function RecipeDetailScreen() {
                   <Text style={styles.emptySubtext}>Be the first to review this recipe!</Text>
                 </View>
               ) : (
-                localReviews.map((review) => (
-                  <View key={review.id} style={styles.reviewCard}>
-                    <View style={styles.reviewHeader}>
-                      <Avatar uri={review.user.avatar} size={36} />
-                      <View style={styles.reviewHeaderText}>
-                        <Text style={styles.reviewUser}>{review.user.name}</Text>
-                        <Text style={styles.reviewTime}>{review.timestamp}</Text>
+                localReviews.map((review) => {
+                  const liked = isLiked(review.id, review.liked);
+                  const likes = getLikeCount(review.id, review.likes);
+                  return (
+                    <View key={review.id} style={styles.reviewCard}>
+                      <View style={styles.reviewHeader}>
+                        <Avatar uri={review.user.avatar} size={36} />
+                        <View style={styles.reviewHeaderText}>
+                          <Text style={styles.reviewUser}>{review.user.name}</Text>
+                          <Text style={styles.reviewTime}>{review.timestamp}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.reviewMetaRow}>
+                        <MakeAgainBadge value={review.makeAgain} />
+                        <DifficultyPips value={review.difficulty} />
+                      </View>
+                      {review.tasteRating != null && review.tasteRating > 0 && (
+                        <View style={styles.tasteRow}>
+                          <Ionicons name="star" size={14} color="#FFD700" />
+                          <Text style={styles.tasteText}>{review.tasteRating.toFixed(1)}/5 taste</Text>
+                        </View>
+                      )}
+                      {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
+                      {review.flavorNotes && (
+                        <Text style={styles.flavorNotes}>Flavor notes: {review.flavorNotes}</Text>
+                      )}
+
+                      <View style={styles.reviewSocial}>
+                        <Text style={styles.reviewLikes}>
+                          {likes} {likes === 1 ? 'like' : 'likes'}
+                        </Text>
+                        <SocialActions
+                          likes={likes}
+                          liked={liked}
+                          comments={0}
+                          onLike={() => toggleLike(review.id, review.likes, review.liked)}
+                          onShare={() =>
+                            Share.share({
+                              message: `Check out ${review.user.name}'s review of "${recipe.name}" on Chef'd!`,
+                            })
+                          }
+                        />
                       </View>
                     </View>
-                    <View style={styles.reviewMetaRow}>
-                      <MakeAgainBadge value={review.makeAgain} />
-                      <DifficultyPips value={review.difficulty} />
-                    </View>
-                    {review.tasteRating != null && review.tasteRating > 0 && (
-                      <View style={styles.tasteRow}>
-                        <Ionicons name="star" size={14} color="#FFD700" />
-                        <Text style={styles.tasteText}>{review.tasteRating.toFixed(1)}/5 taste</Text>
-                      </View>
-                    )}
-                    {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
-                    {review.flavorNotes && (
-                      <Text style={styles.flavorNotes}>Flavor notes: {review.flavorNotes}</Text>
-                    )}
-                  </View>
-                ))
+                  );
+                })
               )}
             </View>
           )}
@@ -581,5 +605,18 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontStyle: 'italic',
     marginTop: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  reviewSocial: {
+    marginTop: Spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderLight,
+    paddingTop: Spacing.md,
+  },
+  reviewLikes: {
+    fontSize: FontSize.xs,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+    marginBottom: Spacing.sm,
   },
 });
