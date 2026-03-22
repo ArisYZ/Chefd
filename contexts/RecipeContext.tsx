@@ -35,6 +35,14 @@ type RecipeContextValue = {
   recipes: Recipe[];
   getRecipeById: (id: string) => Recipe | undefined;
   addRecipe: (recipe: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings'>) => string;
+  /**
+   * Updates a recipe you created (including bundled seed recipes you authored).
+   * Persists to user storage and merged `recipes.json` snapshot. Returns false if not found or not owned.
+   */
+  updateRecipe: (
+    recipeId: string,
+    data: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings'>,
+  ) => Promise<boolean>;
   /** Removes a user-owned recipe from local storage and session reviews. Returns false if not owned. */
   deleteRecipe: (recipeId: string) => Promise<boolean>;
   getReviewsForRecipe: (recipeId: string) => Review[];
@@ -181,11 +189,16 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [reviewsKey]);
 
-  /** Merged seed JSON may already include user-posted recipes; avoid listing the same id twice. */
+  /**
+   * Seed catalog + user-only recipes; user storage entries **override** seed by id so edits
+   * to bundled recipes (same id, same author) are reflected everywhere.
+   */
   const recipes = useMemo(() => {
     const seedIds = new Set(seedRecipes.map((r) => r.id));
-    const extraFromUserStorage = userRecipes.filter((r) => !seedIds.has(r.id));
-    return [...seedRecipes, ...extraFromUserStorage];
+    const overrideById = new Map(userRecipes.map((r) => [r.id, r]));
+    const mergedFromSeed = seedRecipes.map((r) => overrideById.get(r.id) ?? r);
+    const userOnly = userRecipes.filter((r) => !seedIds.has(r.id));
+    return [...mergedFromSeed, ...userOnly];
   }, [seedRecipes, userRecipes]);
 
   const persistMergedRecipesSnapshot = useCallback(async () => {
@@ -254,6 +267,51 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       return id;
     },
     [persistRecipes, user?.displayName, user?.username, userId],
+  );
+
+  const updateRecipe = useCallback(
+    async (
+      recipeId: string,
+      data: Omit<Recipe, 'id' | 'averageRating' | 'totalRatings'>,
+    ): Promise<boolean> => {
+      if (!userId) return false;
+      const current = recipes.find((r) => r.id === recipeId);
+      if (!current) return false;
+      const isOwner =
+        current.createdByUserId === userId ||
+        (recipeId.startsWith('ur-') && current.createdByUserId == null);
+      if (!isOwner) return false;
+
+      const measured = normalizeRecipeIngredientsMeasured(data.ingredientsMeasured ?? []);
+      const ingredientsLines =
+        measured.length > 0 ? measured.map(formatIngredientLine) : data.ingredients ?? [];
+
+      const next: Recipe = {
+        ...current,
+        ...data,
+        id: recipeId,
+        ingredientsMeasured: measured,
+        ingredients: ingredientsLines,
+        averageRating: current.averageRating,
+        totalRatings: current.totalRatings,
+        createdByUserId: current.createdByUserId ?? userId,
+        createdByName: current.createdByName ?? user?.displayName ?? user?.username ?? 'You',
+        stepPhotos: data.stepPhotos ?? current.stepPhotos,
+        sourceName: data.sourceName ?? current.sourceName,
+      };
+
+      setUserRecipes((prev) => {
+        const idx = prev.findIndex((r) => r.id === recipeId);
+        const merged =
+          idx >= 0
+            ? [...prev.slice(0, idx), next, ...prev.slice(idx + 1)]
+            : [...prev, next];
+        void persistRecipes(merged);
+        return merged;
+      });
+      return true;
+    },
+    [userId, recipes, persistRecipes, user?.displayName, user?.username],
   );
 
   const deleteRecipe = useCallback(
@@ -343,6 +401,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       recipes,
       getRecipeById,
       addRecipe,
+      updateRecipe,
       deleteRecipe,
       getReviewsForRecipe,
       addReview,
@@ -353,6 +412,7 @@ export function RecipeProvider({ children }: { children: React.ReactNode }) {
       recipes,
       getRecipeById,
       addRecipe,
+      updateRecipe,
       deleteRecipe,
       getReviewsForRecipe,
       addReview,

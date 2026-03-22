@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,8 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { copyAsync, documentDirectory } from 'expo-file-system/legacy';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +23,7 @@ import { RECIPE_TAG_OPTIONS, MAX_RECIPE_TAGS, getTagConfig } from '@/constants/r
 import { FLAVOR_TAG_OPTIONS, MAX_FLAVOR_TAGS } from '@/constants/flavorTags';
 import { MEASUREMENT_UNITS } from '@/constants/measurementUnits';
 import { formatIngredientLine } from '@/lib/ingredients';
-import type { IngredientMeasured } from '@/types';
+import type { IngredientMeasured, Recipe } from '@/types';
 import { useRecipes } from '@/contexts/RecipeContext';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -32,10 +33,37 @@ const MAX_DESC = 500;
 const MAX_STEP = 300;
 const MAX_ING_NAME = 50;
 
+function isRecipeOwner(recipe: Recipe, userId: string | undefined, recipeId: string): boolean {
+  if (!userId) return false;
+  return (
+    recipe.createdByUserId === userId ||
+    (recipeId.startsWith('ur-') && recipe.createdByUserId == null)
+  );
+}
+
+/** Stored times are minutes; map to form fields using saved display units. */
+function minutesToFormField(
+  minutes: number,
+  storedUnit: 'minutes' | 'hours' | undefined,
+): { value: string; unit: 'minutes' | 'hours' } {
+  const u = storedUnit ?? 'minutes';
+  if (u === 'hours') {
+    const h = minutes / 60;
+    const text = Number.isInteger(h) ? String(h) : String(Math.round(h * 10) / 10);
+    return { value: text, unit: 'hours' };
+  }
+  return { value: String(Math.round(minutes)), unit: 'minutes' };
+}
+
 export default function NewRecipeScreen() {
   const router = useRouter();
-  const { addRecipe } = useRecipes();
+  const navigation = useNavigation();
+  const params = useLocalSearchParams<{ editId?: string | string[] }>();
+  const editIdRaw = params.editId;
+  const editId = Array.isArray(editIdRaw) ? editIdRaw[0] : editIdRaw;
+  const { addRecipe, updateRecipe, getRecipeById } = useRecipes();
   const { user, onUserCreatedRecipe } = useAuth();
+  const lastHydratedEdit = useRef<string | null>(null);
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -56,6 +84,64 @@ export default function NewRecipeScreen() {
   const [unitPickerIndex, setUnitPickerIndex] = useState<number | null>(null);
   const [instructions, setInstructions] = useState<string[]>(['']);
   const [sourceUrl, setSourceUrl] = useState('');
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: editId ? 'Edit Recipe' : 'New Recipe',
+    });
+  }, [editId, navigation]);
+
+  useEffect(() => {
+    if (!editId) {
+      lastHydratedEdit.current = null;
+      return;
+    }
+    if (lastHydratedEdit.current === editId) return;
+    const r = getRecipeById(editId);
+    if (!r) {
+      Alert.alert('Not found', 'This recipe could not be opened for editing.');
+      router.back();
+      return;
+    }
+    if (!user?.id) {
+      Alert.alert('Sign in required', 'Sign in to edit your recipes.');
+      router.back();
+      return;
+    }
+    if (!isRecipeOwner(r, user.id, editId)) {
+      Alert.alert('Cannot edit', 'You can only edit recipes you created.');
+      router.back();
+      return;
+    }
+
+    setImageUri(r.image || null);
+    setName(r.name);
+    setDescription(r.description ?? '');
+    setCuisine(r.cuisine);
+    setCategory(r.category);
+    const prepF = minutesToFormField(r.prepTime, r.prepTimeUnit);
+    const cookF = minutesToFormField(r.cookTime, r.cookTimeUnit);
+    setPrepTime(prepF.value);
+    setPrepUnit(prepF.unit);
+    setCookTime(cookF.value);
+    setCookUnit(cookF.unit);
+    setServings(r.servings);
+    setDifficulty(r.difficulty);
+    setSelectedTags([...r.tags]);
+    setSelectedFlavors(r.flavorTags ? [...r.flavorTags] : []);
+    const ingRows =
+      r.ingredientsMeasured && r.ingredientsMeasured.length > 0
+        ? r.ingredientsMeasured.map((m) => ({
+            amount: m.amount ?? '',
+            unit: m.unit ?? 'g',
+            name: m.name ?? '',
+          }))
+        : [{ amount: '', unit: 'g', name: '' }];
+    setIngredients(ingRows);
+    setInstructions(r.instructions.length > 0 ? [...r.instructions] : ['']);
+    setSourceUrl(r.sourceUrl ?? '');
+    lastHydratedEdit.current = editId;
+  }, [editId, getRecipeById, user?.id, router]);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) => {
@@ -199,7 +285,12 @@ export default function NewRecipeScreen() {
     const prep = getTimeInMinutes(prepTime, prepUnit);
     const cook = getTimeInMinutes(cookTime, cookUnit);
 
-    if (!imageUri) { Alert.alert('Photo required', 'Add a photo for your recipe.'); return; }
+    const existingImage = editId ? getRecipeById(editId)?.image : undefined;
+    const resolvedImage = (imageUri ?? existingImage ?? '').trim();
+    if (!resolvedImage) {
+      Alert.alert('Photo required', 'Add a photo for your recipe.');
+      return;
+    }
     if (!name.trim()) { Alert.alert('Name required', 'Enter a recipe name.'); return; }
     if (Number.isNaN(prep) || Number.isNaN(cook)) {
       Alert.alert('Time', 'Enter valid prep and cook times (0 or more).');
@@ -221,14 +312,14 @@ export default function NewRecipeScreen() {
     }
     if (!steps.length) { Alert.alert('Instructions', 'Add at least one step.'); return; }
 
-    const id = addRecipe({
+    const payload = {
       name: name.trim(),
       description: description.trim() || undefined,
       cuisine: cuisine.trim() || 'Other',
       category: category.trim() || 'General',
       tags: selectedTags,
       flavorTags: selectedFlavors.length > 0 ? selectedFlavors : undefined,
-      image: imageUri ?? '',
+      image: resolvedImage,
       prepTime: prep,
       cookTime: cook,
       prepTimeUnit: prepUnit,
@@ -239,7 +330,19 @@ export default function NewRecipeScreen() {
       ingredientsMeasured: ingMeasured,
       instructions: steps,
       sourceUrl: sourceUrl.trim() || undefined,
-    });
+    };
+
+    if (editId) {
+      const ok = await updateRecipe(editId, payload);
+      if (!ok) {
+        Alert.alert('Could not save', 'You may not have permission to edit this recipe.');
+        return;
+      }
+      router.replace(`/recipe/${editId}`);
+      return;
+    }
+
+    const id = addRecipe(payload);
 
     if (user) await onUserCreatedRecipe();
     router.replace(`/recipe/${id}`);
@@ -605,7 +708,7 @@ export default function NewRecipeScreen() {
         />
 
         <TouchableOpacity style={styles.saveBtn} onPress={save} activeOpacity={0.9}>
-          <Text style={styles.saveBtnText}>Save recipe</Text>
+          <Text style={styles.saveBtnText}>{editId ? 'Save changes' : 'Save recipe'}</Text>
         </TouchableOpacity>
 
         <View style={{ height: 32 }} />

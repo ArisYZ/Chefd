@@ -71,13 +71,14 @@ export default function RecipeDetailScreen() {
       : null;
   const creatorLabel =
     recipe.createdByName ?? (recipe.createdByUserId ? `@${recipe.createdByUserId}` : 'Unknown cook');
-  /** App-created recipes use `ur-` ids; creator may be missing if imported while logged out. */
+  /** You own the recipe if you're the recorded author (seed ids like `r1` or user ids `ur-*`). */
   const isOwnRecipe = Boolean(
     user?.id &&
-      recipe.id.startsWith('ur-') &&
-      (recipe.createdByUserId == null || recipe.createdByUserId === user.id),
+      (recipe.createdByUserId === user.id ||
+        (recipe.id.startsWith('ur-') && recipe.createdByUserId == null)),
   );
-  const canDeleteRecipe = isOwnRecipe;
+  /** Only locally posted recipes (`ur-*`) can be removed; bundled seed recipes cannot. */
+  const canDeleteRecipe = isOwnRecipe && recipe.id.startsWith('ur-');
   const existingReview = localReviews.find((r) => r.user.id === user?.id);
   const canReview = !isOwnRecipe;
   const bookmarked = isBookmarked(recipe.id);
@@ -204,6 +205,19 @@ export default function RecipeDetailScreen() {
               <Ionicons name="share-outline" size={22} color={Colors.primary} />
             </TouchableOpacity>
           </View>
+
+          {isOwnRecipe ? (
+            <TouchableOpacity
+              style={styles.editRecipeBtn}
+              activeOpacity={0.75}
+              onPress={() =>
+                router.push(`/recipe/new?editId=${encodeURIComponent(recipe.id)}`)
+              }
+            >
+              <Ionicons name="create-outline" size={18} color={Colors.primary} />
+              <Text style={styles.editRecipeText}>Edit recipe</Text>
+            </TouchableOpacity>
+          ) : null}
 
           {canDeleteRecipe ? (
             <TouchableOpacity
@@ -506,6 +520,22 @@ const styles = StyleSheet.create({
   actionButtonActive: {
     backgroundColor: Colors.primary,
     borderColor: Colors.primary,
+  },
+  editRecipeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    paddingVertical: Spacing.md,
+    marginBottom: Spacing.sm,
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    borderRadius: BorderRadius.full,
+  },
+  editRecipeText: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    color: Colors.primary,
   },
   deleteRecipeBtn: {
     flexDirection: 'row',
